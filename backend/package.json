@@ -1,0 +1,15 @@
+{\n  "name": "stellarmartBd",
+  "version": "1.0.0",
+  "description": "Backend for StellarMart",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {\n    "express": "^4.17.1",
+    "mysql2": "^2.3.3",
+    "jsonwebtoken": "^8.5.1",
+    "dotenv": "^10.0.0"
+  },
+  "devDependencies": {},\n  "keywords": [],\n  "author": "tourff",
+  "license": "ISC"
+}
