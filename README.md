@@ -1,72 +1,142 @@
-# Project Overview
+# 🌟 StellarMart BD - E-Commerce Platform
 
-Welcome to the StellarMartBD project! This repository is dedicated to building and maintaining an e-commerce platform that allows users to buy and sell products in a user-friendly environment.
+A complete, modern e-commerce platform built with **Next.js**, **Node.js/Express**, and **MySQL**. Designed for single vendor with multiple categories and a powerful admin panel.
 
-## Features
-- User authentication and registration
-- Product listing with search functionality
-- Shopping cart and checkout process
-- Order management for users and admin
-- User reviews and ratings for products
-- Responsive design for mobile and desktop views
+## 📋 Features
 
-## Tech Stack
-- **Frontend:** React, Redux, Tailwind CSS
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB
-- **Authentication:** JWT (JSON Web Tokens)
+### 👥 Customer Features
+- ✅ Home Page with Slider, Featured Products, Categories
+- ✅ Browse Products by Category & Subcategory
+- ✅ Advanced Product Filtering & Sorting
+- ✅ Product Details with Images, Variations, Reviews
+- ✅ Shopping Cart Management
+- ✅ Secure Checkout & Payment Integration
+- ✅ Order Tracking & History
+- ✅ Wishlist Management
+- ✅ User Dashboard & Profile
+- ✅ Reviews & Ratings System
 
-## Installation Instructions
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/tourff/stellarmartBd.git
-   cd stellarmartBd
-   ```
-2. Install backend dependencies:
-   ```bash
-   cd backend
-   npm install
-   ```
-3. Install frontend dependencies:
-   ```bash
-   cd ../frontend
-   npm install
-   ```
-4. Configure environment variables for the backend in a `.env` file.
-5. Start the backend server:
-   ```bash
-   npm start
-   ```
-6. Start the frontend development server:
-   ```bash
-   cd frontend
-   npm start
-   ```
+### 🔧 Admin Features
+- ✅ Dashboard with Sales Analytics & Reports
+- ✅ Product Management (Add/Edit/Delete)
+- ✅ Category & Subcategory Management
+- ✅ Order Management & Status Updates
+- ✅ Customer Management
+- ✅ Coupon & Offer Management
+- ✅ Inventory & Stock Tracking
+- ✅ Payment & Shipping Configuration
+- ✅ Newsletter Management
+- ✅ Activity Logs & Admin Users
+- ✅ Website Settings & SEO Management
+- ✅ And 25+ more admin features!
 
-## Folder Structure
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | Next.js, React, Tailwind CSS, Axios |
+| **Backend** | Node.js, Express.js |
+| **Database** | MySQL |
+| **Authentication** | JWT |
+| **Deployment** | XAMPP (Local), AWS/Heroku (Production) |
+
+## 📁 Project Structure
+
 ```
 stellarmartBd/
-├── backend/        # Server-side code
-│   ├── config/     # Configuration files
-│   ├── models/     # Mongoose models
-│   ├── routes/     # Express routes
-│   ├── controllers/# Route controllers
-│   ├── middleware/ # Custom middleware
-│   └── ...        # Other backend files
-├── frontend/       # Client-side code
-│   ├── src/       # React source files
-│   │   ├── components/ # React components
-│   │   ├── pages/       # Application pages
-│   │   ├── styles/      # Stylesheets
-│   │   └── ...         # Other frontend files
-└── README.md       # Project overview
+├── frontend/          # Next.js Frontend
+├── backend/           # Node.js + Express Backend
+├── database/          # MySQL Schemas
+├── docs/              # Documentation
+└── README.md
 ```
 
-## Development Workflow
-1. **Branching**: Always create a new branch for any feature or bug fix. Use descriptive names for branches (e.g., `feature/add-product` or `bugfix/fix-cart`).
-2. **Commits**: Make small, frequent commits with clear messages.
-3. **Pull Requests**: Open a pull request for review once your feature is complete. Ensure that the code is well-documented and tested.
-4. **Code Review**: Participate in code reviews to maintain code quality and share knowledge with the team.
-5. **Deployment**: After merging, follow the deployment process as specified in the documentation.
+## 🚀 Quick Start
 
-Happy coding!
+### Prerequisites
+- Node.js v16+
+- MySQL (XAMPP)
+- npm or yarn
+
+### Installation
+
+1. **Clone Repository**
+```bash
+git clone https://github.com/tourff/stellarmartBd.git
+cd stellarmartBd
+```
+
+2. **Frontend Setup**
+```bash
+cd frontend
+npm install
+npm run dev
+# Visit http://localhost:3000
+```
+
+3. **Backend Setup**
+```bash
+cd ../backend
+npm install
+npm run dev
+# Server runs on http://localhost:5000
+```
+
+4. **Database Setup**
+```bash
+# Import database/schema.sql into MySQL using XAMPP PhpMyAdmin
+```
+
+## 📚 Documentation
+
+- [Setup Guide](./docs/SETUP_GUIDE.md)
+- [API Documentation](./docs/API_DOCUMENTATION.md)
+- [Database Schema](./docs/DATABASE_SCHEMA.md)
+- [Features List](./docs/FEATURES.md)
+
+## 📊 Database Tables
+
+- `users` - Customer accounts
+- `products` - Product listings
+- `categories` - Product categories
+- `orders` - Customer orders
+- `order_items` - Order line items
+- `coupons` - Discount coupons
+- `reviews` - Product reviews
+- `admin_users` - Admin accounts
+- `inventory` - Stock tracking
+- `activity_logs` - Admin actions
+
+## 🔐 Environment Variables
+
+Create `.env` files in both frontend and backend directories. See `.env.example` for reference.
+
+## 📈 Development Roadmap
+
+- [x] Project Setup
+- [x] Database Schema Design
+- [ ] Backend API Development
+- [ ] Frontend UI Development
+- [ ] Integration Testing
+- [ ] Admin Panel
+- [ ] Deployment Setup
+
+## 🤝 Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+## 📄 License
+
+MIT License - See [LICENSE](./LICENSE) file.
+
+## 👨‍💻 Author
+
+- **Tourff** (@tourff)
+
+## 📞 Support
+
+For issues, questions, or suggestions, please create a [GitHub Issue](https://github.com/tourff/stellarmartBd/issues).
+
+---
+
+**Made with ❤️ for StellarMart BD**
