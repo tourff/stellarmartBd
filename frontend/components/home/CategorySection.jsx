@@ -1,62 +1,78 @@
+// components/home/CategorySection.jsx
+'use client';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 
-const categories = [
-  { id: 1, name: 'মোবাইল ফোন', icon: '📱', count: 150, slug: 'mobile-phones', color: 'bg-blue-100' },
-  { id: 2, name: 'ল্যাপটপ', icon: '💻', count: 85, slug: 'laptops', color: 'bg-purple-100' },
-  { id: 3, name: 'ট্যাবলেট', icon: '📲', count: 45, slug: 'tablets', color: 'bg-pink-100' },
-  { id: 4, name: 'স্মার্টওয়াচ', icon: '⌚', count: 60, slug: 'smartwatches', color: 'bg-green-100' },
-  { id: 5, name: 'হেডফোন', icon: '🎧', count: 120, slug: 'headphones', color: 'bg-yellow-100' },
-  { id: 6, name: 'স্পিকার', icon: '🔊', count: 75, slug: 'speakers', color: 'bg-red-100' },
-  { id: 7, name: 'ক্যামেরা', icon: '📷', count: 40, slug: 'cameras', color: 'bg-indigo-100' },
-  { id: 8, name: 'গেমিং', icon: '🎮', count: 95, slug: 'gaming', color: 'bg-orange-100' },
-  { id: 9, name: 'টিভি', icon: '📺', count: 55, slug: 'tvs', color: 'bg-teal-100' },
-  { id: 10, name: 'অ্যাকসেসরিজ', icon: '🔌', count: 200, slug: 'accessories', color: 'bg-gray-100' },
-  { id: 11, name: 'ফ্রিজ', icon: '🧊', count: 35, slug: 'refrigerators', color: 'bg-cyan-100' },
-  { id: 12, name: 'এসি', icon: '❄️', count: 28, slug: 'air-conditioners', color: 'bg-sky-100' },
-];
+export default function CategorySection() {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const CategorySection = () => {
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch('/api/categories');
+      const data = await res.json();
+      if (data.success) {
+        setCategories(data.categories);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const defaultCategories = [
+    { _id: 1, name: 'Electronics', slug: 'electronics', image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400' },
+    { _id: 2, name: 'Fashion', slug: 'fashion', image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=400' },
+    { _id: 3, name: 'Home & Living', slug: 'home-living', image: 'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=400' },
+    { _id: 4, name: 'Beauty', slug: 'beauty', image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400' },
+  ];
+
+  const displayCategories = categories.length > 0 ? categories : defaultCategories;
+
   return (
-    <section className="py-12 bg-white">
+    <section className="py-16">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="section-title">ক্যাটাগরি</h2>
-            <p className="section-subtitle">আপনার প্রয়োজন অনুযায়ী ক্যাটাগরি ব্রাউজ করুন</p>
-          </div>
-          <Link 
-            href="/categories" 
-            className="text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
-          >
-            সব দেখুন
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
-        </div>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+          Shop by Category
+        </h2>
+        <p className="text-gray-600 text-center mb-12">
+          Browse your favorite categories
+        </p>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {categories.map((category) => (
-            <Link
-              key={category.id}
-              href={`/categories/${category.slug}`}
-              className="group"
-            >
-              <div className={`${category.color} rounded-2xl p-6 text-center transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1`}>
-                <span className="text-4xl mb-3 block">{category.icon}</span>
-                <h3 className="font-semibold text-gray-800 mb-1 group-hover:text-primary-600 transition">
-                  {category.name}
-                </h3>
-                <p className="text-sm text-gray-500">{category.count} পণ্য</p>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {displayCategories.map((category) => (
+              <Link
+                key={category._id}
+                href={`/products?category=${category.slug}`}
+                className="group relative h-48 md:h-64 rounded-xl overflow-hidden shadow-lg"
+              >
+                <Image
+                  src={category.image || 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400'}
+                  alt={category.name}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors flex items-center justify-center">
+                  <h3 className="text-white text-xl md:text-2xl font-bold">
+                    {category.name}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
-};
-
-export default CategorySection;
+}
