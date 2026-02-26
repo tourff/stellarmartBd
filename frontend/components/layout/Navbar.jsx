@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { ShoppingBag, Search, Headset, User, X } from 'lucide-react';
@@ -9,7 +11,10 @@ const Navbar = ({ cartCount = 0, cartTotal = 0 }) => {
     <>
       {/* কার্ট স্লাইডবার ওভারলে */}
       {isCartOpen && (
-        <div className="fixed inset-0 bg-black/50 z-[1001]" onClick={() => setIsCartOpen(false)} />
+        <div 
+          className="fixed inset-0 bg-black/50 z-[1001]" 
+          onClick={() => setIsCartOpen(false)} 
+        />
       )}
 
       {/* কার্ট স্লাইডবার */}
@@ -56,14 +61,14 @@ const Navbar = ({ cartCount = 0, cartTotal = 0 }) => {
               placeholder="Khoj: The Search" 
               className="w-full px-4 py-1.5 outline-none text-xs font-medium"
             />
-            <button className="bg-[#083b66] text-white px-5 hover:bg-blue-900">
+            <button type="submit" className="bg-[#083b66] text-white px-5 hover:bg-blue-900">
               <Search size={16} />
             </button>
           </form>
 
           {/* ইউজার অ্যাকশন */}
           <nav className="flex items-center gap-4">
-            <Link href="#" className="flex flex-col items-center text-gray-600 hover:text-green-600 group">
+            <Link href="https://wa.me/8801847853867" target="_blank" className="flex flex-col items-center text-gray-600 hover:text-green-600 group">
               <Headset size={18} className="group-hover:scale-110 transition-transform" />
               <span className="text-[8px] font-bold mt-1 uppercase">Support</span>
             </Link>
