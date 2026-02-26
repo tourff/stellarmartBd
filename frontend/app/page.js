@@ -1,10 +1,10 @@
-// app/page.jsx
+// Instead of @/components use relative path
 import HeroSection from '@/components/home/HeroSection';
 import CategorySection from '@/components/home/CategorySection';
-import FeaturedProduct from '@/components/home/FeaturedProduct';
-import FlashSale from '@/components/home/FlashSale';
-import Newsletter from '@/components/home/Newsletter';
-import WhyChooseUs from '@/components/home/WhyChooseUs';
+import FeaturedProduct from '@/app/components/home/FeaturedProduct';
+import FlashSale from '@/app/components/home/FlashSale';
+import Newsletter from '@/app/components/home/Newsletter';
+import WhyChooseUs from '@/app/components/home/WhyChooseUs';
 
 export default function Home() {
   return (
