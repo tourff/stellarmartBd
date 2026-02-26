@@ -1,11 +1,21 @@
 'use client';
 
-// FaTaka সরিয়ে FaMoneyBillWave এবং অন্যান্য আইকন রাখা হয়েছে
-import { FaBox, FaShoppingCart, FaUsers, FaMoneyBillWave, FaArrowUp, FaArrowDown, FaEye, FaEdit, FaTrash } from 'react-icons/fa';
+// FaPackage এবং FaPending নামে কোনো আইকন নেই, তাই সঠিক নামগুলো ব্যবহার করা হয়েছে
+import { 
+  FaBox, 
+  FaShoppingCart, 
+  FaUsers, 
+  FaMoneyBillWave, 
+  FaArrowUp, 
+  FaArrowDown, 
+  FaEye, 
+  FaEdit, 
+  FaTrash,
+  FaClock // FaPending এর বিকল্প হিসেবে এটি ব্যবহার করতে পারেন
+} from 'react-icons/fa';
 import Link from 'next/link';
 
 const stats = [
-  // FaTaka এর বদলে FaMoneyBillWave ব্যবহার করা হয়েছে
   { title: 'Total Revenue', value: '৳12,45,000', change: '+12.5%', icon: FaMoneyBillWave, color: 'bg-green-100 text-green-600' },
   { title: 'Total Orders', value: '1,245', change: '+8.2%', icon: FaShoppingCart, color: 'bg-blue-100 text-blue-600' },
   { title: 'Total Products', value: '856', change: '+3.1%', icon: FaBox, color: 'bg-purple-100 text-purple-600' },
@@ -59,7 +69,7 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-xl shadow-sm">
           <div className="flex items-center justify-between p-6 border-b">
             <h2 className="text-lg font-bold text-gray-900">Recent Orders</h2>
-            <Link href="/admin/orders" className="text-primary-600 hover:underline text-sm">
+            <Link href="/admin/orders" className="text-blue-600 hover:underline text-sm">
               View All
             </Link>
           </div>
@@ -77,7 +87,7 @@ export default function AdminDashboard() {
                 {recentOrders.map((order) => (
                   <tr key={order.id} className="border-b hover:bg-gray-50">
                     <td className="py-4 px-6">
-                      <span className="font-medium text-primary-600">{order.id}</span>
+                      <span className="font-medium text-blue-600">{order.id}</span>
                     </td>
                     <td className="py-4 px-6 text-gray-600">{order.customer}</td>
                     <td className="py-4 px-6 font-semibold">৳{order.amount}</td>
@@ -102,7 +112,7 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-xl shadow-sm">
           <div className="flex items-center justify-between p-6 border-b">
             <h2 className="text-lg font-bold text-gray-900">Top Selling Products</h2>
-            <Link href="/admin/products" className="text-primary-600 hover:underline text-sm">
+            <Link href="/admin/products" className="text-blue-600 hover:underline text-sm">
               View All
             </Link>
           </div>
@@ -118,7 +128,7 @@ export default function AdminDashboard() {
                     <p className="text-sm text-gray-500">{product.sold} sold</p>
                   </div>
                 </div>
-                <p className="font-semibold text-primary-600">৳{product.revenue.toLocaleString()}</p>
+                <p className="font-semibold text-blue-600">৳{product.revenue.toLocaleString()}</p>
               </div>
             ))}
           </div>
