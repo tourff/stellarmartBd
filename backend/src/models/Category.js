@@ -1,55 +1,13 @@
-const mongoose = require('mongoose');
+// models/Category.js
+import mongoose from 'mongoose';
 
-const categorySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Category name is required'],
-    trim: true
-  },
-  slug: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true
-  },
-  description: {
-    type: String,
-    default: ''
-  },
-  icon: {
-    type: String,
-    default: ''
-  },
-  image: {
-    type: String,
-    default: ''
-  },
-  parent: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-    default: null
-  },
-  isFeatured: {
-    type: Boolean,
-    default: false
-  },
-  isActive: {
-    type: Boolean,
-    default: true
-  },
-  order: {
-    type: Number,
-    default: 0
-  }
-}, {
-  timestamps: true
+const CategorySchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  slug: { type: String, required: true, unique: true },
+  description: { type: String },
+  image: { type: String },
+  isActive: { type: Boolean, default: true },
+  createdAt: { type: Date, default: Date.now },
 });
 
-categorySchema.pre('save', function(next) {
-  if (this.isModified('name')) {
-    this.slug = this.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-  }
-  next();
-});
-
-module.exports = mongoose.model('Category', categorySchema);
+export default mongoose.models.Category || mongoose.model('Category', CategorySchema);
