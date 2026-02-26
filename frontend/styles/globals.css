@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* গুগল ফন্ট ইমপোর্ট */
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    /* স্ক্রিনশটের মতো হালকা ব্যাকগ্রাউন্ড কালার */
+    @apply font-english text-gray-800 bg-[#f4f7f9]; 
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bengali font-bold;
+  }
+}
+
+@layer components {
+  /* স্ক্রিনশটের সেই ডার্ক ব্লু থিম বাটন */
+  .btn-buy-now {
+    @apply bg-[#004a7c] hover:bg-[#00365b] text-white font-bold py-2 px-4 rounded transition-all duration-300 text-xs uppercase flex items-center justify-center gap-1;
+  }
+
+  .btn-add-cart {
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded transition-all duration-300 text-xs uppercase flex items-center justify-center gap-1;
+  }
+  
+  /* প্রোডাক্ট কার্ডের জন্য বিশেষ শ্যাডো এবং বর্ডার */
+  .product-card {
+    @apply bg-white border border-gray-100 rounded-lg overflow-hidden hover:shadow-2xl transition-all duration-300;
+  }
+  
+  .section-title {
+    @apply text-xl md:text-2xl font-bold text-gray-800 uppercase tracking-tight;
+  }
+}
+
+@layer utilities {
+  /* কাস্টম কালার ইউটিলিটি */
+  .bg-navy {
+    background-color: #004a7c;
+  }
+  
+  /* ছবির জন্য ড্রপ শ্যাডো */
+  .image-drop-shadow {
+    filter: drop-shadow(0 10px 15px rgba(0, 74, 124, 0.1));
+  }
+}
+
+/* কাস্টম স্ক্রলবার - স্ক্রিনশটের কালারের সাথে মিল রেখে */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #004a7c;
+  @apply rounded-full;
+}
+
+/* নো স্ক্রলবার ইউটিলিটি */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
