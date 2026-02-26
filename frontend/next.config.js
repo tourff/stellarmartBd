@@ -2,15 +2,22 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['res.cloudinary.com'], // যদি প্রোডাক্ট ইমেজের জন্য Cloudinary ব্যবহার করেন
+    // পুরনো 'domains' এর বদলে আধুনিক 'remotePatterns' ব্যবহার করা হয়েছে
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '**',
+      },
+    ],
   },
   async rewrites() {
     return [
       {
         source: '/api/:path*',
         destination: process.env.NODE_ENV === 'development'
-          ? 'http://localhost:5000/api/:path*' // আপনার লোকাল ব্যাকএন্ড পোর্ট অনুযায়ী পরিবর্তন করুন
-          : 'https://your-backend-url.vercel.app/api/:path*', // আপনার লাইভ ব্যাকএন্ড ইউআরএল এখানে দিন
+          ? 'http://localhost:5000/api/:path*' 
+          : 'https://your-backend-url.vercel.app/api/:path*', // আপনার আসল ব্যাকএন্ড ইউআরএল এখানে দিন
       },
     ];
   },
