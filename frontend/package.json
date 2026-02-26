@@ -16,5 +16,10 @@
     "react-hot-toast": "^2.4.1",
     "lucide-react": "latest",
     "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "tailwindcss": "latest",
+    "postcss": "latest",
+    "autoprefixer": "latest"
   }
 }
