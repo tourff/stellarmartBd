@@ -1,0 +1,21 @@
+[build]
+  # Next.js build command
+  command = "npm run build"
+  # Next.js production output directory
+  publish = ".next"
+
+[[plugins]]
+  # Netlify-te Next.js-er SSR ebong Routing-er jonno proyojoniyo
+  package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+  # Client-side routing (404 error) thik korar jonno
+  from = "/*"
+  to = "/.next/server/pages/index.html"
+  status = 200
+  force = false
+
+[build.environment]
+  # Build process-er somoy dependency error komanor jonno
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--version"
