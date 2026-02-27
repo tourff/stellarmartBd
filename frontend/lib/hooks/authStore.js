@@ -6,30 +6,19 @@ export const useAuthStore = create(
     (set) => ({
       user: null,
       loading: false,
-      
-      // Login function
-      login: (userData) => {
-        set({ user: userData });
-      },
-      
-      // Logout function
+      login: (userData) => set({ user: userData }),
       logout: () => {
         set({ user: null });
-        // LocalStorage clear korar jonno
         if (typeof window !== 'undefined') {
           localStorage.removeItem('prime-auth-storage');
           window.location.href = '/login';
         }
       },
-
-      // Build error thik korte safe hydrate check
-      setHasHydrated: (state) => {
-        set({ _hasHydrated: state });
-      }
     }),
     {
-      name: 'prime-auth-storage', // ব্রাউজারে এই নামে ডেটা সেভ থাকবে
-      storage: createJSONStorage(() => localStorage), // Server-side error bondho korte
+      name: 'prime-auth-storage',
+      // Build-er somoy error bondho korte storage check
+      storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : null)),
     }
   )
 );
