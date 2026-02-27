@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-// Build crash thik korte ekhane default values deya holo
+// context create korar somoy default value deya holo jate build crash na kore
 const AuthContext = createContext({
   user: null,
   loading: false,
@@ -18,9 +18,12 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('prime_user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    // Shudhu browser-e localStorage check korbe
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem('prime_user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
     }
     setLoading(false);
   }, []);
@@ -56,6 +59,6 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  // Jodi context na thake tobe default values return korbe
-  return context; 
+  // Context na thakle default return korbe
+  return context || { user: null, loading: false };
 };
