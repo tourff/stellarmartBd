@@ -4,7 +4,13 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-const AuthContext = createContext();
+// Build crash thik korte ekhane default values deya holo
+const AuthContext = createContext({
+  user: null,
+  loading: false,
+  login: () => {},
+  logout: () => {}
+});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -48,12 +54,8 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Build crash thik korar jonno update kora holo
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    // Build time-e error throw na kore empty values return korbe
-    return { user: null, loading: false, login: () => {}, logout: () => {} };
-  }
-  return context;
+  // Jodi context na thake tobe default values return korbe
+  return context; 
 };
