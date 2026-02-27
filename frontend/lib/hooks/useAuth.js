@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-// Default value diye context create kora holo
+// Default value diye context create kora holo - auth property add kora holo
 const AuthContext = createContext({
   user: null,
   auth: null,
@@ -22,7 +22,11 @@ export const AuthProvider = ({ children }) => {
     if (typeof window !== 'undefined') {
       const storedUser = localStorage.getItem('prime_user');
       if (storedUser) {
-        setUser(JSON.parse(storedUser));
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (e) {
+          console.error('Error parsing user data:', e);
+        }
       }
     }
     setLoading(false);
@@ -52,10 +56,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // context value te 'auth' property o add kora holo jate destructuring fail na kore
+  // Context value with all required properties including 'auth'
   const value = {
     user,
-    auth: user,
+    auth: user, // Same as user for backward compatibility
     login,
     logout,
     loading
@@ -68,11 +72,21 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// Custom hook with safe fallback
 export const useAuth = () => {
   const context = useContext(AuthContext);
   // Build error thik korte default values return korbe
   if (!context) {
-    return { user: null, auth: null, loading: false, login: () => {}, logout: () => {} };
+    return { 
+      user: null, 
+      auth: null, 
+      loading: false, 
+      login: () => {}, 
+      logout: () => {} 
+    };
   }
   return context;
 };
+
+// Default export for easier importing
+export default useAuth;

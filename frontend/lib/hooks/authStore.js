@@ -33,16 +33,17 @@ export const useAuthStore = create(
       storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : null)),
       skipHydration: true,
       onRehydrateStorage: () => (state) => {
+        // Fix: Call setHasHydrated directly on the store, not on state
         if (state) {
-          state.setHasHydrated(true);
+          useAuthStore.getState().setHasHydrated(true);
         }
       },
     }
   )
 );
 
-// Custom hook for safe auth access
-export const useAuth = () => {
+// Custom hook for safe auth access - renamed to avoid conflict with useAuth context
+export const useAuthStoreHook = () => {
   const store = useAuthStore();
   return {
     user: store.user,
