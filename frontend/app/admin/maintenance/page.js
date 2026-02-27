@@ -1,9 +1,10 @@
+"use client";
+
 import { useState } from 'react';
 import { 
   FaTools,
   FaServer,
   FaDatabase,
-  // FaCache - REMOVE THIS (doesn't exist)
   FaTrash,
   FaCheck,
   FaTimes,
@@ -12,7 +13,21 @@ import {
   FaCheckCircle,
   FaClock,
   FaPowerOff,
-  // Alternative icons you can use instead of FaCache:
-  FaCube,    // Cube icon as package/cache representation
-  FaLayerGroup, // Layer group as cache representation
+  FaCube,      
+  FaLayerGroup 
 } from 'react-icons/fa';
+
+export default function MaintenancePage() {
+  const [status, setStatus] = useState('Active');
+
+  return (
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <h1><FaTools /> System Maintenance</h1>
+      <p>Current Status: {status} <FaCheckCircle color="green" /></p>
+      <button onClick={() => setStatus('Updating...')}>
+        <FaSync /> Sync Now
+      </button>
+      {/* Apnar baki UI code ekhane thakbe */}
+    </div>
+  );
+}
