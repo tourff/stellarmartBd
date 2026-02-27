@@ -1,18 +1,14 @@
 require('dotenv').config();
-const app = require('./src/app');
-const connectDatabase = require('./src/config/database');
+const express = require('express');
+const cors = require('cors');
+const app = express();
 
-const PORT = process.env.PORT || 5000;
+app.use(cors());
+app.use(express.json());
 
-connectDatabase()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 API URL: http://localhost:${PORT}/api`);
-    });
-  })
-  .catch((error) => {
-    console.error('❌ Database connection failed:', error);
-    process.exit(1);
-  });
+// Database connection logic ekhane thakbe
+
+const PORT = process.env.PORT || 10000; // Render usually uses 10000 or a dynamic port
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
