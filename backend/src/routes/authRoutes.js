@@ -73,49 +73,6 @@ router.post('/login', [
   }
 });
 
-// Admin Login (Special route for admin panel)
-// Username: turjo, Password: turjo0424
-router.post('/admin-login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-
-    // Hardcoded admin credentials check
-    if (username === 'turjo' && password === 'turjo0424') {
-      // Create or find admin user
-      let adminUser = await User.findOne({ email: 'turjo@stellarmart.com' });
-      
-      if (!adminUser) {
-        // Create admin user if doesn't exist
-        adminUser = await User.create({
-          name: 'Turjo Admin',
-          email: 'turjo@stellarmart.com',
-          password: password,
-          role: 'admin',
-          status: 'active'
-        });
-      }
-
-      const token = generateToken(adminUser.id);
-
-      res.json({
-        success: true,
-        token,
-        user: { 
-          id: adminUser.id, 
-          name: adminUser.name, 
-          email: adminUser.email, 
-          role: 'admin' 
-        }
-      });
-    } else {
-      res.status(401).json({ message: 'Invalid admin credentials' });
-    }
-  } catch (error) {
-    console.error('Admin login error:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
 // Get Me
 router.get('/me', auth, async (req, res) => {
   try {

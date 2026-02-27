@@ -1,30 +1,14 @@
 require('dotenv').config();
-const app = require('./src/app');
-const connectDatabase = require('./src/config/database');
+const express = require('express');
+const cors = require('cors');
+const app = express();
 
-const PORT = process.env.PORT || 10000;
+app.use(cors());
+app.use(express.json());
 
-// Connect to database and start server
-const startServer = async () => {
-  try {
-    // Connect to database (PostgreSQL with Sequelize)
-    const { sequelize } = require('./src/models');
-    await sequelize.authenticate();
-    console.log('✅ Database connected successfully');
-    
-    // Sync models (use { force: true } to reset tables)
-    await sequelize.sync({ alter: true });
-    console.log('✅ Models synchronized');
+// Database connection logic ekhane thakbe
 
-    // Start server
-    app.listen(PORT, () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
-      console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
-    });
-  } catch (error) {
-    console.error('❌ Failed to start server:', error.message);
-    process.exit(1);
-  }
-};
-
-startServer();
+const PORT = process.env.PORT || 10000; // Render usually uses 10000 or a dynamic port
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

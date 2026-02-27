@@ -1,128 +1,37 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Link from 'next/link';
+// FaCog দুইবার ছিল, এখন একবার করে দেওয়া হয়েছে
 import { 
   FaBars, FaTimes, FaTachometerAlt, FaBox, FaTags, 
   FaShoppingCart, FaUsers, FaCog, FaChartBar, 
-  FaEnvelope, FaBell, FaSignOutAlt, FaChevronDown,
-  FaFileAlt, FaTruck, FaCreditCard, FaQuestionCircle,
-  FaBullhorn, FaMagic, FaNewspaper, FaPercent,
-  FaWarehouse, FaTools, FaHeadset, FaStar
+  FaEnvelope, FaBell, FaSignOutAlt, FaChevronDown 
 } from 'react-icons/fa';
 
 const adminNavItems = [
   { icon: FaTachometerAlt, label: 'Dashboard', href: '/admin' },
-  
   { icon: FaBox, label: 'Products', href: '/admin/products', subItems: [
     { label: 'All Products', href: '/admin/products' },
     { label: 'Add Product', href: '/admin/products/add' },
     { label: 'Categories', href: '/admin/categories' },
-    { label: 'Add Category', href: '/admin/categories/add' },
-    { label: 'Inventory', href: '/admin/inventory' },
+    { label: 'Brands', href: '/admin/brands' },
   ]},
-  
   { icon: FaShoppingCart, label: 'Orders', href: '/admin/orders' },
-  
   { icon: FaUsers, label: 'Customers', href: '/admin/customers' },
-  
-  { icon: FaTags, label: 'Coupons', href: '/admin/coupons', subItems: [
-    { label: 'All Coupons', href: '/admin/coupons' },
-    { label: 'Add Coupon', href: '/admin/coupons/add' },
-  ]},
-  
-  { icon: FaPercent, label: 'Offers', href: '/admin/offers' },
-  
-  { icon: FaBullhorn, label: 'Marketing', href: '/admin/marketing', subItems: [
-    { label: 'Dashboard', href: '/admin/marketing' },
-    { label: 'Abandoned Carts', href: '/admin/marketing/abandoned-carts' },
-    { label: 'Affiliates', href: '/admin/marketing/affiliates' },
-    { label: 'Campaigns', href: '/admin/marketing/campaigns' },
-    { label: 'Conversion Stats', href: '/admin/marketing/conversion-stats' },
-  ]},
-  
-  { icon: FaChartBar, label: 'Analytics', href: '/admin/analytics', subItems: [
-    { label: 'Overview', href: '/admin/analytics' },
-    { label: 'Demographic Reports', href: '/admin/analytics/demographic-reports' },
-    { label: 'Sales Forecast', href: '/admin/analytics/sales-forecast' },
-  ]},
-  
-  { icon: FaFileAlt, label: 'Reports', href: '/admin/reports' },
-  
-  { icon: FaStar, label: 'Reviews', href: '/admin/reviews' },
-  
-  { icon: FaTruck, label: 'Shipping', href: '/admin/shipping' },
-  
-  { icon: FaCreditCard, label: 'Payments', href: '/admin/payments' },
-  
-  { icon: FaEnvelope, label: 'Messages', href: '/admin/contact' },
-  
-  { icon: FaNewspaper, label: 'Newsletter', href: '/admin/newsletter' },
-  
-  { icon: FaQuestionCircle, label: 'FAQs', href: '/admin/faqs' },
-  
-  { icon: FaHeadset, label: 'Support', href: '/admin/maintenance' },
-  
-  { icon: FaTools, label: 'Intelligence', href: '/admin/intelligence', subItems: [
-    { label: 'Overview', href: '/admin/intelligence' },
-    { label: 'Customer Journey', href: '/admin/intelligence/customer-journey' },
-    { label: 'Retention', href: '/admin/intelligence/retention' },
-    { label: 'Search Insights', href: '/admin/intelligence/search-insights' },
-  ]},
-  
-  { icon: FaCog, label: 'Settings', href: '/admin/settings', subItems: [
-    { label: 'General', href: '/admin/settings/general' },
-    { label: 'Website', href: '/admin/settings/website' },
-    { label: 'Admin Users', href: '/admin/settings/admin-users' },
-  ]},
-  
-  { icon: FaFileAlt, label: 'Activity Logs', href: '/admin/activity-logs' },
+  { icon: FaTags, label: 'Coupons', href: '/admin/coupons' },
+  { icon: FaChartBar, label: 'Reports', href: '/admin/reports' },
+  { icon: FaEnvelope, label: 'Messages', href: '/admin/messages' },
+  { icon: FaCog, label: 'Settings', href: '/admin/settings' },
 ];
 
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [adminUser, setAdminUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
-  useEffect(() => {
-    // Check admin authentication
-    const token = localStorage.getItem('admin_token');
-    const user = localStorage.getItem('admin_user');
-    
-    if (!token || !user) {
-      // Not logged in, redirect to login
-      router.push('/admin/login');
-    } else {
-      setIsAuthenticated(true);
-      setAdminUser(JSON.parse(user));
-    }
-    setLoading(false);
-  }, [router]);
 
   const toggleDropdown = (index) => {
     setActiveDropdown(activeDropdown === index ? null : index);
   };
-
-  const handleLogout = () => {
-    localStorage.removeItem('admin_token');
-    localStorage.removeItem('admin_user');
-    router.push('/admin/login');
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -150,27 +59,16 @@ export default function AdminLayout({ children }) {
           </button>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-              <span className="text-blue-600 font-semibold text-sm">
-                {adminUser?.name?.charAt(0) || 'A'}
-              </span>
+              <span className="text-blue-600 font-semibold text-sm">A</span>
             </div>
-            <span className="hidden md:block font-medium">
-              {adminUser?.name || 'Admin'}
-            </span>
-            <button 
-              onClick={handleLogout}
-              className="ml-2 text-red-500 hover:text-red-700"
-              title="Logout"
-            >
-              <FaSignOutAlt />
-            </button>
+            <span className="hidden md:block font-medium">Admin</span>
           </div>
         </div>
       </header>
 
       {/* Sidebar */}
       <aside className={`fixed left-0 top-16 bottom-0 bg-white shadow-sm z-40 transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-0 -left-64 overflow-hidden'}`}>
-        <nav className="p-4 space-y-1 overflow-y-auto h-full">
+        <nav className="p-4 space-y-1">
           {adminNavItems.map((item, index) => (
             <div key={index}>
               {item.subItems ? (
@@ -186,7 +84,7 @@ export default function AdminLayout({ children }) {
                     <FaChevronDown className={`text-xs transition-transform ${activeDropdown === index ? 'rotate-180' : ''}`} />
                   </button>
                   {activeDropdown === index && (
-                    <div className="ml-4 mt-1 space-y-1">
+                    <div className="ml-8 mt-1 space-y-1">
                       {item.subItems.map((subItem, subIndex) => (
                         <Link
                           key={subIndex}

@@ -6,7 +6,6 @@ const Order = require('./Order');
 const OrderItem = require('./OrderItem');
 const Cart = require('./Cart');
 const Wishlist = require('./Wishlist');
-const Banner = require('./Banner');
 
 // Associations
 // User - Order
@@ -53,6 +52,5 @@ module.exports = {
   Order,
   OrderItem,
   Cart,
-  Wishlist,
-  Banner
+  Wishlist
 };

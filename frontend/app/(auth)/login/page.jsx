@@ -40,7 +40,7 @@ export default function LoginPage() {
 
       if (response.ok && result.success) {
         // ৪. এপিআই থেকে পাওয়া ইউজার ডেটা এবং টোকেন স্টোরে সেভ করা হচ্ছে
-        login({ ...result.user, token: result.token });
+        login(result.user, result.token); 
         toast.success('লগইন সফল হয়েছে!');
         window.location.href = '/';
       } else {

@@ -1,48 +1,42 @@
-/* Google Fonts - must be at the top */
+@import "tailwindcss";
+
+/* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* Tailwind CSS v3 directives */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Custom styles */
-@layer base {
-  html {
-    scroll-behavior: smooth;
+/* Custom theme configuration */
+@theme {
+  --color-primary-50: #e6f7ff;
+  --color-primary-100: #bae7ff;
+  --color-primary-200: #91d5ff;
+  --color-primary-300: #69c0ff;
+  --color-primary-400: #40a9ff;
+  --color-primary-500: #1890ff;
+  --color-primary-600: #096dd9;
+  --color-primary-700: #0050b3;
+  --color-primary-800: #003a8c;
+  --color-primary-900: #002766;
+  
+  --font-family-bengali: 'Hind Siliguri', sans-serif;
+  --font-family-english: 'Inter', sans-serif;
+  
+  --animate-fade-in: fadeIn 0.5s ease-in-out;
+  --animate-slide-up: slideUp 0.5s ease-out;
+  --animate-pulse-slow: pulse 3s infinite;
+  
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
   }
   
-  body {
-    @apply text-gray-800 bg-[#f4f7f9];
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-bold;
+  @keyframes slideUp {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
   }
 }
 
-@layer components {
-  .btn-buy-now {
-    @apply bg-[#004a7c] hover:bg-[#00365b] text-white font-bold py-2 px-4 rounded transition-all duration-300 text-xs uppercase flex items-center justify-center gap-1;
-  }
-
-  .btn-add-cart {
-    @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded transition-all duration-300 text-xs uppercase flex items-center justify-center gap-1;
-  }
-  
-  .product-card {
-    @apply bg-white border border-gray-100 rounded-lg overflow-hidden hover:shadow-2xl transition-all duration-300;
-  }
-  
-  .section-title {
-    @apply text-xl md:text-2xl font-bold text-gray-800 uppercase tracking-tight;
-  }
-}
-
-@layer utilities {
-  .image-drop-shadow {
-    filter: drop-shadow(0 10px 15px rgba(0, 74, 124, 0.1));
-  }
+/* Custom base styles */
+html {
+  scroll-behavior: smooth;
 }
 
 /* Custom scrollbar */
@@ -51,14 +45,19 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  background-color: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: #004a7c;
-  @apply rounded-full;
+  border-radius: 9999px;
 }
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Image drop shadow utility */
+.image-drop-shadow {
+  filter: drop-shadow(0 10px 15px rgba(0, 74, 124, 0.1));
 }

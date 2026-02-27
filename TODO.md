@@ -1,26 +1,14 @@
-# StellarMartBD - Comprehensive Fix Plan
+# Fix Plan for Vercel Build Error
 
-## Issues Found:
+## Issue
+Error: `TypeError: Cannot destructure property 'auth' of 'a' as it is undefined` during `npm run build`
 
-### 1. Database Mismatch (CRITICAL)
-- Backend uses Mongoose (MongoDB) in models but Sequelize with PostgreSQL in package.json
-- Need to choose ONE database (PostgreSQL recommended for production)
+## Root Cause
+The zustand store with persist middleware tries to access localStorage during server-side rendering (SSR/SSG), which doesn't exist on the server.
 
-### 2. Backend server.js Issues
-- Doesn't properly import/use app.js
-- Doesn't connect to database
+## Solution
+1. Fix authStore.js to properly handle SSR hydration
+2. Add onRehydrateStorage callback to track when hydration is complete
 
-### 3. Frontend API Configuration
-- API points to localhost:5000 - needs environment variable for production
-
-### 4. Already Fixed
-- ✅ authStore.js - SSR handling
-- ✅ globals.css - @import order
-
-## Fix Plan:
-
-- [ ] 1. Fix backend/server.js - Properly integrate app.js and database connection
-- [ ] 2. Fix backend/src/models - Use Sequelize consistently (matching package.json)
-- [ ] 3. Fix frontend/lib/api.js - Use environment variable for API URL
-- [ ] 4. Create .env.example files for both frontend and backend
-- [ ] 5. Verify all routes and controllers are properly connected
+## Files to Edit
+- frontend/lib/hooks/authStore.js

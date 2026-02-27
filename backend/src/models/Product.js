@@ -1,94 +1,20 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+// models/Product.js
+import mongoose from 'mongoose';
 
-const Product = sequelize.define('Product', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      len: [1, 200]
-    }
-  },
-  slug: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: false
-  },
-  price: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: false,
-    validate: {
-      min: 0
-    }
-  },
-  discountPrice: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: true,
-    defaultValue: 0,
-    validate: {
-      min: 0
-    }
-  },
-  images: {
-    type: DataTypes.JSONB,
-    allowNull: true,
-    defaultValue: []
-  },
-  category_id: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    references: {
-      model: 'categories',
-      key: 'id'
-    }
-  },
-  stock: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    defaultValue: 0,
-    validate: {
-      min: 0
-    }
-  },
-  rating: {
-    type: DataTypes.DECIMAL(3, 2),
-    allowNull: true,
-    defaultValue: 0,
-    validate: {
-      min: 0,
-      max: 5
-    }
-  },
-  reviews: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    defaultValue: 0,
-    validate: {
-      min: 0
-    }
-  },
-  isFeatured: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
-  },
-  isFlashSale: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
-  }
-}, {
-  tableName: 'products',
-  timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: 'updated_at'
+const ProductSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  slug: { type: String, required: true, unique: true },
+  description: { type: String, required: true },
+  price: { type: Number, required: true },
+  discountPrice: { type: Number, default: 0 },
+  images: [{ url: String, alt: String }],
+  category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
+  stock: { type: Number, default: 0 },
+  rating: { type: Number, default: 0 },
+  reviews: { type: Number, default: 0 },
+  isFeatured: { type: Boolean, default: false },
+  isFlashSale: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = Product;
+export default mongoose.models.Product || mongoose.model('Product', ProductSchema);
