@@ -1,6 +1,18 @@
 // hooks/useCart.js
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+
+// Create storage safely for SSR
+const createSafeStorage = () => {
+  if (typeof window === 'undefined') {
+    return {
+      getItem: () => null,
+      setItem: () => {},
+      removeItem: () => {},
+    };
+  }
+  return localStorage;
+};
 
 export const useCart = create(
   persist(
@@ -27,6 +39,10 @@ export const useCart = create(
       }),
       clearCart: () => set({ cartItems: [] }),
     }),
-    { name: 'cart-storage' } // এটি ইউজার ব্রাউজার রিফ্রেশ দিলেও ডেটা হারাবে না
+    { 
+      name: 'cart-storage',
+      storage: createJSONStorage(createSafeStorage),
+      skipHydration: true,
+    }
   )
 );

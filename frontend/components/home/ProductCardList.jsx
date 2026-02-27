@@ -4,21 +4,21 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaShoppingCart, FaHeart, FaStar, FaCheck } from 'react-icons/fa';
-// 'stores' এর বদলে 'hooks' পাথ ব্যবহার করা হয়েছে
-import { useCart } from '@/lib/hooks/useCart'; 
+// Fixed: Import from cartStore.js
+import { useCart } from '@/lib/hooks/cartStore'; 
 import toast from 'react-hot-toast';
 
 export default function ProductCardList({ product }) {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const { addToCart } = useCart();
 
-  // ডিসকাউন্ট ক্যালকুলেশন
+  // Discount calculation
   const discountPercent = product.discount || (product.regular_price > product.selling_price 
     ? Math.round(((product.regular_price - product.selling_price) / product.regular_price) * 100) 
     : 0);
 
   const handleAddToCart = (e) => {
-    e.preventDefault(); // যাতে লিঙ্কে ক্লিক না হয়
+    e.preventDefault();
     e.stopPropagation();
     addToCart(product, 1);
     toast.success(`${product.name} added to cart!`);
@@ -81,7 +81,7 @@ export default function ProductCardList({ product }) {
 
             {/* Features/Description */}
             <p className="text-sm text-gray-600 mb-4 line-clamp-2 italic">
-              {product.description || "Premium quality gaming product, perfect for your needs."}
+              {product.description || "Premium quality product, perfect for your needs."}
             </p>
 
             <div className="flex items-center gap-2 text-xs font-semibold text-green-600 uppercase">
