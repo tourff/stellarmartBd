@@ -31,6 +31,7 @@ export const useAuthStore = create(
     {
       name: 'prime-auth-storage', // ব্রাউজারে এই নামে ডেটা সেভ থাকবে
       storage: createJSONStorage(() => typeof window !== 'undefined' ? localStorage : null), // Server-side error bondho korte
+      skipHydration: true, // SSR build error thik korar jonno
       onRehydrateStorage: () => (state) => {
         // Hydration complete hole state set korbe
         state?.setHasHydrated(true);
