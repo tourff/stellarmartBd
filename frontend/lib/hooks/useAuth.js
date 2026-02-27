@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 // Default value diye context create kora holo
 const AuthContext = createContext({
   user: null,
-  auth: null, // many components might be looking for 'auth' property
+  auth: null,
   loading: false,
   login: () => {},
   logout: () => {}
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   // context value te 'auth' property o add kora holo jate destructuring fail na kore
   const value = {
     user,
-    auth: user, // Alias for 'auth' property
+    auth: user,
     login,
     logout,
     loading
@@ -71,5 +71,8 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   // Build error thik korte default values return korbe
-  return context || { user: null, auth: null, loading: false }; 
+  if (!context) {
+    return { user: null, auth: null, loading: false, login: () => {}, logout: () => {} };
+  }
+  return context;
 };

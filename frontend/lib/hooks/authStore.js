@@ -23,18 +23,19 @@ export const useAuthStore = create(
         }
       },
 
-      // Build error thik korte safe hydrate check
+      // Set hydration state
       setHasHydrated: (state) => {
         set({ _hasHydrated: state });
       }
     }),
     {
-      name: 'prime-auth-storage', // ব্রাউজারে এই নামে ডেটা সেভ থাকবে
-      storage: createJSONStorage(() => typeof window !== 'undefined' ? localStorage : null), // Server-side error bondho korte
-      skipHydration: true, // SSR build error thik korar jonno
+      name: 'prime-auth-storage',
+      storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : null)),
+      skipHydration: true,
       onRehydrateStorage: () => (state) => {
-        // Hydration complete hole state set korbe
-        state?.setHasHydrated(true);
+        if (state) {
+          state.setHasHydrated(true);
+        }
       },
     }
   )
