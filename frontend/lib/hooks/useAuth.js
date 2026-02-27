@@ -4,9 +4,10 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-// context create korar somoy default value deya holo jate build crash na kore
+// Default value diye context create kora holo
 const AuthContext = createContext({
   user: null,
+  auth: null, // many components might be looking for 'auth' property
   loading: false,
   login: () => {},
   logout: () => {}
@@ -18,7 +19,6 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // Shudhu browser-e localStorage check korbe
     if (typeof window !== 'undefined') {
       const storedUser = localStorage.getItem('prime_user');
       if (storedUser) {
@@ -44,14 +44,25 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('prime_user');
-    setUser(null);
-    toast.success('লগআউট করা হয়েছে');
-    router.push('/login');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('prime_user');
+      setUser(null);
+      toast.success('লগআউট করা হয়েছে');
+      router.push('/login');
+    }
+  };
+
+  // context value te 'auth' property o add kora holo jate destructuring fail na kore
+  const value = {
+    user,
+    auth: user, // Alias for 'auth' property
+    login,
+    logout,
+    loading
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
@@ -59,6 +70,6 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  // Context na thakle default return korbe
-  return context || { user: null, loading: false };
+  // Build error thik korte default values return korbe
+  return context || { user: null, auth: null, loading: false }; 
 };
