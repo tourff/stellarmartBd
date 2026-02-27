@@ -1,6 +1,18 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
+// Create storage safely for SSR
+const createSafeStorage = () => {
+  if (typeof window === 'undefined') {
+    return {
+      getItem: () => null,
+      setItem: () => {},
+      removeItem: () => {},
+    };
+  }
+  return localStorage;
+};
+
 export const useAuthStore = create(
   persist(
     (set) => ({
@@ -18,8 +30,14 @@ export const useAuthStore = create(
         set({ user: null });
         // LocalStorage clear korar jonno
         if (typeof window !== 'undefined') {
-          localStorage.removeItem('prime-auth-storage');
-          window.location.href = '/login';
+          try {
+            localStorage.removeItem('prime-auth-storage');
+          } catch (e) {
+            // Ignore storage errors
+          }
+          if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+          }
         }
       },
 
@@ -30,14 +48,8 @@ export const useAuthStore = create(
     }),
     {
       name: 'prime-auth-storage',
-      storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : null)),
+      storage: createJSONStorage(createSafeStorage),
       skipHydration: true,
-      onRehydrateStorage: () => (state) => {
-        // Fix: Call setHasHydrated directly on the store, not on state
-        if (state) {
-          useAuthStore.getState().setHasHydrated(true);
-        }
-      },
     }
   )
 );

@@ -1,5 +1,17 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+
+// Create storage safely for SSR
+const createSafeStorage = () => {
+  if (typeof window === 'undefined') {
+    return {
+      getItem: () => null,
+      setItem: () => {},
+      removeItem: () => {},
+    };
+  }
+  return localStorage;
+};
 
 export const useCartStore = create(
   persist(
@@ -93,6 +105,8 @@ export const useCartStore = create(
     }),
     {
       name: 'stellarmart-cart',
+      storage: createJSONStorage(createSafeStorage),
+      skipHydration: true,
     }
   )
 );
