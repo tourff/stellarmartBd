@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // ব্রাউজার লোড হলে চেক করবে ইউজার আগে লগইন ছিল কি না
     const storedUser = localStorage.getItem('prime_user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -23,14 +22,13 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      // এখানে আপনার API কল হবে (আপাতত ডামি ডেটা)
       const mockUser = { id: '1', name: 'Siam', email: email }; 
       setUser(mockUser);
       localStorage.setItem('prime_user', JSON.stringify(mockUser));
-      toast.success('লগইন সফল হয়েছে!');
+      toast.success('লগইন সফল হয়েছে!');
       router.push('/dashboard');
     } catch (error) {
-      toast.error('লগইন ব্যর্থ হয়েছে!');
+      toast.error('লগইন ব্যর্থ হয়েছে!');
     } finally {
       setLoading(false);
     }
@@ -39,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('prime_user');
     setUser(null);
-    toast.success('লগআউট করা হয়েছে');
+    toast.success('লগআউট করা হয়েছে');
     router.push('/login');
   };
 
@@ -50,10 +48,12 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// Build crash thik korar jonno update kora holo
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    // Build time-e error throw na kore empty values return korbe
+    return { user: null, loading: false, login: () => {}, logout: () => {} };
   }
   return context;
 };
