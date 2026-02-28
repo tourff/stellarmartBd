@@ -51,7 +51,7 @@ export default function Sidebar() {
         <p className="text-xs text-gray-500 mt-1">Admin Panel</p>
       </div>
       
-      <nav className="p-2">
+      <nav className="p-2 pb-20">
         {menuItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -71,10 +71,10 @@ export default function Sidebar() {
         })}
       </nav>
       
-      <div className="absolute bottom-0 w-64 p-4 border-t bg-gray-50">
+      <div className="fixed bottom-0 w-64 p-4 border-t bg-white shadow-lg">
         <Link
           href="/"
-          className="flex items-center gap-2 text-gray-600 hover:text-blue-700"
+          className="flex items-center gap-2 text-gray-600 hover:text-blue-700 font-medium"
         >
           <span>🌐</span>
           <span>View Website</span>
