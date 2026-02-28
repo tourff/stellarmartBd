@@ -8,28 +8,34 @@ export async function GET(request) {
     
     const { searchParams } = new URL(request.url);
     const position = searchParams.get('position');
+    const admin = searchParams.get('admin');
     
-    const query = { isActive: true };
+    let query = {};
+    
+    // If not admin, only show active banners
+    if (!admin) {
+      query.isActive = true;
+      
+      // Check date validity
+      const now = new Date();
+      query.$or = [
+        { startDate: { $exists: false } },
+        { startDate: { $lte: now } },
+      ];
+      query.$or.push({
+        $or: [
+          { endDate: { $exists: false } },
+          { endDate: { $gte: now } },
+        ],
+      });
+    }
     
     // Filter by position
     if (position) {
       query.position = position;
     }
     
-    // Check date validity
-    const now = new Date();
-    query.$or = [
-      { startDate: { $exists: false } },
-      { startDate: { $lte: now } },
-    ];
-    query.$or.push({
-      $or: [
-        { endDate: { $exists: false } },
-        { endDate: { $gte: now } },
-      ],
-    });
-    
-    const banners = await Banner.find(query).sort('orderBy');
+    const banners = await Banner.find(query).sort({ orderBy: 1, createdAt: -1 });
     
     return NextResponse.json({ banners });
   } catch (error) {
