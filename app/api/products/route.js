@@ -101,8 +101,28 @@ export async function POST(request) {
     // Set stock status
     if (data.stockQuantity <= 0) {
       data.stockStatus = 'out_of_stock';
-    } else if (data.stockQuantity <= data.lowStockThreshold) {
+    } else if (data.stockQuantity <= (data.lowStockThreshold || 5)) {
       data.stockStatus = 'low_stock';
+    } else {
+      data.stockStatus = 'in_stock';
+    }
+    
+    // Handle base64 images if provided
+    if (data.images && Array.isArray(data.images)) {
+      const processedImages = [];
+      for (const img of data.images) {
+        if (img && img.startsWith('data:')) {
+          // Keep base64 data URL as-is (can be stored or converted to URL later)
+          processedImages.push(img);
+        } else if (img && typeof img === 'string') {
+          processedImages.push(img);
+        }
+      }
+      data.images = processedImages;
+      // Set featured image to first image if not set
+      if (!data.featuredImage && processedImages.length > 0) {
+        data.featuredImage = processedImages[0];
+      }
     }
     
     const product = await Product.create({

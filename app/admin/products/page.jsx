@@ -41,6 +41,39 @@ export default function ProductsPage() {
     isActive: true
   });
   const [imageInput, setImageInput] = useState('');
+  const [uploading, setUploading] = useState(false);
+
+  // Handle file upload from computer
+  const handleFileUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    try {
+      for (const file of files) {
+        // Convert file to base64
+        const reader = new FileReader();
+        const base64Promise = new Promise((resolve) => {
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+        
+        const base64 = await base64Promise;
+        
+        // Add to images array
+        setFormData(prev => ({
+          ...prev,
+          images: [...prev.images, base64],
+          featuredImage: prev.featuredImage || base64
+        }));
+      }
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      alert('Failed to upload images');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   useEffect(() => {
     fetchData();
