@@ -64,19 +64,6 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b mb-6 -mx-8 -mt-8 px-8 py-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-700">Welcome, Admin</span>
-            <Link href="/" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              Logout
-            </Link>
-          </div>
-        </div>
-      </header>
-
       {/* Error Message */}
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
