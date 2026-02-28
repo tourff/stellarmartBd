@@ -1,29 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { 
-  LayoutDashboard, 
-  Users, 
-  Package, 
-  ShoppingCart, 
-  Image, 
   Plus,
   Edit,
   Trash2,
   Search,
   Loader2,
   X,
-  ChevronRight
+  ChevronRight,
+  Package
 } from 'lucide-react';
-
-const menuItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
-  { icon: Users, label: 'User Management', href: '/admin/users' },
-  { icon: Package, label: 'Category Management', href: '/admin/categories', active: true },
-  { icon: ShoppingCart, label: 'Product Management', href: '/admin/products' },
-  { icon: Image, label: 'Banner Manager', href: '/admin/banners' },
-];
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState([]);
@@ -58,10 +45,8 @@ export default function CategoriesPage() {
     }
   };
 
-  // Get parent categories only (for dropdown)
   const parentCategories = categories.filter(cat => !cat.parentId);
 
-  // Group subcategories under parents
   const getSubcategories = (parentId) => {
     return categories.filter(cat => cat.parentId === parentId);
   };
@@ -140,173 +125,69 @@ export default function CategoriesPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="flex items-center justify-between px-6 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Category Management</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-700">Welcome, Admin</span>
-            <Link href="/" className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
-              Back to Site
-            </Link>
+    <div>
+      <h1 className="text-2xl font-bold mb-6">Category Management</h1>
+
+      {/* Toolbar */}
+      <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1 max-w-md relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search categories..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
+          <button 
+            onClick={() => { resetForm(); setShowModal(true); }}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          >
+            <Plus className="w-5 h-5" />
+            Add Category
+          </button>
         </div>
-      </header>
+      </div>
 
-      <div className="flex">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white shadow-lg min-h-screen">
-          <nav className="p-4 space-y-1">
-            {menuItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  item.active
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-700 hover:bg-blue-50'
-                }`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </Link>
-            ))}
-          </nav>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 p-6">
-          {/* Toolbar */}
-          <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex-1 max-w-md relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search categories..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                />
-              </div>
-              <button 
-                onClick={() => { resetForm(); setShowModal(true); }}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-              >
-                <Plus className="w-5 h-5" />
-                Add Category
-              </button>
-            </div>
+      {/* Categories List */}
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
           </div>
-
-          {/* Categories List - With Subcategories */}
-          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-            {loading ? (
-              <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-              </div>
-            ) : filteredCategories.length === 0 ? (
-              <div className="text-center py-20">
-                <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">No categories found</p>
-              </div>
-            ) : (
-              <div className="divide-y divide-gray-200">
-                {/* Show parent categories with their subcategories */}
-                {parentCategories.filter(cat => cat.name?.toLowerCase().includes(searchTerm.toLowerCase())).map((category) => {
-                  const subcategories = getSubcategories(category._id);
-                  return (
-                    <div key={category._id}>
-                      {/* Parent Category */}
-                      <div className="flex items-center justify-between px-6 py-4 hover:bg-gray-50">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <Package className="w-5 h-5 text-blue-600" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold text-gray-900">{category.name}</span>
-                              <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">Parent</span>
-                              {category.isFeatured && (
-                                <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded">Featured</span>
-                              )}
-                            </div>
-                            <span className="text-sm text-gray-500">/{category.slug}</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className={`px-3 py-1 text-xs rounded-full ${category.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                            {category.isActive ? 'Active' : 'Inactive'}
-                          </span>
-                          <button 
-                            onClick={() => handleEdit(category)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button 
-                            onClick={() => handleDelete(category._id)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                      
-                      {/* Subcategories */}
-                      {subcategories.length > 0 && (
-                        <div className="bg-gray-50 pl-16 pr-6 py-2">
-                          <div className="flex items-center gap-2 mb-2">
-                            <ChevronRight className="w-4 h-4 text-gray-400" />
-                            <span className="text-sm font-medium text-gray-600">Subcategories ({subcategories.length})</span>
-                          </div>
-                          <div className="space-y-1">
-                            {subcategories.map((sub) => (
-                              <div key={sub._id} className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
-                                <div className="flex items-center gap-3">
-                                  <span className="text-gray-800">{sub.name}</span>
-                                  <span className="text-sm text-gray-400">/{sub.slug}</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <span className={`px-2 py-0.5 text-xs rounded-full ${sub.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                    {sub.isActive ? 'Active' : 'Inactive'}
-                                  </span>
-                                  <button 
-                                    onClick={() => handleEdit(sub)}
-                                    className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"
-                                  >
-                                    <Edit className="w-3.5 h-3.5" />
-                                  </button>
-                                  <button 
-                                    onClick={() => handleDelete(sub._id)}
-                                    className="p-1.5 text-red-600 hover:bg-red-50 rounded"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-                
-                {/* Show root-level subcategories (orphan categories) */}
-                {filteredCategories.filter(cat => cat.parentId && !parentCategories.find(p => p._id === cat.parentId)).map((category) => (
-                  <div key={category._id} className="flex items-center justify-between px-6 py-4 hover:bg-gray-50">
-                    <div className="flex items-center gap-4 pl-8">
-                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <Package className="w-5 h-5 text-gray-500" />
+        ) : filteredCategories.length === 0 ? (
+          <div className="text-center py-20">
+            <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600">No categories found</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-gray-200">
+            {parentCategories.filter(cat => cat.name?.toLowerCase().includes(searchTerm.toLowerCase())).map((category) => {
+              const subcategories = getSubcategories(category._id);
+              return (
+                <div key={category._id}>
+                  <div className="flex items-center justify-between px-6 py-4 hover:bg-gray-50">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Package className="w-5 h-5 text-blue-600" />
                       </div>
                       <div>
-                        <span className="font-medium text-gray-900">{category.name}</span>
-                        <span className="text-sm text-gray-500 ml-2">/{category.slug}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-gray-900">{category.name}</span>
+                          <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">Parent</span>
+                          {category.isFeatured && (
+                            <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded">Featured</span>
+                          )}
+                        </div>
+                        <span className="text-sm text-gray-500">/{category.slug}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
+                      <span className={`px-3 py-1 text-xs rounded-full ${category.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        {category.isActive ? 'Active' : 'Inactive'}
+                      </span>
                       <button 
                         onClick={() => handleEdit(category)}
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
@@ -321,11 +202,47 @@ export default function CategoriesPage() {
                       </button>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                  
+                  {subcategories.length > 0 && (
+                    <div className="bg-gray-50 pl-16 pr-6 py-2">
+                      <div className="flex items-center gap-2 mb-2">
+                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm font-medium text-gray-600">Subcategories ({subcategories.length})</span>
+                      </div>
+                      <div className="space-y-1">
+                        {subcategories.map((sub) => (
+                          <div key={sub._id} className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <span className="text-gray-800">{sub.name}</span>
+                              <span className="text-sm text-gray-400">/{sub.slug}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className={`px-2 py-0.5 text-xs rounded-full ${sub.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                {sub.isActive ? 'Active' : 'Inactive'}
+                              </span>
+                              <button 
+                                onClick={() => handleEdit(sub)}
+                                className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"
+                              >
+                                <Edit className="w-3.5 h-3.5" />
+                              </button>
+                              <button 
+                                onClick={() => handleDelete(sub._id)}
+                                className="p-1.5 text-red-600 hover:bg-red-50 rounded"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
-        </main>
+        )}
       </div>
 
       {/* Modal */}
@@ -348,7 +265,7 @@ export default function CategoriesPage() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -359,7 +276,7 @@ export default function CategoriesPage() {
                   type="text"
                   value={formData.nameBn}
                   onChange={(e) => setFormData({ ...formData, nameBn: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               
@@ -369,7 +286,7 @@ export default function CategoriesPage() {
                   type="text"
                   value={formData.slug}
                   onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -379,7 +296,7 @@ export default function CategoriesPage() {
                 <select
                   value={formData.parentId}
                   onChange={(e) => setFormData({ ...formData, parentId: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">None (Root Category)</option>
                   {parentCategories
@@ -390,7 +307,6 @@ export default function CategoriesPage() {
                     </option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-500 mt-1">Select a parent to create a subcategory</p>
               </div>
               
               <div>
@@ -398,7 +314,7 @@ export default function CategoriesPage() {
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   rows={2}
                 />
               </div>
@@ -409,7 +325,7 @@ export default function CategoriesPage() {
                   type="number"
                   value={formData.orderBy}
                   onChange={(e) => setFormData({ ...formData, orderBy: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               

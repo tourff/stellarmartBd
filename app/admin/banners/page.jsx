@@ -32,7 +32,6 @@ export default function BannerManagement() {
     endDate: ''
   });
 
-  // Fetch banners
   const fetchBanners = async () => {
     try {
       const res = await fetch('/api/banners?admin=true');
@@ -49,7 +48,6 @@ export default function BannerManagement() {
     fetchBanners();
   }, []);
 
-  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -80,7 +78,6 @@ export default function BannerManagement() {
     }
   };
 
-  // Delete banner
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this banner?')) return;
     
@@ -92,7 +89,6 @@ export default function BannerManagement() {
     }
   };
 
-  // Toggle active status
   const toggleActive = async (banner) => {
     try {
       await fetch(`/api/banners/${banner._id}`, {
@@ -106,7 +102,6 @@ export default function BannerManagement() {
     }
   };
 
-  // Edit banner
   const handleEdit = (banner) => {
     setEditingBanner(banner);
     setFormData({
@@ -126,7 +121,6 @@ export default function BannerManagement() {
     setShowModal(true);
   };
 
-  // Reset form
   const resetForm = () => {
     setEditingBanner(null);
     setFormData({
@@ -146,119 +140,102 @@ export default function BannerManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="flex items-center justify-between px-6 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Banner Management</h1>
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">Banner Management</h1>
+        <button
+          onClick={() => { resetForm(); setShowModal(true); }}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        >
+          <Plus className="w-5 h-5" />
+          Add New Banner
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="text-center py-10 text-gray-700">Loading...</div>
+      ) : banners.length === 0 ? (
+        <div className="text-center py-10 bg-white rounded-xl">
+          <ImageIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-600 text-lg">No banners found</p>
+          <p className="text-gray-500 text-sm mt-2">Create banners to display on your website</p>
           <button
-            onClick={() => { resetForm(); setShowModal(true); }}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            onClick={() => setShowModal(true)}
+            className="mt-4 text-blue-600 hover:underline font-medium"
           >
-            <Plus className="w-5 h-5" />
-            Add New Banner
+            Create your first banner
           </button>
         </div>
-      </header>
-
-      <div className="flex">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white shadow-lg min-h-screen p-4">
-          <nav className="space-y-1">
-            <a href="/admin" className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
-              <span>← Back to Dashboard</span>
-            </a>
-          </nav>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 p-6">
-          {loading ? (
-            <div className="text-center py-10 text-gray-700">Loading...</div>
-          ) : banners.length === 0 ? (
-            <div className="text-center py-10 bg-white rounded-xl">
-              <ImageIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 text-lg">No banners found</p>
-              <p className="text-gray-500 text-sm mt-2">Create banners to display on your website</p>
-              <button
-                onClick={() => setShowModal(true)}
-                className="mt-4 text-blue-600 hover:underline font-medium"
-              >
-                Create your first banner
-              </button>
-            </div>
-          ) : (
-            <div className="grid gap-4">
-              {banners.map((banner) => (
-                <div
-                  key={banner._id}
-                  className={`bg-white rounded-xl shadow-sm p-4 flex items-center gap-4 ${
-                    !banner.isActive ? 'opacity-60' : ''
-                  }`}
-                >
-                  <GripVertical className="w-5 h-5 text-gray-400 cursor-move" />
-                  
-                  <div className="w-32 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                    {banner.image ? (
-                      <img src={banner.image} alt={banner.title} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <ImageIcon className="w-8 h-8 text-gray-400" />
-                      </div>
-                    )}
+      ) : (
+        <div className="grid gap-4">
+          {banners.map((banner) => (
+            <div
+              key={banner._id}
+              className={`bg-white rounded-xl shadow-sm p-4 flex items-center gap-4 ${
+                !banner.isActive ? 'opacity-60' : ''
+              }`}
+            >
+              <GripVertical className="w-5 h-5 text-gray-400 cursor-move" />
+              
+              <div className="w-32 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                {banner.image ? (
+                  <img src={banner.image} alt={banner.title} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <ImageIcon className="w-8 h-8 text-gray-400" />
                   </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900">{banner.title}</h3>
-                    <p className="text-sm text-gray-600 truncate">{banner.description}</p>
-                    <div className="flex gap-2 mt-1">
-                      <span className={`px-2 py-0.5 text-xs rounded font-medium ${
-                        banner.position === 'hero' ? 'bg-blue-100 text-blue-700' :
-                        banner.position === 'top' ? 'bg-green-100 text-green-700' :
-                        banner.position === 'middle' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-gray-200 text-gray-700'
-                      }`}>
-                        {banner.position}
-                      </span>
-                      <span className="px-2 py-0.5 text-xs rounded bg-gray-200 text-gray-700 font-medium">
-                        Order: {banner.orderBy}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => toggleActive(banner)}
-                      className={`p-2 rounded-lg ${
-                        banner.isActive 
-                          ? 'bg-green-100 text-green-600 hover:bg-green-200' 
-                          : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
-                      }`}
-                      title={banner.isActive ? 'Active' : 'Inactive'}
-                    >
-                      {banner.isActive ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
-                    </button>
-                    
-                    <button
-                      onClick={() => handleEdit(banner)}
-                      className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200"
-                    >
-                      <Edit className="w-5 h-5" />
-                    </button>
-                    
-                    <button
-                      onClick={() => handleDelete(banner._id)}
-                      className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
+                )}
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-gray-900">{banner.title}</h3>
+                <p className="text-sm text-gray-600 truncate">{banner.description}</p>
+                <div className="flex gap-2 mt-1">
+                  <span className={`px-2 py-0.5 text-xs rounded font-medium ${
+                    banner.position === 'hero' ? 'bg-blue-100 text-blue-700' :
+                    banner.position === 'top' ? 'bg-green-100 text-green-700' :
+                    banner.position === 'middle' ? 'bg-yellow-100 text-yellow-700' :
+                    'bg-gray-200 text-gray-700'
+                  }`}>
+                    {banner.position}
+                  </span>
+                  <span className="px-2 py-0.5 text-xs rounded bg-gray-200 text-gray-700 font-medium">
+                    Order: {banner.orderBy}
+                  </span>
                 </div>
-              ))}
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => toggleActive(banner)}
+                  className={`p-2 rounded-lg ${
+                    banner.isActive 
+                      ? 'bg-green-100 text-green-600 hover:bg-green-200' 
+                      : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                  }`}
+                  title={banner.isActive ? 'Active' : 'Inactive'}
+                >
+                  {banner.isActive ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+                </button>
+                
+                <button
+                  onClick={() => handleEdit(banner)}
+                  className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200"
+                >
+                  <Edit className="w-5 h-5" />
+                </button>
+                
+                <button
+                  onClick={() => handleDelete(banner._id)}
+                  className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </div>
             </div>
-          )}
-        </main>
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Modal */}
       {showModal && (
@@ -274,7 +251,6 @@ export default function BannerManagement() {
             </div>
             
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              {/* Image URL */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Banner Image URL *
@@ -283,7 +259,7 @@ export default function BannerManagement() {
                   type="url"
                   value={formData.image}
                   onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   placeholder="https://example.com/image.jpg"
                   required
                 />
@@ -294,7 +270,6 @@ export default function BannerManagement() {
                 )}
               </div>
 
-              {/* Title */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -304,7 +279,7 @@ export default function BannerManagement() {
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
@@ -316,12 +291,11 @@ export default function BannerManagement() {
                     type="text"
                     value={formData.titleBn}
                     onChange={(e) => setFormData({ ...formData, titleBn: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
-              {/* Description */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -330,7 +304,7 @@ export default function BannerManagement() {
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     rows={2}
                   />
                 </div>
@@ -341,13 +315,12 @@ export default function BannerManagement() {
                   <textarea
                     value={formData.descriptionBn}
                     onChange={(e) => setFormData({ ...formData, descriptionBn: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     rows={2}
                   />
                 </div>
               </div>
 
-              {/* Link & Position */}
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -357,7 +330,7 @@ export default function BannerManagement() {
                     type="url"
                     value={formData.link}
                     onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     placeholder="/shop"
                   />
                 </div>
@@ -369,7 +342,7 @@ export default function BannerManagement() {
                     type="text"
                     value={formData.linkText}
                     onChange={(e) => setFormData({ ...formData, linkText: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -379,7 +352,7 @@ export default function BannerManagement() {
                   <select
                     value={formData.position}
                     onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="hero">Hero Banner</option>
                     <option value="top">Top Banner</option>
@@ -389,7 +362,6 @@ export default function BannerManagement() {
                 </div>
               </div>
 
-              {/* Order & Active */}
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -399,7 +371,7 @@ export default function BannerManagement() {
                     type="number"
                     value={formData.orderBy}
                     onChange={(e) => setFormData({ ...formData, orderBy: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     min={0}
                   />
                 </div>
@@ -411,7 +383,7 @@ export default function BannerManagement() {
                     type="date"
                     value={formData.startDate}
                     onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -422,12 +394,11 @@ export default function BannerManagement() {
                     type="date"
                     value={formData.endDate}
                     onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
-              {/* Active Checkbox */}
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -441,7 +412,6 @@ export default function BannerManagement() {
                 </label>
               </div>
 
-              {/* Submit Button */}
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <button
                   type="button"
