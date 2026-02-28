@@ -88,12 +88,18 @@ export default function Navbar() {
               </div>
             </div>
             
-            <Link href="/" className="font-semibold text-gray-800 hover:text-blue-600 transition-colors">Home</Link>
-            <Link href="/shop" className="font-semibold text-gray-800 hover:text-blue-600 transition-colors">Shop</Link>
-            <Link href="/categories" className="font-semibold text-gray-800 hover:text-blue-600 transition-colors">Categories</Link>
-            <Link href="/products?featured=true" className="font-semibold text-gray-800 hover:text-blue-600 transition-colors">Featured</Link>
-            <Link href="/new-arrivals" className="font-semibold text-gray-800 hover:text-blue-600 transition-colors">New Arrivals</Link>
-            <Link href="/flash-sale" className="font-bold text-red-600 hover:text-red-700 transition-colors">Flash Sale 🔥</Link>
+            <div className="flex-1 overflow-x-auto flex items-center gap-4">
+              {categories.slice(0, 6).map((cat) => (
+                <Link 
+                  key={cat.slug} 
+                  href={`/category/${cat.slug}`}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors whitespace-nowrap"
+                >
+                  <span>{cat.icon}</span>
+                  <span>{cat.name}</span>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </nav>
