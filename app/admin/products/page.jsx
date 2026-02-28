@@ -497,8 +497,19 @@ export default function ProductsPage() {
                     className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
                   >
                     <Upload className="w-4 h-4" />
-                    Add
+                    Add URL
                   </button>
+                  <label className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 flex items-center gap-2 cursor-pointer">
+                    <Upload className="w-4 h-4" />
+                    {uploading ? 'Uploading...' : 'Upload'}
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
                 {formData.images.length > 0 && (
                   <div className="grid grid-cols-4 gap-2 mt-2">
