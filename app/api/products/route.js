@@ -35,6 +35,12 @@ export async function GET(request) {
       query.isFeatured = true;
     }
     
+    // Also check isNewArrival for new arrivals
+    const isNewArrival = searchParams.get('isNewArrival');
+    if (isNewArrival === 'true') {
+      query.isNewArrival = true;
+    }
+    
     const skip = (page - 1) * limit;
     
     const [products, total] = await Promise.all([
