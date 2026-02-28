@@ -4,11 +4,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { ShoppingBag, Heart, Menu, ChevronDown, Search, User, Headphones, X } from 'lucide-react';
+import CartDrawer from './CartDrawer';
 
 export default function Navbar() {
-  const { cartCount } = useCart();
+  const { cartCount, cart, loading, updateQuantity, removeFromCart, clearCart } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
 
   const categories = [
     { name: 'Electronics', slug: 'electronics', icon: '📱' },
@@ -184,8 +186,8 @@ export default function Navbar() {
             <span className="text-xs font-medium text-gray-700">Support</span>
           </Link>
 
-          {/* Cart */}
-          <Link href="/cart" className="flex flex-col items-center gap-1 relative">
+          {/* Cart - Opens Drawer */}
+          <button onClick={() => setCartOpen(true)} className="flex flex-col items-center gap-1 relative">
             <ShoppingBag className="w-6 h-6 text-gray-700" />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
@@ -193,7 +195,7 @@ export default function Navbar() {
               </span>
             )}
             <span className="text-xs font-medium text-gray-700">Cart</span>
-          </Link>
+          </button>
 
           {/* Wishlist */}
           <Link href="/wishlist" className="flex flex-col items-center gap-1">
@@ -202,6 +204,17 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
+
+      {/* Cart Drawer */}
+      <CartDrawer 
+        isOpen={cartOpen} 
+        onClose={() => setCartOpen(false)} 
+        cart={cart}
+        loading={loading}
+        updateQuantity={updateQuantity}
+        removeFromCart={removeFromCart}
+        clearCart={clearCart}
+      />
 
       {/* Spacer for Mobile Bottom Bar */}
       <div className="md:hidden h-20"></div>
