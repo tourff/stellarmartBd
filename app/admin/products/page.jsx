@@ -68,18 +68,19 @@ export default function ProductsPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Ensure product is always active (published)
+      const productData = {
+        ...formData,
+        isActive: true, // Always publish the product
+        price: formData.sellingPrice,
+        oldPrice: formData.regularPrice,
+        stock: formData.stockQuantity
+      };
+      
       const url = editingProduct 
         ? `/api/products/${editingProduct._id}`
         : '/api/products';
       const method = editingProduct ? 'PUT' : 'POST';
-      
-      // Prepare data to match schema
-      const productData = {
-        ...formData,
-        price: formData.sellingPrice, // For compatibility
-        oldPrice: formData.regularPrice, // For compatibility
-        stock: formData.stockQuantity // For compatibility
-      };
       
       const res = await fetch(url, {
         method,
@@ -88,7 +89,7 @@ export default function ProductsPage() {
       });
 
       if (res.ok) {
-        alert(editingProduct ? 'Product updated!' : 'Product created!');
+        alert(editingProduct ? 'Product updated and published!' : 'Product created and published!');
         setShowModal(false);
         resetForm();
         fetchData();
