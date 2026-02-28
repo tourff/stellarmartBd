@@ -1,7 +1,12 @@
+'use client';
+
 import Link from 'next/link';
+import { useCart } from '../context/CartContext';
 import { ShoppingBag, Heart, Menu, ChevronDown } from 'lucide-react';
 
 export default function Navbar() {
+  const { cartCount } = useCart();
+
   const categories = [
     { name: 'Electronics', slug: 'electronics', icon: '📱' },
     { name: 'Fashion', slug: 'fashion', icon: '👔' },
@@ -44,7 +49,11 @@ export default function Navbar() {
             </Link>
             <Link href="/cart" className="p-2 hover:bg-blue-50 rounded-lg relative">
               <ShoppingBag className="w-6 h-6 text-gray-800" />
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">0</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
             </Link>
             <Link href="/login" className="px-5 py-2.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors shadow-md">
               Sign In
