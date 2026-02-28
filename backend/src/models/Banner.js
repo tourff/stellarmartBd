@@ -1,14 +1,46 @@
-// models/Banner.js
-import mongoose from 'mongoose';
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const BannerSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  subtitle: { type: String },
-  image: { type: String, required: true },
-  link: { type: String },
-  position: { type: String, enum: ['hero', 'middle', 'bottom'], default: 'hero' },
-  isActive: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now },
+const Banner = sequelize.define('Banner', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: 'Banner title is required' }
+    }
+  },
+  subtitle: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: 'Banner image is required' }
+    }
+  },
+  link: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  position: {
+    type: DataTypes.ENUM('hero', 'middle', 'bottom'),
+    defaultValue: 'hero'
+  },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  }
+}, {
+  tableName: 'banners',
+  timestamps: true,
+  underscored: true
 });
 
-export default mongoose.models.Banner || mongoose.model('Banner', BannerSchema);
+module.exports = Banner;

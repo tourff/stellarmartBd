@@ -15,53 +15,60 @@ const createSafeStorage = () => {
 
 export const useAuthStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
+      token: null,
       loading: false,
       _hasHydrated: false,
       
-      // Login function
-      login: (userData) => {
-        set({ user: userData });
+      // Login function - stores user and token
+      login: (userData, authToken) => {
+        set({ 
+          user: userData, 
+          token: authToken,
+        });
       },
       
-      // Logout function
+      // Logout function - clears all data
       logout: () => {
-        set({ user: null });
-        // LocalStorage clear korar jonno
+        set({ user: null, token: null });
         if (typeof window !== 'undefined') {
-          try {
-            localStorage.removeItem('prime-auth-storage');
-          } catch (e) {
-            // Ignore storage errors
-          }
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login';
-          }
+          localStorage.removeItem('stellarmart-auth-storage');
         }
       },
 
       // Set hydration state
       setHasHydrated: (state) => {
         set({ _hasHydrated: state });
+      },
+
+      // Update user data
+      updateUser: (userData) => {
+        set({ user: userData });
       }
     }),
     {
-      name: 'prime-auth-storage',
+      name: 'stellarmart-auth-storage',
       storage: createJSONStorage(createSafeStorage),
       skipHydration: true,
+      partialize: (state) => ({ 
+        user: state.user, 
+        token: state.token 
+      }),
     }
   )
 );
 
-// Custom hook for safe auth access - renamed to avoid conflict with useAuth context
+// Custom hook for auth store
 export const useAuthStoreHook = () => {
   const store = useAuthStore();
   return {
     user: store.user,
+    token: store.token,
     loading: store.loading,
     login: store.login,
     logout: store.logout,
+    updateUser: store.updateUser,
     _hasHydrated: store._hasHydrated,
   };
 };

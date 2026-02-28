@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FaEye, FaEyeSlash, FaGoogle, FaFacebook } from 'react-icons/fa';
-
-// ১. সঠিক নামে ইমপোর্ট করা হলো
-import { useAuthStore } from '@/lib/hooks/authStore'; 
+import { useAuth } from '@/lib/hooks/useAuth';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
@@ -14,8 +13,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  // ২. সঠিক হুক ব্যবহার করা হলো
-  const { login } = useAuthStore();
+  const { login } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,25 +27,16 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // ৩. এখানে আপনার এপিআই কল করতে হবে
-      // আপনার স্টোরের login() ফাংশন সরাসরি API কল করে না, এটি শুধু ডেটা সেভ করে।
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        // ৪. এপিআই থেকে পাওয়া ইউজার ডেটা এবং টোকেন স্টোরে সেভ করা হচ্ছে
-        login(result.user, result.token); 
-        toast.success('লগইন সফল হয়েছে!');
-        window.location.href = '/';
+      const result = await login(email, password);
+      
+      if (result.success) {
+        toast.success('লগইন সফল হয়েছে!');
+        router.push('/');
       } else {
-        toast.error(result?.message || 'লগইন ব্যর্থ হয়েছে');
+        toast.error(result.message || 'লগইন ব্যর্থ হয়েছে');
       }
     } catch (error) {
+      console.error('Login error:', error);
       toast.error('সার্ভারে সমস্যা হচ্ছে, আবার চেষ্টা করুন');
     } finally {
       setLoading(false);

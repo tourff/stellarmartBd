@@ -13,8 +13,11 @@ const auth = async (req, res, next) => {
       return res.status(401).json({ message: 'Not authorized' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024');
+    
+    // Find user using Sequelize (findByPk instead of findById)
+    const user = await User.findByPk(decoded.id);
 
     if (!user) {
       return res.status(401).json({ message: 'User not found' });
@@ -27,6 +30,7 @@ const auth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    console.error('Auth middleware error:', error.message);
     return res.status(401).json({ message: 'Not authorized' });
   }
 };

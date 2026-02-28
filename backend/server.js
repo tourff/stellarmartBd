@@ -1,14 +1,24 @@
 require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const app = express();
+const app = require('./src/app');
+const { connectDatabase } = require('./src/config/database');
 
-app.use(cors());
-app.use(express.json());
+const PORT = process.env.PORT || 10000;
 
-// Database connection logic ekhane thakbe
+// Connect to database and start server
+const startServer = async () => {
+  try {
+    // Connect to database
+    await connectDatabase();
+    
+    // Start server
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
+      console.log(`📱 API Health: http://localhost:${PORT}/api/health`);
+    });
+  } catch (error) {
+    console.error('❌ Failed to start server:', error.message);
+    process.exit(1);
+  }
+};
 
-const PORT = process.env.PORT || 10000; // Render usually uses 10000 or a dynamic port
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+startServer();
