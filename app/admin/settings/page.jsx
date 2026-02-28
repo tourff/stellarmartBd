@@ -24,7 +24,7 @@ import {
   Video,
   FileText,
   Link,
-  Social
+  Share2
 } from 'lucide-react';
 
 export default function SettingsPage() {
@@ -97,7 +97,7 @@ export default function SettingsPage() {
     { id: 'contact', label: 'Contact', icon: Phone },
     { id: 'email', label: 'Email', icon: Mail },
     { id: 'payment', label: 'Payment', icon: DollarSign },
-    { id: 'social', label: 'Social', icon: Social },
+    { id: 'social', label: 'Social', icon: Share2 },
     { id: 'maintenance', label: 'Maintenance', icon: Shield },
   ];
 

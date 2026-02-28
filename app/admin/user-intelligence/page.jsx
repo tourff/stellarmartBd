@@ -9,7 +9,7 @@ import {
   MousePointer,
   Clock,
   MapPin,
-  Device,
+  Smartphone,
   Search,
   Filter,
   Download,
@@ -177,7 +177,7 @@ export default function UserIntelligencePage() {
               <div key={index}>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="flex items-center gap-2">
-                    <Device className="w-4 h-4 text-gray-400" />
+                    <Smartphone className="w-4 h-4 text-gray-400" />
                     {device.device}
                   </span>
                   <span className="text-gray-600">{device.users} users ({device.percentage}%)</span>
