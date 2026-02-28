@@ -3,36 +3,18 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
+import { useCategories } from '../lib/hooks/useCategories';
 import { ShoppingBag, Heart, Menu, ChevronDown, Search, User, Headphones, X } from 'lucide-react';
 import CartDrawer from './CartDrawer';
 
 export default function Navbar() {
   const { cartCount, cart, loading, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { categories, loading: loadingCategories } = useCategories();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubMenu, setActiveSubMenu] = useState(null);
-
-  // Fetch categories from API
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch('/api/categories/nested');
-        const data = await res.json();
-        if (data.categories) {
-          setCategories(data.categories);
-        }
-      } catch (error) {
-        console.error('Failed to fetch categories:', error);
-      } finally {
-        setLoadingCategories(false);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   // Close menus on outside click
   useEffect(() => {
