@@ -1,9 +1,0 @@
-export { default as HeroSection } from './HeroSection';
-export { default as CategorySection } from './CategorySection';
-export { default as FeaturedCategories } from './FeaturedCategories';
-export { default as FlashSale } from './FlashSale';
-export { default as FeaturedProducts } from './FeaturedProducts';
-export { default as NewArrivals } from './NewArrivals';
-export { default as WhyChooseUs } from './WhyChooseUs';
-export { default as Newsletter } from './Newsletter';
-export { default as BannerSection } from './BannerSection';
