@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
 import AdminNavbar from './AdminNavbar';
+import Link from 'next/link';
 
 export default function AdminLayout({ children }) {
   const router = useRouter();
@@ -23,10 +24,10 @@ export default function AdminLayout({ children }) {
       if (res.ok) {
         setIsAuthenticated(true);
       } else {
-        router.push('/admin/login');
+        router.replace('/admin/login');
       }
     } catch (error) {
-      router.push('/admin/login');
+      router.replace('/admin/login');
     } finally {
       setLoading(false);
     }
@@ -41,7 +42,11 @@ export default function AdminLayout({ children }) {
   }
 
   if (!isAuthenticated) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#083b66]"></div>
+      </div>
+    );
   }
 
   return (
