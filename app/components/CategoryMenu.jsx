@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 const CategoryMenu = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [openSubSubDropdown, setOpenSubSubDropdown] = useState(null);
 
   // Fetch categories from database
   useEffect(() => {
@@ -35,6 +36,11 @@ const CategoryMenu = () => {
 
   const handleMouseLeave = () => {
     setOpenDropdown(null);
+    setOpenSubSubDropdown(null);
+  };
+
+  const handleSubMouseEnter = (subIndex) => {
+    setOpenSubSubDropdown(subIndex);
   };
 
   if (loading) {
@@ -71,18 +77,44 @@ const CategoryMenu = () => {
                 )}
               </Link>
 
-              {/* Subcategories Dropdown */}
+              {/* Subcategories Dropdown - Level 2 */}
               {cat.subcategories && cat.subcategories.length > 0 && openDropdown === index && (
                 <div className="absolute top-full left-0 mt-0 pt-3 z-50">
-                  <div className="bg-white text-gray-800 rounded-lg shadow-xl border border-gray-100 py-2 min-w-48">
-                    {cat.subcategories.map((sub) => (
-                      <Link
+                  <div className="bg-white text-gray-800 rounded-lg shadow-xl border border-gray-100 py-2 min-w-52">
+                    {cat.subcategories.map((sub, subIndex) => (
+                      <div 
                         key={sub._id}
-                        href={`/category/${sub.slug}`}
-                        className="block px-4 py-2 hover:bg-gray-50 hover:text-[#083b66] text-sm font-medium transition-colors"
+                        className="relative group/sub"
+                        onMouseEnter={() => handleSubMouseEnter(`${index}-${subIndex}`)}
+                        onMouseLeave={() => setOpenSubSubDropdown(null)}
                       >
-                        {sub.name}
-                      </Link>
+                        <Link
+                          href={`/category/${sub.slug}`}
+                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-50 hover:text-[#083b66] text-sm font-medium transition-colors"
+                        >
+                          <span>{sub.name}</span>
+                          {sub.subcategories && sub.subcategories.length > 0 && (
+                            <ChevronRight size={14} className="ml-2" />
+                          )}
+                        </Link>
+
+                        {/* Sub-Subcategories Dropdown - Level 3 */}
+                        {sub.subcategories && sub.subcategories.length > 0 && openSubSubDropdown === `${index}-${subIndex}` && (
+                          <div className="absolute top-0 left-full ml-0 pl-3 z-50">
+                            <div className="bg-white text-gray-800 rounded-lg shadow-xl border border-gray-100 py-2 min-w-52">
+                              {sub.subcategories.map((subSub) => (
+                                <Link
+                                  key={subSub._id}
+                                  href={`/category/${subSub.slug}`}
+                                  className="block px-4 py-2 hover:bg-gray-50 hover:text-[#083b66] text-sm font-medium transition-colors"
+                                >
+                                  {subSub.name}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 </div>
