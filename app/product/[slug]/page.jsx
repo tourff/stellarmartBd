@@ -11,11 +11,12 @@ const mockProducts = {
 };
 
 import Link from 'next/link';
+import React from 'react';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import { useCart } from '../../context/CartContext';
 import { Star, Heart, ShoppingBag, Truck, Shield, RotateCcw, Check, Loader2 } from 'lucide-react';
-import { dbConnect } from '@/lib/db';
+import dbConnect from '@/lib/db';
 import { Product } from '@/models';
 
 async function getProduct(slug) {
