@@ -5,6 +5,9 @@ const mockProducts = {
   'macbook-pro-m3': { _id: '3', name: 'MacBook Pro M3', category: { name: 'Electronics' }, price: 259999, sellingPrice: 259999, rating: 4.9, description: 'The new MacBook Pro with M3 chip.', images: ['https://placehold.co/600x600/333333/white?text=MacBook+Pro+M3'], stockQuantity: 5 },
   'nike-air-max': { _id: '4', name: 'Nike Air Max', category: { name: 'Fashion' }, price: 8999, sellingPrice: 8999, regularPrice: 12000, rating: 4.5, description: 'Classic Nike Air Max sneakers.', images: ['https://placehold.co/600x600/FF0000/white?text=Nike+Air+Max'], stockQuantity: 25 },
   'sony-wh-1000xm5': { _id: '5', name: 'Sony WH-1000XM5', category: { name: 'Electronics' }, price: 34999, sellingPrice: 34999, rating: 4.8, description: 'Premium noise canceling headphones.', images: ['https://placehold.co/600x600/333333/white?text=Sony+XM5'], stockQuantity: 8 },
+  'apple-ipad-pro': { _id: '6', name: 'Apple iPad Pro', category: { name: 'Electronics' }, price: 99999, sellingPrice: 99999, rating: 4.7, description: 'The powerful iPad Pro with M2 chip.', images: ['https://placehold.co/600x600/333333/white?text=iPad+Pro'], stockQuantity: 12 },
+  'samsung-watch': { _id: '7', name: 'Samsung Galaxy Watch', category: { name: 'Electronics' }, price: 24999, sellingPrice: 24999, rating: 4.5, description: 'Smart watch with advanced health features.', images: ['https://placehold.co/600x600/333333/white?text=Galaxy+Watch'], stockQuantity: 20 },
+  'adidas-shoes': { _id: '8', name: 'Adidas Running Shoes', category: { name: 'Fashion' }, price: 5999, sellingPrice: 5999, regularPrice: 8000, rating: 4.4, description: 'Comfortable running shoes for athletes.', images: ['https://placehold.co/600x600/FF0000/white?text=Adidas+Shoes'], stockQuantity: 30 },
 };
 
 import Link from 'next/link';
