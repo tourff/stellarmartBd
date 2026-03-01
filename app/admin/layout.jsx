@@ -1,16 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
 import AdminNavbar from './AdminNavbar';
 
 export default function AdminLayout({ children }) {
+  const pathname = usePathname();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Skip auth check for login page
+  const isLoginPage = pathname === '/admin/login';
+
   useEffect(() => {
+    if (isLoginPage) {
+      setLoading(false);
+      return;
+    }
+
     const checkAuth = async () => {
       try {
         const res = await fetch('/api/auth/admin-me', {
@@ -20,21 +29,17 @@ export default function AdminLayout({ children }) {
         if (res.ok) {
           setIsAuthenticated(true);
         } else {
-          // Not authenticated, redirect to login
-          window.location.href = '/admin/login';
-          return;
+          router.push('/admin/login');
         }
       } catch (error) {
-        // Error, redirect to login
-        window.location.href = '/admin/login';
-        return;
+        router.push('/admin/login');
       } finally {
         setLoading(false);
       }
     };
 
     checkAuth();
-  }, []);
+  }, [isLoginPage, router]);
 
   if (loading) {
     return (
@@ -42,6 +47,11 @@ export default function AdminLayout({ children }) {
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#083b66]"></div>
       </div>
     );
+  }
+
+  // Show login page without admin layout
+  if (isLoginPage) {
+    return <>{children}</>;
   }
 
   if (!isAuthenticated) {
