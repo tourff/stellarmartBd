@@ -13,7 +13,9 @@ const CategoryMenu = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch('/api/categories?parent=true');
+        const res = await fetch('/api/categories?parent=true', { 
+          cache: 'no-store' 
+        });
         const data = await res.json();
         if (data.categories) {
           setCategories(data.categories);
