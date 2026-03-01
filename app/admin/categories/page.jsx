@@ -299,14 +299,21 @@ export default function CategoriesPage() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">None (Root Category)</option>
-                  {parentCategories
+                  {categories
                     .filter(cat => editingCategory?._id !== cat._id)
-                    .map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </option>
-                  ))}
+                    .map((cat) => {
+                      const isSubSub = cat.parentId && categories.some(c => c._id === cat.parentId);
+                      const levelPrefix = isSubSub ? '└─ ' : '├─ ';
+                      return (
+                        <option key={cat._id} value={cat._id}>
+                          {levelPrefix}{cat.name}
+                        </option>
+                      );
+                    })}
                 </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Select a parent to create subcategory. Leave empty for root category.
+                </p>
               </div>
               
               <div>

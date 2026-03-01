@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShoppingBag, Loader2 } from 'lucide-react';
 import Navbar from './components/Navbar';
+import CategoryMenu from './components/CategoryMenu';
 import Footer from './components/Footer';
 import HeroBanner from './components/HeroBanner';
 import Features from './components/Features';
@@ -70,6 +71,7 @@ export default function HomePage() {
       </div>
 
       <Navbar />
+      <CategoryMenu />
       <HeroBanner />
       <Features />
 
