@@ -1,3 +1,15 @@
+// Mock products for display when database is empty
+const mockProducts = [
+  { _id: '1', slug: 'iphone-15-pro-max', name: 'iPhone 15 Pro Max', category: { name: 'Electronics' }, price: 149999, sellingPrice: 149999, regularPrice: 159999, rating: 4.8, featuredImage: 'https://placehold.co/600x600/007AFF/white?text=iPhone+15+Pro+Max', stockQuantity: 10 },
+  { _id: '2', slug: 'samsung-galaxy-s24-ultra', name: 'Samsung Galaxy S24 Ultra', category: { name: 'Electronics' }, price: 129999, sellingPrice: 129999, rating: 4.7, featuredImage: 'https://placehold.co/600x600/007AFF/white?text=Galaxy+S24+Ultra', stockQuantity: 15 },
+  { _id: '3', slug: 'macbook-pro-m3', name: 'MacBook Pro M3', category: { name: 'Electronics' }, price: 259999, sellingPrice: 259999, rating: 4.9, featuredImage: 'https://placehold.co/600x600/333333/white?text=MacBook+Pro+M3', stockQuantity: 5 },
+  { _id: '4', slug: 'nike-air-max', name: 'Nike Air Max', category: { name: 'Fashion' }, price: 8999, sellingPrice: 8999, regularPrice: 12000, rating: 4.5, featuredImage: 'https://placehold.co/600x600/FF0000/white?text=Nike+Air+Max', stockQuantity: 25 },
+  { _id: '5', slug: 'sony-wh-1000xm5', name: 'Sony WH-1000XM5', category: { name: 'Electronics' }, price: 34999, sellingPrice: 34999, rating: 4.8, featuredImage: 'https://placehold.co/600x600/333333/white?text=Sony+XM5', stockQuantity: 8 },
+  { _id: '6', slug: 'apple-ipad-pro', name: 'Apple iPad Pro', category: { name: 'Electronics' }, price: 99999, sellingPrice: 99999, rating: 4.7, featuredImage: 'https://placehold.co/600x600/333333/white?text=iPad+Pro', stockQuantity: 12 },
+  { _id: '7', slug: 'samsung-watch', name: 'Samsung Galaxy Watch', category: { name: 'Electronics' }, price: 24999, sellingPrice: 24999, rating: 4.5, featuredImage: 'https://placehold.co/600x600/333333/white?text=Galaxy+Watch', stockQuantity: 20 },
+  { _id: '8', slug: 'adidas-shoes', name: 'Adidas Running Shoes', category: { name: 'Fashion' }, price: 5999, sellingPrice: 5999, regularPrice: 8000, rating: 4.4, featuredImage: 'https://placehold.co/600x600/FF0000/white?text=Adidas+Shoes', stockQuantity: 30 },
+];
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -19,9 +31,16 @@ export default function ShopPage() {
     try {
       const res = await fetch('/api/products');
       const data = await res.json();
-      setProducts(data.products || []);
+      // Use mock products if database is empty
+      const dbProducts = data.products || [];
+      if (dbProducts.length === 0) {
+        setProducts(mockProducts);
+      } else {
+        setProducts(dbProducts);
+      }
     } catch (error) {
       console.error('Error fetching products:', error);
+      setProducts(mockProducts);
     } finally {
       setLoading(false);
     }
