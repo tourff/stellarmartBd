@@ -1,17 +1,13 @@
-import React from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import { useCart } from '../../context/CartContext';
 import { Star, Heart, ShoppingBag, Truck, Shield, RotateCcw, Check, Loader2 } from 'lucide-react';
+import { dbConnect } from '@/lib/db';
+import { Product } from '@/models';
 
 async function getProduct(slug) {
   try {
-    // Connect to database
-    const { default: dbConnect } = await import('@/lib/db');
-    const { Product } = await import('@/models');
-    
     await dbConnect();
     
     const product = await Product.findOne({ slug, isActive: true }).populate('category', 'name slug');
@@ -284,5 +280,3 @@ function ProductContent({ product, sellingPrice, regularPrice, discount, product
     </>
   );
 }
-
-import React from 'react';
