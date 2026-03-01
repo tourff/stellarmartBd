@@ -9,7 +9,9 @@ import {
   Eye,
   Loader2,
   X,
-  ShoppingCart
+  ShoppingCart,
+  Image as ImageIcon,
+  Upload
 } from 'lucide-react';
 
 export default function ProductsPage() {
@@ -21,17 +23,57 @@ export default function ProductsPage() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    slug: '',
+    nameBn: '',
     description: '',
-    price: 0,
-    oldPrice: 0,
+    descriptionBn: '',
+    regularPrice: 0,
+    sellingPrice: 0,
+    stockQuantity: 0,
     category: '',
     sku: '',
-    stock: 0,
+    brand: '',
+    tags: [],
     images: [],
+    featuredImage: '',
     isFeatured: false,
+    isNewArrival: false,
+    isBestSeller: false,
     isActive: true
   });
+  const [imageInput, setImageInput] = useState('');
+  const [uploading, setUploading] = useState(false);
+
+  // Handle file upload from computer
+  const handleFileUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    try {
+      for (const file of files) {
+        // Convert file to base64
+        const reader = new FileReader();
+        const base64Promise = new Promise((resolve) => {
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+        
+        const base64 = await base64Promise;
+        
+        // Add to images array
+        setFormData(prev => ({
+          ...prev,
+          images: [...prev.images, base64],
+          featuredImage: prev.featuredImage || base64
+        }));
+      }
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      alert('Failed to upload images');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -59,6 +101,15 @@ export default function ProductsPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Ensure product is always active (published)
+      const productData = {
+        ...formData,
+        isActive: true, // Always publish the product
+        price: formData.sellingPrice,
+        oldPrice: formData.regularPrice,
+        stock: formData.stockQuantity
+      };
+      
       const url = editingProduct 
         ? `/api/products/${editingProduct._id}`
         : '/api/products';
@@ -67,14 +118,17 @@ export default function ProductsPage() {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(productData)
       });
 
       if (res.ok) {
-        alert(editingProduct ? 'Product updated!' : 'Product created!');
+        alert(editingProduct ? 'Product updated and published!' : 'Product created and published!');
         setShowModal(false);
         resetForm();
         fetchData();
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Failed to save product');
       }
     } catch (error) {
       console.error('Error saving product:', error);
@@ -82,7 +136,7 @@ export default function ProductsPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure?')) return;
+    if (!confirm('Are you sure you want to delete this product?')) return;
     try {
       await fetch(`/api/products/${id}`, { method: 'DELETE' });
       fetchData();
@@ -95,15 +149,21 @@ export default function ProductsPage() {
     setEditingProduct(product);
     setFormData({
       name: product.name || '',
-      slug: product.slug || '',
+      nameBn: product.nameBn || '',
       description: product.description || '',
-      price: product.price || 0,
-      oldPrice: product.oldPrice || 0,
+      descriptionBn: product.descriptionBn || '',
+      regularPrice: product.regularPrice || product.oldPrice || 0,
+      sellingPrice: product.sellingPrice || product.price || 0,
+      stockQuantity: product.stockQuantity || product.stock || 0,
       category: product.category?._id || product.category || '',
       sku: product.sku || '',
-      stock: product.stock || 0,
+      brand: product.brand || '',
+      tags: product.tags || [],
       images: product.images || [],
+      featuredImage: product.featuredImage || '',
       isFeatured: product.isFeatured || false,
+      isNewArrival: product.isNewArrival || false,
+      isBestSeller: product.isBestSeller || false,
       isActive: product.isActive ?? true
     });
     setShowModal(true);
@@ -113,16 +173,51 @@ export default function ProductsPage() {
     setEditingProduct(null);
     setFormData({
       name: '',
-      slug: '',
+      nameBn: '',
       description: '',
-      price: 0,
-      oldPrice: 0,
+      descriptionBn: '',
+      regularPrice: 0,
+      sellingPrice: 0,
+      stockQuantity: 0,
       category: '',
       sku: '',
-      stock: 0,
+      brand: '',
+      tags: [],
       images: [],
+      featuredImage: '',
       isFeatured: false,
+      isNewArrival: false,
+      isBestSeller: false,
       isActive: true
+    });
+    setImageInput('');
+  };
+
+  const addImage = () => {
+    if (imageInput.trim()) {
+      setFormData({
+        ...formData,
+        images: [...formData.images, imageInput.trim()],
+        featuredImage: formData.featuredImage || imageInput.trim()
+      });
+      setImageInput('');
+    }
+  };
+
+  const removeImage = (index) => {
+    const newImages = [...formData.images];
+    newImages.splice(index, 1);
+    setFormData({
+      ...formData,
+      images: newImages,
+      featuredImage: newImages[0] || ''
+    });
+  };
+
+  const setAsFeatured = (imageUrl) => {
+    setFormData({
+      ...formData,
+      featuredImage: imageUrl
     });
   };
 
@@ -173,12 +268,12 @@ export default function ProductsPage() {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Image</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Product</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">SKU</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Category</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Price</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Stock</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Featured</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Actions</th>
               </tr>
@@ -187,34 +282,45 @@ export default function ProductsPage() {
               {filteredProducts.map((product) => (
                 <tr key={product._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
-                    <span className="font-medium text-gray-900">{product.name}</span>
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{product.sku}</td>
-                  <td className="px-6 py-4 text-gray-600">
-                    {product.category?.name || product.category || '-'}
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
+                      {product.featuredImage || product.images?.[0] ? (
+                        <img 
+                          src={product.featuredImage || product.images[0]} 
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <ImageIcon className="w-6 h-6 text-gray-400" />
+                        </div>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-gray-900 font-semibold">৳{product.price?.toLocaleString()}</span>
-                    {product.oldPrice > product.price && (
+                    <span className="font-medium text-gray-900">{product.name}</span>
+                    {product.isFeatured && (
+                      <span className="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded">Featured</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-gray-600">{product.sku || '-'}</td>
+                  <td className="px-6 py-4 text-gray-600">
+                    {product.category?.name || '-'}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-gray-900 font-semibold">৳{product.sellingPrice?.toLocaleString() || product.price?.toLocaleString()}</span>
+                    {product.regularPrice > product.sellingPrice && (
                       <span className="ml-2 text-gray-500 line-through text-sm">
-                        ৳{product.oldPrice?.toLocaleString()}
+                        ৳{product.regularPrice?.toLocaleString() || product.oldPrice?.toLocaleString()}
                       </span>
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    {product.stock > 0 ? (
-                      <span className={product.stock < 10 ? 'text-orange-600 font-medium' : 'text-green-600'}>
-                        {product.stock}
+                    {product.stockQuantity > 0 || product.stock > 0 ? (
+                      <span className={(product.stockQuantity || product.stock) < 10 ? 'text-orange-600 font-medium' : 'text-green-600'}>
+                        {product.stockQuantity || product.stock}
                       </span>
                     ) : (
                       <span className="text-red-600 font-medium">Out of Stock</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    {product.isFeatured ? (
-                      <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">Featured</span>
-                    ) : (
-                      <span className="text-gray-400">-</span>
                     )}
                   </td>
                   <td className="px-6 py-4">
@@ -226,9 +332,6 @@ export default function ProductsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
-                        <Eye className="w-4 h-4" />
-                      </button>
                       <button 
                         onClick={() => handleEdit(product)}
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
@@ -253,7 +356,7 @@ export default function ProductsPage() {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b">
               <h2 className="text-xl font-bold text-gray-900">
                 {editingProduct ? 'Edit Product' : 'Add New Product'}
@@ -264,17 +367,30 @@ export default function ProductsPage() {
             </div>
             
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              {/* Basic Info */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Product Name (English) *</label>
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Product Name (Bangla)</label>
+                  <input
+                    type="text"
+                    value={formData.nameBn}
+                    onChange={(e) => setFormData({ ...formData, nameBn: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">SKU</label>
                   <input
@@ -284,10 +400,19 @@ export default function ProductsPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+                  <input
+                    type="text"
+                    value={formData.brand}
+                    onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description (English)</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -296,43 +421,57 @@ export default function ProductsPage() {
                 />
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description (Bangla)</label>
+                <textarea
+                  value={formData.descriptionBn}
+                  onChange={(e) => setFormData({ ...formData, descriptionBn: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  rows={3}
+                />
+              </div>
+
+              {/* Pricing */}
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Regular Price *</label>
                   <input
                     type="number"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+                    value={formData.regularPrice}
+                    onChange={(e) => setFormData({ ...formData, regularPrice: parseFloat(e.target.value) })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Old Price</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Selling Price *</label>
                   <input
                     type="number"
-                    value={formData.oldPrice}
-                    onChange={(e) => setFormData({ ...formData, oldPrice: parseFloat(e.target.value) })}
+                    value={formData.sellingPrice}
+                    onChange={(e) => setFormData({ ...formData, sellingPrice: parseFloat(e.target.value) })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Stock</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
                   <input
                     type="number"
-                    value={formData.stock}
-                    onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) })}
+                    value={formData.stockQuantity}
+                    onChange={(e) => setFormData({ ...formData, stockQuantity: parseInt(e.target.value) })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
+              {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  required
                 >
                   <option value="">Select Category</option>
                   {categories.map(cat => (
@@ -341,7 +480,76 @@ export default function ProductsPage() {
                 </select>
               </div>
 
-              <div className="flex items-center gap-4">
+              {/* Images */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Product Images</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={imageInput}
+                    onChange={(e) => setImageInput(e.target.value)}
+                    placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={addImage}
+                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Add URL
+                  </button>
+                  <label className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 flex items-center gap-2 cursor-pointer">
+                    <Upload className="w-4 h-4" />
+                    {uploading ? 'Uploading...' : 'Upload'}
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                {formData.images.length > 0 && (
+                  <div className="grid grid-cols-4 gap-2 mt-2">
+                    {formData.images.map((img, index) => (
+                      <div key={index} className="relative group">
+                        <img 
+                          src={img} 
+                          alt={`Product ${index + 1}`}
+                          className={`w-full h-20 object-cover rounded-lg ${formData.featuredImage === img ? 'ring-2 ring-blue-500' : ''}`}
+                        />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-1">
+                          {formData.featuredImage !== img && (
+                            <button
+                              type="button"
+                              onClick={() => setAsFeatured(img)}
+                              className="p-1 bg-white rounded text-xs text-gray-700"
+                            >
+                              Set Featured
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="p-1 bg-red-500 rounded text-white"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                        {formData.featuredImage === img && (
+                          <span className="absolute top-1 left-1 px-1.5 py-0.5 bg-blue-500 text-white text-xs rounded">Featured</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <p className="text-xs text-gray-500 mt-1">Add image URLs. Click on an image to set it as featured.</p>
+              </div>
+
+              {/* Status */}
+              <div className="flex items-center gap-4 flex-wrap">
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -350,6 +558,26 @@ export default function ProductsPage() {
                     className="w-4 h-4 text-blue-600"
                   />
                   <span className="text-sm text-gray-700">Featured</span>
+                </label>
+                
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.isNewArrival}
+                    onChange={(e) => setFormData({ ...formData, isNewArrival: e.target.checked })}
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="text-sm text-gray-700">New Arrival</span>
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.isBestSeller}
+                    onChange={(e) => setFormData({ ...formData, isBestSeller: e.target.checked })}
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="text-sm text-gray-700">Best Seller</span>
                 </label>
                 
                 <label className="flex items-center gap-2">

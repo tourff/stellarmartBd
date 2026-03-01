@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { ShoppingBag, Heart, Menu, ChevronDown, Search, User, Headphones, X } from 'lucide-react';
+import { ShoppingBag, Heart, Search, User, Headphones, Menu, X } from 'lucide-react';
 import CartDrawer from './CartDrawer';
 
 export default function Navbar() {
@@ -12,23 +12,14 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
 
-  const categories = [
-    { name: 'Electronics', slug: 'electronics', icon: '📱' },
-    { name: 'Fashion', slug: 'fashion', icon: '👔' },
-    { name: 'Home & Living', slug: 'home-living', icon: '🏠' },
-    { name: 'Sports', slug: 'sports', icon: '⚽' },
-    { name: 'Beauty', slug: 'beauty', icon: '💄' },
-    { name: 'Books', slug: 'books', icon: '📚' },
-  ];
-
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className="bg-white shadow-md sticky top-0 z-50 hidden md:block">
+      <nav className="bg-[#083b66] shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="text-2xl font-extrabold text-blue-700 flex items-center gap-2">
+            <Link href="/" className="text-2xl font-extrabold text-white flex items-center gap-2">
               <ShoppingBag className="w-8 h-8" />
               StellarMartBD
             </Link>
@@ -39,10 +30,10 @@ export default function Navbar() {
                 <input
                   type="text"
                   name="q"
-                  placeholder="🔍 Search for products, brands and more..."
-                  className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200 text-gray-800 font-medium"
+                  placeholder="Search for products, brands and more..."
+                  className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200 text-gray-800 font-medium"
                 />
-                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-bold shadow-sm">
+                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-yellow-400 text-gray-900 rounded-md hover:bg-yellow-500 font-bold shadow-sm">
                   Search
                 </button>
               </form>
@@ -50,59 +41,31 @@ export default function Navbar() {
             
             {/* Actions */}
             <div className="flex items-center gap-4">
-              <Link href="/wishlist" className="p-2 hover:bg-blue-50 rounded-lg relative">
-                <Heart className="w-6 h-6 text-gray-800" />
+              <Link href="/wishlist" className="p-2 hover:bg-white/10 rounded-lg relative">
+                <Heart className="w-6 h-6 text-white" />
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">0</span>
               </Link>
-              <Link href="/cart" className="p-2 hover:bg-blue-50 rounded-lg relative">
-                <ShoppingBag className="w-6 h-6 text-gray-800" />
+              <Link href="/cart" className="p-2 hover:bg-white/10 rounded-lg relative">
+                <ShoppingBag className="w-6 h-6 text-white" />
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
               </Link>
-              <Link href="/login" className="px-5 py-2.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors shadow-md">
+              <Link href="/login" className="px-5 py-2.5 bg-yellow-400 text-gray-900 font-bold rounded-lg hover:bg-yellow-500 transition-colors shadow-md">
                 Sign In
               </Link>
             </div>
-          </div>
-          
-          {/* Category Menu */}
-          <div className="flex items-center gap-6 py-3 border-t">
-            <div className="relative group">
-              <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg font-semibold text-gray-800 hover:bg-gray-200 transition-colors">
-                <Menu className="w-5 h-5" />
-                All Categories
-                <ChevronDown className="w-4 h-4" />
-              </button>
-              <div className="absolute top-full left-0 mt-1 w-56 bg-white shadow-xl rounded-lg hidden group-hover:block z-50">
-                <div className="py-2">
-                  {categories.map((cat) => (
-                    <Link key={cat.slug} href={`/category/${cat.slug}`} className="flex items-center justify-between px-4 py-2.5 hover:bg-blue-50 text-gray-800">
-                      <span className="flex items-center gap-2">{cat.icon} {cat.name}</span>
-                      <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            <Link href="/" className="font-semibold text-gray-800 hover:text-blue-600 transition-colors">Home</Link>
-            <Link href="/shop" className="font-semibold text-gray-800 hover:text-blue-600 transition-colors">Shop</Link>
-            <Link href="/categories" className="font-semibold text-gray-800 hover:text-blue-600 transition-colors">Categories</Link>
-            <Link href="/products?featured=true" className="font-semibold text-gray-800 hover:text-blue-600 transition-colors">Featured</Link>
-            <Link href="/new-arrivals" className="font-semibold text-gray-800 hover:text-blue-600 transition-colors">New Arrivals</Link>
-            <Link href="/flash-sale" className="font-bold text-red-600 hover:text-red-700 transition-colors">Flash Sale 🔥</Link>
           </div>
         </div>
       </nav>
 
       {/* Mobile Top Bar - Logo + Search (Sticky Top) */}
-      <div className="md:hidden sticky top-0 z-50 bg-white shadow-md">
+      <div className="md:hidden sticky top-0 z-50 bg-[#083b66] shadow-md">
         <div className="flex items-center justify-between px-4 py-3">
           {/* Logo */}
-          <Link href="/" className="text-xl font-extrabold text-blue-700 flex items-center gap-2">
+          <Link href="/" className="text-xl font-extrabold text-white flex items-center gap-2">
             <ShoppingBag className="w-6 h-6" />
             StellarMartBD
           </Link>
@@ -111,15 +74,15 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2 bg-gray-100 rounded-lg"
+              className="p-2 bg-white/10 rounded-lg"
             >
-              {searchOpen ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
+              {searchOpen ? <X className="w-5 h-5 text-white" /> : <Search className="w-5 h-5 text-white" />}
             </button>
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 bg-gray-100 rounded-lg"
+              className="p-2 bg-white/10 rounded-lg"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-white" /> : <Menu className="w-5 h-5 text-white" />}
             </button>
           </div>
         </div>
@@ -132,10 +95,10 @@ export default function Navbar() {
                 type="text"
                 name="q"
                 placeholder="Search products..."
-                className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 text-gray-800"
+                className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 text-gray-800"
                 autoFocus
               />
-              <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-blue-600 text-white rounded-md text-sm font-bold">
+              <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-yellow-400 text-gray-900 rounded-md text-sm font-bold">
                 Search
               </button>
             </form>
@@ -152,20 +115,9 @@ export default function Navbar() {
               <Link href="/products?featured=true" className="block py-2 font-semibold text-gray-800">Featured</Link>
               <Link href="/new-arrivals" className="block py-2 font-semibold text-gray-800">New Arrivals</Link>
               <Link href="/flash-sale" className="block py-2 font-bold text-red-600">Flash Sale 🔥</Link>
-              
-              {/* Categories */}
-              <div className="pt-2 border-t">
-                <p className="font-semibold text-gray-600 mb-2">Categories</p>
-                {categories.map((cat) => (
-                  <Link 
-                    key={cat.slug} 
-                    href={`/category/${cat.slug}`} 
-                    className="block py-2 text-gray-800"
-                  >
-                    {cat.icon} {cat.name}
-                  </Link>
-                ))}
-              </div>
+              <Link href="/wishlist" className="block py-2 font-semibold text-gray-800">Wishlist</Link>
+              <Link href="/cart" className="block py-2 font-semibold text-gray-800">Cart</Link>
+              <Link href="/login" className="block py-2 font-semibold text-gray-800">Sign In</Link>
             </div>
           </div>
         )}
