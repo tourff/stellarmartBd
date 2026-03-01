@@ -1,3 +1,12 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import ProductCard from '../components/ProductCard';
+import { Loader2 } from 'lucide-react';
+
 // Mock products for display when database is empty
 const mockProducts = [
   { _id: '1', slug: 'iphone-15-pro-max', name: 'iPhone 15 Pro Max', category: { name: 'Electronics' }, price: 149999, sellingPrice: 149999, regularPrice: 159999, rating: 4.8, featuredImage: 'https://placehold.co/600x600/007AFF/white?text=iPhone+15+Pro+Max', stockQuantity: 10 },
@@ -9,15 +18,6 @@ const mockProducts = [
   { _id: '7', slug: 'samsung-watch', name: 'Samsung Galaxy Watch', category: { name: 'Electronics' }, price: 24999, sellingPrice: 24999, rating: 4.5, featuredImage: 'https://placehold.co/600x600/333333/white?text=Galaxy+Watch', stockQuantity: 20 },
   { _id: '8', slug: 'adidas-shoes', name: 'Adidas Running Shoes', category: { name: 'Fashion' }, price: 5999, sellingPrice: 5999, regularPrice: 8000, rating: 4.4, featuredImage: 'https://placehold.co/600x600/FF0000/white?text=Adidas+Shoes', stockQuantity: 30 },
 ];
-
-'use client';
-
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import ProductCard from '../components/ProductCard';
-import { Loader2 } from 'lucide-react';
 
 export default function ShopPage() {
   const [products, setProducts] = useState([]);
