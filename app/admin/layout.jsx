@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
 import AdminNavbar from './AdminNavbar';
-import Link from 'next/link';
 
 export default function AdminLayout({ children }) {
   const router = useRouter();
@@ -12,26 +11,30 @@ export default function AdminLayout({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/auth/admin-me', {
+          credentials: 'include'
+        });
+        
+        if (res.ok) {
+          setIsAuthenticated(true);
+        } else {
+          // Not authenticated, redirect to login
+          window.location.href = '/admin/login';
+          return;
+        }
+      } catch (error) {
+        // Error, redirect to login
+        window.location.href = '/admin/login';
+        return;
+      } finally {
+        setLoading(false);
+      }
+    };
+
     checkAuth();
   }, []);
-
-  const checkAuth = async () => {
-    try {
-      const res = await fetch('/api/auth/admin-me', {
-        credentials: 'include'
-      });
-      
-      if (res.ok) {
-        setIsAuthenticated(true);
-      } else {
-        router.replace('/admin/login');
-      }
-    } catch (error) {
-      router.replace('/admin/login');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -42,11 +45,7 @@ export default function AdminLayout({ children }) {
   }
 
   if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#083b66]"></div>
-      </div>
-    );
+    return null;
   }
 
   return (
