@@ -1,3 +1,12 @@
+// Mock products for fallback when database is empty
+const mockProducts = {
+  'iphone-15-pro-max': { _id: '1', name: 'iPhone 15 Pro Max', category: { name: 'Electronics' }, price: 149999, sellingPrice: 149999, regularPrice: 159999, rating: 4.8, description: 'The iPhone 15 Pro Max features a titanium design.', images: ['https://placehold.co/600x600/007AFF/white?text=iPhone+15+Pro+Max'], stockQuantity: 10 },
+  'samsung-galaxy-s24-ultra': { _id: '2', name: 'Samsung Galaxy S24 Ultra', category: { name: 'Electronics' }, price: 129999, sellingPrice: 129999, rating: 4.7, description: 'The Samsung Galaxy S24 Ultra with AI features.', images: ['https://placehold.co/600x600/007AFF/white?text=Galaxy+S24+Ultra'], stockQuantity: 15 },
+  'macbook-pro-m3': { _id: '3', name: 'MacBook Pro M3', category: { name: 'Electronics' }, price: 259999, sellingPrice: 259999, rating: 4.9, description: 'The new MacBook Pro with M3 chip.', images: ['https://placehold.co/600x600/333333/white?text=MacBook+Pro+M3'], stockQuantity: 5 },
+  'nike-air-max': { _id: '4', name: 'Nike Air Max', category: { name: 'Fashion' }, price: 8999, sellingPrice: 8999, regularPrice: 12000, rating: 4.5, description: 'Classic Nike Air Max sneakers.', images: ['https://placehold.co/600x600/FF0000/white?text=Nike+Air+Max'], stockQuantity: 25 },
+  'sony-wh-1000xm5': { _id: '5', name: 'Sony WH-1000XM5', category: { name: 'Electronics' }, price: 34999, sellingPrice: 34999, rating: 4.8, description: 'Premium noise canceling headphones.', images: ['https://placehold.co/600x600/333333/white?text=Sony+XM5'], stockQuantity: 8 },
+};
+
 import Link from 'next/link';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
@@ -9,14 +18,13 @@ import { Product } from '@/models';
 async function getProduct(slug) {
   try {
     await dbConnect();
-    
     const product = await Product.findOne({ slug, isActive: true }).populate('category', 'name slug');
-    
-    if (!product) return null;
-    
-    return JSON.parse(JSON.stringify(product));
+    if (product) return JSON.parse(JSON.stringify(product));
+    if (mockProducts[slug]) return mockProducts[slug];
+    return null;
   } catch (error) {
     console.error('Error fetching product:', error);
+    if (mockProducts[slug]) return mockProducts[slug];
     return null;
   }
 }
