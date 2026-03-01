@@ -1,84 +1,54 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import { User } from '@/models';
 import jwt from 'jsonwebtoken';
+
+// Hardcoded admin credentials
+const ADMIN_CREDENTIALS = {
+  username: 'turjo',
+  password: 'turjo0424'
+};
 
 export async function POST(request) {
   try {
-    await dbConnect();
+    const { username, password } = await request.json();
     
-    const { email, password } = await request.json();
-    
-    // Find user with password
-    const user = await User.findOne({ email }).select('+password');
-    
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
+    // Check credentials
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+      // Generate JWT token
+      const token = jwt.sign(
+        { id: 'admin', username: username, role: 'admin' },
+        process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024',
+        { expiresIn: process.env.JWT_EXPIRE || '7d' }
       );
-    }
-    
-    // Check password
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
-      );
-    }
-    
-    // Check if admin
-    if (user.role !== 'admin' && user.role !== 'super_admin') {
-      return NextResponse.json(
-        { error: 'Access denied. Admin privileges required.' },
-        { status: 403 }
-      );
-    }
-    
-    // Check status
-    if (user.status !== 'active') {
-      return NextResponse.json(
-        { error: 'Account is suspended or inactive' },
-        { status: 401 }
-      );
-    }
-    
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
-      process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024',
-      { expiresIn: process.env.JWT_EXPIRE || '7d' }
-    );
-    
-    // Remove password from response
-    user.password = undefined;
-    
-    const response = NextResponse.json(
-      { 
-        message: 'Admin login successful', 
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          avatar: user.avatar,
+      
+      const response = NextResponse.json(
+        { 
+          message: 'Admin login successful', 
+          user: {
+            id: 'admin',
+            username: username,
+            role: 'admin',
+          },
+          token 
         },
-        token 
-      },
-      { status: 200 }
+        { status: 200 }
+      );
+      
+      // Set cookie
+      response.cookies.set('adminToken', token, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+        path: '/',
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+      });
+      
+      return response;
+    }
+    
+    return NextResponse.json(
+      { error: 'Invalid username or password' },
+      { status: 401 }
     );
-    
-    // Set cookie
-    response.cookies.set('adminToken', token, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: '/',
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-    });
-    
-    return response;
   } catch (error) {
     console.error('Admin login error:', error);
     return NextResponse.json(

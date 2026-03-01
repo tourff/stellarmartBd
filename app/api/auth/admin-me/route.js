@@ -1,12 +1,8 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import { User } from '@/models';
 import jwt from 'jsonwebtoken';
 
 export async function GET(request) {
   try {
-    await dbConnect();
-    
     const token = request.cookies.get('adminToken')?.value;
     
     if (!token) {
@@ -22,31 +18,12 @@ export async function GET(request) {
       process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024'
     );
     
-    // Get user
-    const user = await User.findById(decoded.id);
-    
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
-    }
-    
-    // Check if admin
-    if (user.role !== 'admin' && user.role !== 'super_admin') {
-      return NextResponse.json(
-        { error: 'Access denied' },
-        { status: 403 }
-      );
-    }
-    
+    // Return admin user info
     return NextResponse.json({
       user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
+        id: decoded.id,
+        username: decoded.username,
+        role: decoded.role,
       }
     });
   } catch (error) {
