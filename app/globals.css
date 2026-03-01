@@ -13,6 +13,7 @@ body {
   background: rgb(var(--background-start-rgb));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Force light mode - remove dark mode */
@@ -43,7 +44,7 @@ body {
   background: #555;
 }
 
-/* Animations */
+/* Animations - optimize for performance */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -57,6 +58,18 @@ body {
 
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
+  will-change: opacity, transform;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Toast styles */
@@ -106,4 +119,25 @@ input, textarea, select {
 
 input::placeholder, textarea::placeholder {
   color: #9ca3af !important;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid #083b66;
+  outline-offset: 2px;
+}
+
+/* Skip to main content link for accessibility */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #083b66;
+  color: white;
+  padding: 8px;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
 }
