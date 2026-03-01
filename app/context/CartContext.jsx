@@ -49,37 +49,10 @@ export function CartProvider({ children }) {
     }
   };
 
-  // Optimistic add to cart - immediately update UI
+  // Add to cart - wait for server response
   const addToCart = async (productId, quantity = 1) => {
     const sessionId = getSessionId();
     
-    // Optimistic update - immediately add to cart UI
-    setCart(prevCart => {
-      const existingItemIndex = prevCart.items.findIndex(
-        item => item.product && item.product._id === productId
-      );
-      
-      let newItems;
-      if (existingItemIndex >= 0) {
-        // Item exists, increase quantity
-        newItems = [...prevCart.items];
-        newItems[existingItemIndex] = {
-          ...newItems[existingItemIndex],
-          quantity: newItems[existingItemIndex].quantity + quantity
-        };
-      } else {
-        // New item - add with temporary data
-        newItems = [...prevCart.items, {
-          _id: 'temp_' + Date.now(),
-          product: { _id: productId, sellingPrice: 0, regularPrice: 0 },
-          quantity
-        }];
-      }
-      
-      return { items: newItems, total: calculateTotal(newItems) };
-    });
-
-    // Then make API call in background
     try {
       const res = await fetch('/api/cart', {
         method: 'POST',
@@ -89,38 +62,22 @@ export function CartProvider({ children }) {
       const data = await res.json();
       
       if (data.cart) {
-        // Update with actual data from server
         const total = calculateTotal(data.cart.items);
         setCart({ items: data.cart.items, total });
       }
       return { success: true, message: 'Added to cart!' };
     } catch (error) {
       console.error('Error adding to cart:', error);
-      // Revert on error
-      fetchCart();
       return { success: false, message: 'Failed to add to cart' };
     }
   };
 
-  // Optimistic update quantity - immediately update UI
+  // Update quantity - wait for server response
   const updateQuantity = async (productId, quantity) => {
     if (quantity < 1) return;
 
     const sessionId = getSessionId();
     
-    // Optimistic update - immediately update UI
-    setCart(prevCart => {
-      const newItems = prevCart.items.map(item => {
-        const itemProductId = item.product?._id || item.product;
-        if (itemProductId === productId) {
-          return { ...item, quantity };
-        }
-        return item;
-      });
-      return { items: newItems, total: calculateTotal(newItems) };
-    });
-
-    // Then make API call in background
     try {
       const res = await fetch('/api/cart', {
         method: 'PUT',
@@ -135,25 +92,13 @@ export function CartProvider({ children }) {
       }
     } catch (error) {
       console.error('Error updating cart:', error);
-      // Revert on error
-      fetchCart();
     }
   };
 
-  // Optimistic remove from cart - immediately update UI
+  // Remove from cart - wait for server response
   const removeFromCart = async (productId) => {
     const sessionId = getSessionId();
     
-    // Optimistic update - immediately remove from UI
-    setCart(prevCart => {
-      const newItems = prevCart.items.filter(item => {
-        const itemProductId = item.product?._id || item.product;
-        return itemProductId !== productId;
-      });
-      return { items: newItems, total: calculateTotal(newItems) };
-    });
-
-    // Then make API call in background
     try {
       const res = await fetch(`/api/cart?productId=${productId}&sessionId=${sessionId}`, {
         method: 'DELETE'
@@ -166,15 +111,12 @@ export function CartProvider({ children }) {
       }
     } catch (error) {
       console.error('Error removing from cart:', error);
-      // Revert on error
-      fetchCart();
     }
   };
 
   const clearCart = async () => {
     const sessionId = getSessionId();
     
-    // Optimistic update
     setCart({ items: [], total: 0 });
 
     try {
