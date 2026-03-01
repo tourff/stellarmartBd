@@ -41,7 +41,7 @@ const CategoryMenu = () => {
   }
 
   return (
-    <div className="w-full bg-[#083b66] text-white border-t border-blue-800 shadow-md hidden md:block relative">
+    <div className="w-full bg-[#083b66] text-white border-t border-blue-800 shadow-md hidden md:block sticky top-16 z-40">
       <div className="max-w-7xl mx-auto px-4">
         <ul className="flex items-center gap-8 py-3 text-[13px] font-bold tracking-wider">
           <li className="hover:text-yellow-400 cursor-pointer transition-all uppercase">

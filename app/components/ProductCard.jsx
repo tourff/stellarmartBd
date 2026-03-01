@@ -97,26 +97,38 @@ export default function ProductCard({ product }) {
         
         {/* Stock Status */}
         {(product.stockQuantity || product.stock) > 0 ? (
-          <button 
-            onClick={handleAddToCart}
-            disabled={isAdding}
-            className={`w-full mt-3 py-2.5 font-bold rounded-lg transition-all shadow-md 
-              ${added 
-                ? 'bg-green-600 text-white' 
-                : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
-          >
-            {added ? (
-              <span className="flex items-center justify-center gap-2">
-                <Check className="w-5 h-5" />
-                Added to Cart
-              </span>
-            ) : isAdding ? (
-              'Adding...'
-            ) : (
-              'Add to Cart'
-            )}
-          </button>
+          <div className="flex gap-2 mt-3">
+            <button 
+              onClick={handleAddToCart}
+              disabled={isAdding}
+              className={`flex-1 py-2.5 font-bold rounded-lg transition-all shadow-md 
+                ${added 
+                  ? 'bg-green-600 text-white' 
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+            >
+              {added ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4" />
+                  Added
+                </span>
+              ) : isAdding ? (
+                '...'
+              ) : (
+                'Add to Cart'
+              )}
+            </button>
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = `/checkout?product=${product._id || product.id}&qty=1`;
+              }}
+              className="flex-1 py-2.5 font-bold rounded-lg transition-all shadow-md bg-[#083b66] text-white hover:bg-[#062d4d]"
+            >
+              Order Now
+            </button>
+          </div>
         ) : (
           <button 
             disabled

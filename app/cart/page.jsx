@@ -125,13 +125,13 @@ export default function CartPage() {
                       </div>
 
                       <div className="col-span-2 mt-4 md:mt-0">
-                        <div className="flex items-center justify-center gap-2">
-                          <button onClick={() => handleQuantityChange(productId, item.quantity - 1)} disabled={item.quantity <= 1} className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <Minus className="w-4 h-4" />
+                        <div className="flex items-center justify-center gap-1">
+                          <button onClick={() => handleQuantityChange(productId, item.quantity - 1)} disabled={item.quantity <= 1} className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed bg-white">
+                            <Minus className="w-3 h-3" />
                           </button>
-                          <span className="w-12 text-center font-semibold">{item.quantity}</span>
-                          <button onClick={() => handleQuantityChange(productId, item.quantity + 1)} className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100">
-                            <Plus className="w-4 h-4" />
+                          <span className="w-10 text-center font-semibold text-sm">{item.quantity}</span>
+                          <button onClick={() => handleQuantityChange(productId, item.quantity + 1)} className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 bg-white">
+                            <Plus className="w-3 h-3" />
                           </button>
                         </div>
                       </div>
