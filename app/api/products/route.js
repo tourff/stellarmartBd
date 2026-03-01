@@ -48,17 +48,24 @@ export async function GET(request) {
         .populate('category', 'name slug')
         .sort(sort)
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .lean(),
       Product.countDocuments(query),
     ]);
     
+    const productsJson = JSON.parse(JSON.stringify(products));
+    
     return NextResponse.json({
-      products,
+      products: productsJson,
       pagination: {
         page,
         limit,
         total,
         pages: Math.ceil(total / limit),
+      },
+    }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60',
       },
     });
   } catch (error) {
