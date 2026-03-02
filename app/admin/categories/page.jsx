@@ -48,11 +48,7 @@ export default function CategoriesPage() {
   const parentCategories = categories.filter(cat => !cat.parentId);
 
   const getSubcategories = (parentId) => {
-    const parentIdStr = typeof parentId === 'string' ? parentId : parentId?.toString();
-    return categories.filter(cat => {
-      const catParentId = typeof cat.parentId === 'string' ? cat.parentId : cat.parentId?.toString();
-      return catParentId === parentIdStr;
-    });
+    return categories.filter(cat => cat.parentId === parentId);
   };
 
   const handleSubmit = async (e) => {
@@ -74,51 +70,35 @@ export default function CategoriesPage() {
         body: JSON.stringify(submitData)
       });
 
-      const data = await res.json();
-      
       if (res.ok) {
         alert(editingCategory ? 'Category updated!' : 'Category created!');
         setShowModal(false);
         resetForm();
         fetchCategories();
-      } else {
-        alert(data.error || 'Failed to save category');
       }
     } catch (error) {
       console.error('Error saving category:', error);
-      alert('Failed to save category');
     }
   };
 
   const handleDelete = async (id) => {
     if (!confirm('Are you sure? This will also delete all subcategories.')) return;
     try {
-      const res = await fetch(`/api/categories/${id}`, { method: 'DELETE' });
-      const data = await res.json();
-      
-      if (res.ok) {
-        fetchCategories();
-      } else {
-        alert(data.error || 'Failed to delete category');
-      }
+      await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+      fetchCategories();
     } catch (error) {
       console.error('Error deleting category:', error);
-      alert('Failed to delete category');
     }
   };
 
   const handleEdit = (category) => {
     setEditingCategory(category);
-    const parentIdValue = category.parentId 
-      ? (typeof category.parentId === 'string' ? category.parentId : category.parentId._id || category.parentId.toString())
-      : '';
-    
     setFormData({
       name: category.name || '',
       nameBn: category.nameBn || '',
       slug: category.slug || '',
       description: category.description || '',
-      parentId: parentIdValue,
+      parentId: category.parentId || '',
       isFeatured: category.isFeatured || false,
       isActive: category.isActive ?? true,
       orderBy: category.orderBy || 0
@@ -319,26 +299,14 @@ export default function CategoriesPage() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">None (Root Category)</option>
-                  {categories
+                  {parentCategories
                     .filter(cat => editingCategory?._id !== cat._id)
-                    .map((cat) => {
-                      const catId = typeof cat._id === 'string' ? cat._id : cat._id.toString();
-                      const isSubSub = cat.parentId && categories.some(c => {
-                        const cId = typeof c._id === 'string' ? c._id : c._id.toString();
-                        const parentId = typeof cat.parentId === 'string' ? cat.parentId : cat.parentId?.toString();
-                        return cId === parentId;
-                      });
-                      const levelPrefix = isSubSub ? '└─ ' : '├─ ';
-                      return (
-                        <option key={catId} value={catId}>
-                          {levelPrefix}{cat.name}
-                        </option>
-                      );
-                    })}
+                    .map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
                 </select>
-                <p className="text-xs text-gray-500 mt-1">
-                  Select a parent to create subcategory. Leave empty for root category.
-                </p>
               </div>
               
               <div>

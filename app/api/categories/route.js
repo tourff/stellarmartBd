@@ -9,26 +9,6 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const parent = searchParams.get('parent');
     const featured = searchParams.get('featured');
-    const nested = searchParams.get('nested');
-    
-    // If nested=true, return categories with subcategories (for menu)
-    if (nested === 'true') {
-      const parentCategories = await Category.find({ 
-        parentId: null, 
-        isActive: true 
-      })
-      .populate({
-        path: 'subcategories',
-        match: { isActive: true },
-        populate: {
-          path: 'subcategories',
-          match: { isActive: true }
-        }
-      })
-      .sort('orderBy');
-      
-      return NextResponse.json({ categories: parentCategories });
-    }
     
     const query = { isActive: true };
     

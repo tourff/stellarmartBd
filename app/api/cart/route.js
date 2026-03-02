@@ -1,67 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import { Cart } from '@/models';
-import jwt from 'jsonwebtoken';
-
-// Helper function to get user from token
-const getUserFromToken = (request) => {
-  const token = request.cookies.get('token')?.value;
-  if (!token) return null;
-  
-  try {
-    return jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024'
-    );
-  } catch (error) {
-    return null;
-  }
-};
-
-// Helper to merge guest cart with user cart
-const mergeCarts = async (userId, sessionId) => {
-  const userCart = await Cart.findOne({ user: userId });
-  const guestCart = await Cart.findOne({ sessionId });
-  
-  if (!guestCart || guestCart.items.length === 0) {
-    return userCart;
-  }
-  
-  if (!userCart) {
-    // Move guest cart to user
-    await Cart.findByIdAndUpdate(guestCart._id, {
-      user: userId,
-      sessionId: null
-    });
-    await guestCart.populate('items.product');
-    return guestCart;
-  }
-  
-  // Merge items
-  for (const guestItem of guestCart.items) {
-    const existingItem = userCart.items.find(
-      item => item.product.toString() === guestItem.product.toString()
-    );
-    
-    if (existingItem) {
-      existingItem.quantity += guestItem.quantity;
-    } else {
-      userCart.items.push({
-        product: guestItem.product,
-        quantity: guestItem.quantity,
-        variant: guestItem.variant
-      });
-    }
-  }
-  
-  await userCart.save();
-  
-  // Delete guest cart
-  await Cart.findByIdAndDelete(guestCart._id);
-  
-  await userCart.populate('items.product');
-  return userCart;
-};
 
 export async function GET(request) {
   try {
@@ -70,25 +9,8 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get('sessionId');
     
-    // Check if user is logged in
-    const user = getUserFromToken(request);
-    
     let cart;
-    
-    if (user) {
-      // Get or create user cart
-      cart = await Cart.findOne({ user: user.id }).populate('items.product');
-      
-      if (!cart) {
-        cart = await Cart.create({ user: user.id, items: [] });
-      }
-      
-      // Merge with guest cart if sessionId provided
-      if (sessionId) {
-        cart = await mergeCarts(user.id, sessionId);
-      }
-    } else if (sessionId) {
-      // Guest cart
+    if (sessionId) {
       cart = await Cart.findOne({ sessionId }).populate('items.product');
     } else {
       cart = await Cart.findOne({}).populate('items.product');
@@ -115,30 +37,15 @@ export async function POST(request) {
     const data = await request.json();
     const { productId, quantity = 1, sessionId } = data;
     
-    // Check if user is logged in
-    const user = getUserFromToken(request);
+    let cart = await Cart.findOne({ sessionId });
     
-    let cart;
-    
-    if (user) {
-      // User cart
-      cart = await Cart.findOne({ user: user.id });
-      
-      if (!cart) {
-        cart = await Cart.create({ user: user.id, items: [] });
-      }
-    } else {
-      // Guest cart
-      cart = await Cart.findOne({ sessionId });
-      
-      if (!cart) {
-        cart = await Cart.create({ sessionId, items: [] });
-      }
+    if (!cart) {
+      cart = await Cart.create({ sessionId, items: [] });
     }
     
     // Check if product already in cart
     const existingItem = cart.items.find(
-      item => item.product && item.product.toString() === productId
+      item => item.product.toString() === productId
     );
     
     if (existingItem) {
@@ -167,16 +74,7 @@ export async function PUT(request) {
     const data = await request.json();
     const { productId, quantity, sessionId } = data;
     
-    // Check if user is logged in
-    const user = getUserFromToken(request);
-    
-    let cart;
-    
-    if (user) {
-      cart = await Cart.findOne({ user: user.id });
-    } else {
-      cart = await Cart.findOne({ sessionId });
-    }
+    const cart = await Cart.findOne({ sessionId });
     
     if (!cart) {
       return NextResponse.json(
@@ -220,16 +118,7 @@ export async function DELETE(request) {
     const productId = searchParams.get('productId');
     const sessionId = searchParams.get('sessionId');
     
-    // Check if user is logged in
-    const user = getUserFromToken(request);
-    
-    let cart;
-    
-    if (user) {
-      cart = await Cart.findOne({ user: user.id });
-    } else {
-      cart = await Cart.findOne({ sessionId });
-    }
+    const cart = await Cart.findOne({ sessionId });
     
     if (!cart) {
       return NextResponse.json({ message: 'Cart is empty' });
@@ -244,7 +133,6 @@ export async function DELETE(request) {
     }
     
     await cart.save();
-    await cart.populate('items.product');
     
     return NextResponse.json({ cart, message: 'Item removed from cart' });
   } catch (error) {

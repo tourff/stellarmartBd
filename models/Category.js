@@ -56,22 +56,11 @@ const categorySchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Virtual for subcategories
-categorySchema.virtual('subcategories', {
-  ref: 'Category',
-  localField: '_id',
-  foreignField: 'parentId'
-});
-
 // Indexes
 categorySchema.index({ slug: 1 });
 categorySchema.index({ parentId: 1 });
 categorySchema.index({ isFeatured: 1 });
 categorySchema.index({ orderBy: 1 });
-
-// Ensure virtuals are included in JSON
-categorySchema.set('toJSON', { virtuals: true });
-categorySchema.set('toObject', { virtuals: true });
 
 const Category = mongoose.models.Category || mongoose.model('Category', categorySchema);
 

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import { User } from '@/models';
-import jwt from 'jsonwebtoken';
 
 export async function POST(request) {
   try {
@@ -18,7 +17,7 @@ export async function POST(request) {
       );
     }
     
-    // Create new user with default notification and privacy settings
+    // Create new user
     const user = await User.create({
       name,
       email,
@@ -26,59 +25,12 @@ export async function POST(request) {
       phone,
       role: 'customer',
       status: 'active',
-      lastLogin: new Date(),
-      notificationPreferences: {
-        orderUpdates: true,
-        promotionalEmails: true,
-        smsNotifications: false,
-        pushNotifications: true,
-      },
-      privacySettings: {
-        profileVisibility: 'public',
-        showOrders: true,
-        showWishlist: true,
-      },
     });
     
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
-      process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024',
-      { expiresIn: process.env.JWT_EXPIRE || '7d' }
-    );
-    
-    const response = NextResponse.json(
-      { 
-        message: 'Registration successful', 
-        user: { 
-          id: user._id, 
-          name: user.name, 
-          email: user.email, 
-          role: user.role,
-          phone: user.phone,
-          avatar: user.avatar,
-          status: user.status,
-          address: user.address,
-          dateOfBirth: user.dateOfBirth,
-          gender: user.gender,
-          notificationPreferences: user.notificationPreferences,
-          privacySettings: user.privacySettings,
-          createdAt: user.createdAt,
-          lastLogin: user.lastLogin,
-        },
-        token 
-      },
+    return NextResponse.json(
+      { message: 'Registration successful', user: { id: user._id, name: user.name, email: user.email, role: user.role } },
       { status: 201 }
     );
-    
-    // Set cookie
-    response.cookies.set('token', token, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: '/',
-    });
-    
-    return response;
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(

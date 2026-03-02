@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
@@ -19,15 +19,6 @@ export function CartProvider({ children }) {
     return sessionId;
   };
 
-  // Calculate total from items
-  const calculateTotal = useCallback((items) => {
-    const total = items.reduce((sum, item) => {
-      const price = item.product?.sellingPrice || item.product?.regularPrice || item.product?.price || 0;
-      return sum + (price * item.quantity);
-    }, 0);
-    return total;
-  }, []);
-
   // Fetch cart on mount
   useEffect(() => {
     fetchCart();
@@ -39,8 +30,7 @@ export function CartProvider({ children }) {
       const res = await fetch(`/api/cart?sessionId=${sessionId}`);
       const data = await res.json();
       if (data.cart) {
-        const total = calculateTotal(data.cart.items);
-        setCart({ items: data.cart.items, total });
+        calculateTotal(data.cart);
       }
     } catch (error) {
       console.error('Error fetching cart:', error);
@@ -49,21 +39,25 @@ export function CartProvider({ children }) {
     }
   };
 
-  // Add to cart - wait for server response
+  const calculateTotal = (cartData) => {
+    const total = cartData.items.reduce((sum, item) => {
+      const price = item.product?.price || 0;
+      return sum + (price * item.quantity);
+    }, 0);
+    setCart({ items: cartData.items, total });
+  };
+
   const addToCart = async (productId, quantity = 1) => {
-    const sessionId = getSessionId();
-    
     try {
+      const sessionId = getSessionId();
       const res = await fetch('/api/cart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId, quantity, sessionId })
       });
       const data = await res.json();
-      
       if (data.cart) {
-        const total = calculateTotal(data.cart.items);
-        setCart({ items: data.cart.items, total });
+        calculateTotal(data.cart);
       }
       return { success: true, message: 'Added to cart!' };
     } catch (error) {
@@ -72,42 +66,32 @@ export function CartProvider({ children }) {
     }
   };
 
-  // Update quantity - wait for server response
   const updateQuantity = async (productId, quantity) => {
-    if (quantity < 1) return;
-
-    const sessionId = getSessionId();
-    
     try {
+      const sessionId = getSessionId();
       const res = await fetch('/api/cart', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId, quantity, sessionId })
       });
       const data = await res.json();
-      
       if (data.cart) {
-        const total = calculateTotal(data.cart.items);
-        setCart({ items: data.cart.items, total });
+        calculateTotal(data.cart);
       }
     } catch (error) {
       console.error('Error updating cart:', error);
     }
   };
 
-  // Remove from cart - wait for server response
   const removeFromCart = async (productId) => {
-    const sessionId = getSessionId();
-    
     try {
+      const sessionId = getSessionId();
       const res = await fetch(`/api/cart?productId=${productId}&sessionId=${sessionId}`, {
         method: 'DELETE'
       });
       const data = await res.json();
-      
       if (data.cart) {
-        const total = calculateTotal(data.cart.items);
-        setCart({ items: data.cart.items, total });
+        calculateTotal(data.cart);
       }
     } catch (error) {
       console.error('Error removing from cart:', error);
@@ -115,17 +99,14 @@ export function CartProvider({ children }) {
   };
 
   const clearCart = async () => {
-    const sessionId = getSessionId();
-    
-    setCart({ items: [], total: 0 });
-
     try {
+      const sessionId = getSessionId();
       await fetch(`/api/cart?sessionId=${sessionId}`, {
         method: 'DELETE'
       });
+      setCart({ items: [], total: 0 });
     } catch (error) {
       console.error('Error clearing cart:', error);
-      fetchCart();
     }
   };
 

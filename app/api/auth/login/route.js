@@ -36,10 +36,6 @@ export async function POST(request) {
       );
     }
     
-    // Update last login timestamp
-    user.lastLogin = new Date();
-    await user.save();
-    
     // Generate JWT token
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
@@ -57,30 +53,19 @@ export async function POST(request) {
           id: user._id,
           name: user.name,
           email: user.email,
-          phone: user.phone,
-          avatar: user.avatar,
           role: user.role,
-          status: user.status,
-          address: user.address,
-          dateOfBirth: user.dateOfBirth,
-          gender: user.gender,
-          notificationPreferences: user.notificationPreferences,
-          privacySettings: user.privacySettings,
-          createdAt: user.createdAt,
-          lastLogin: user.lastLogin,
+          avatar: user.avatar,
         },
         token 
       },
       { status: 200 }
     );
     
-    // Set cookie with proper attributes for cross-site requests
+    // Set cookie
     response.cookies.set('token', token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/',
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
     });
     
     return response;
