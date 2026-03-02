@@ -9,7 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { 
   User, Package, Heart, Settings as SettingsIcon, LogOut, Loader2, 
   Save, CheckCircle, AlertCircle, Lock, Eye, EyeOff, Menu, X,
-  Bell, Shield, Trash2, Mail, Smartphone, AlertTriangle
+  Bell, Shield, Trash2
 } from 'lucide-react';
 
 export default function SettingsPage() {
@@ -19,7 +19,6 @@ export default function SettingsPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('password');
   
-  // Password change state
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -33,7 +32,6 @@ export default function SettingsPage() {
   const [changingPassword, setChangingPassword] = useState(false);
   const [passwordMessage, setPasswordMessage] = useState({ type: '', text: '' });
 
-  // Notification preferences
   const [notifications, setNotifications] = useState({
     orderUpdates: true,
     promotionalEmails: true,
@@ -43,7 +41,6 @@ export default function SettingsPage() {
   const [savingNotifications, setSavingNotifications] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState({ type: '', text: '' });
 
-  // Privacy settings
   const [privacy, setPrivacy] = useState({
     profileVisibility: 'public',
     showOrders: true,
@@ -54,6 +51,13 @@ export default function SettingsPage() {
     if (!authLoading && !user) {
       router.push('/login');
     } else if (user) {
+      // Load notification and privacy settings from user data
+      if (user.notificationPreferences) {
+        setNotifications(user.notificationPreferences);
+      }
+      if (user.privacySettings) {
+        setPrivacy(user.privacySettings);
+      }
       setLoading(false);
     }
   }, [user, authLoading, router]);
@@ -112,9 +116,21 @@ export default function SettingsPage() {
     setNotificationMessage({ type: '', text: '' });
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setNotificationMessage({ type: 'success', text: 'Notification preferences saved!' });
+      const res = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          notificationPreferences: notifications,
+          privacySettings: privacy
+        })
+      });
+
+      if (res.ok) {
+        setNotificationMessage({ type: 'success', text: 'Preferences saved!' });
+        checkAuth();
+      } else {
+        setNotificationMessage({ type: 'error', text: 'Failed to save preferences' });
+      }
     } catch (error) {
       setNotificationMessage({ type: 'error', text: 'Failed to save preferences' });
     } finally {
@@ -185,12 +201,8 @@ export default function SettingsPage() {
     <>
       <Navbar />
       <div className="min-h-screen bg-gray-50">
-        <div className="bg-gradient-to-r from-[#083b66] via-[#0a4a7d] to-[#083b66] text-white py-8 sm:py-12 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16" />
-            <div className="absolute bottom-0 right-0 w-48 h-48 bg-white rounded-full translate-x-24 translate-y-24" />
-          </div>
-          <div className="max-w-7xl mx-auto px-4 relative">
+        <div className="bg-gradient-to-r from-[#083b66] to-[#062d4d] text-white py-8 sm:py-12">
+          <div className="max-w-7xl mx-auto px-4">
             <h1 className="text-2xl sm:text-3xl font-bold mb-1">Settings</h1>
             <p className="text-blue-200 text-sm sm:text-base">Manage your account settings and preferences</p>
           </div>
@@ -222,7 +234,6 @@ export default function SettingsPage() {
             )}
 
             <div className="md:col-span-3 space-y-4 sm:space-y-6">
-              {/* Tabs */}
               <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div className="border-b overflow-x-auto">
                   <nav className="flex min-w-max">
@@ -269,18 +280,9 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="p-4 sm:p-6">
-                  {/* Password Tab */}
                   {activeTab === 'password' && (
                     <div>
-                      <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <Lock className="w-5 h-5 text-[#083b66]" />
-                        </div>
-                        <div>
-                          <h2 className="text-lg font-bold text-gray-900">Change Password</h2>
-                          <p className="text-sm text-gray-500">Update your password to keep your account secure</p>
-                        </div>
-                      </div>
+                      <h2 className="text-lg font-bold text-gray-900 mb-6">Change Password</h2>
                       
                       {passwordMessage.text && (
                         <div className={`mb-6 p-4 rounded-lg flex items-start gap-3 text-sm ${
@@ -307,14 +309,9 @@ export default function SettingsPage() {
                                 value={passwordData.currentPassword}
                                 onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
                                 required
-                                className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent text-sm"
-                                placeholder="Enter current password"
+                                className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] text-sm"
                               />
-                              <button
-                                type="button"
-                                onClick={() => togglePasswordVisibility('current')}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                              >
+                              <button type="button" onClick={() => togglePasswordVisibility('current')} className="absolute right-3 top-1/2 -translate-y-1/2">
                                 {showPasswords.current ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                               </button>
                             </div>
@@ -328,52 +325,33 @@ export default function SettingsPage() {
                                 value={passwordData.newPassword}
                                 onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
                                 required
-                                className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent text-sm"
-                                placeholder="Enter new password"
+                                className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] text-sm"
                               />
-                              <button
-                                type="button"
-                                onClick={() => togglePasswordVisibility('new')}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                              >
+                              <button type="button" onClick={() => togglePasswordVisibility('new')} className="absolute right-3 top-1/2 -translate-y-1/2">
                                 {showPasswords.new ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                               </button>
                             </div>
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
-                            <div className="relative">
-                              <input 
-                                type={showPasswords.confirm ? 'text' : 'password'}
-                                value={passwordData.confirmPassword}
-                                onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                                required
-                                className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent text-sm"
-                                placeholder="Confirm new password"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => togglePasswordVisibility('confirm')}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                              >
-                                {showPasswords.confirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                              </button>
-                            </div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                            <input 
+                              type="password"
+                              value={passwordData.confirmPassword}
+                              onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                              required
+                              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] text-sm"
+                            />
                           </div>
 
                           <div className="pt-3">
                             <button 
                               type="submit" 
                               disabled={changingPassword}
-                              className="w-full sm:w-auto px-6 py-2.5 bg-[#083b66] text-white font-semibold rounded-lg hover:bg-[#062d4d] disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+                              className="w-full sm:w-auto px-6 py-2.5 bg-[#083b66] text-white rounded-lg hover:bg-[#062d4d] disabled:opacity-50 flex items-center justify-center gap-2"
                             >
-                              {changingPassword ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                              ) : (
-                                <Save className="w-4 h-4" />
-                              )}
-                              {changingPassword ? 'Changing...' : 'Change Password'}
+                              {changingPassword ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                              Change Password
                             </button>
                           </div>
                         </div>
@@ -381,112 +359,44 @@ export default function SettingsPage() {
                     </div>
                   )}
 
-                  {/* Notifications Tab */}
                   {activeTab === 'notifications' && (
                     <div>
-                      <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <Bell className="w-5 h-5 text-[#083b66]" />
-                        </div>
-                        <div>
-                          <h2 className="text-lg font-bold text-gray-900">Notification Preferences</h2>
-                          <p className="text-sm text-gray-500">Choose how you want to receive updates</p>
-                        </div>
-                      </div>
+                      <h2 className="text-lg font-bold text-gray-900 mb-6">Notification Preferences</h2>
 
                       {notificationMessage.text && (
                         <div className={`mb-6 p-4 rounded-lg flex items-start gap-3 text-sm ${
                           notificationMessage.type === 'success' 
-                            ? 'bg-green-50 text-green-700 border border-green-200' 
-                            : 'bg-red-50 text-red-700 border border-red-200'
+                            ? 'bg-green-50 text-green-700' 
+                            : 'bg-red-50 text-red-700'
                         }`}>
-                          {notificationMessage.type === 'success' ? (
-                            <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                          ) : (
-                            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                          )}
+                          {notificationMessage.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
                           <span>{notificationMessage.text}</span>
                         </div>
                       )}
 
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                              <Package className="w-5 h-5 text-[#083b66]" />
-                            </div>
+                        {[
+                          { key: 'orderUpdates', title: 'Order Updates', desc: 'Get notified about order status' },
+                          { key: 'promotionalEmails', title: 'Promotional Emails', desc: 'Receive deals and offers' },
+                          { key: 'smsNotifications', title: 'SMS Notifications', desc: 'Text message alerts' },
+                          { key: 'pushNotifications', title: 'Push Notifications', desc: 'Browser notifications' }
+                        ].map((item) => (
+                          <div key={item.key} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div>
-                              <p className="font-medium text-gray-900">Order Updates</p>
-                              <p className="text-sm text-gray-500">Get notified about order status changes</p>
+                              <p className="font-medium text-gray-900">{item.title}</p>
+                              <p className="text-sm text-gray-500">{item.desc}</p>
                             </div>
+                            <button
+                              onClick={() => handleNotificationChange(item.key)}
+                              className={`relative inline-flex h-6 w-11 items-center rounded-full ${notifications[item.key] ? 'bg-[#083b66]' : 'bg-gray-300'}`}
+                            >
+                              <span className={`inline-block h-4 w-4 transform rounded-full bg-white ${notifications[item.key] ? 'translate-x-6' : 'translate-x-1'}`} />
+                            </button>
                           </div>
-                          <button
-                            onClick={() => handleNotificationChange('orderUpdates')}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              notifications.orderUpdates ? 'bg-[#083b66]' : 'bg-gray-300'
-                            }`}
-                          >
-                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              notifications.orderUpdates ? 'translate-x-6' : 'translate-x-1'
-                            }`} />
-                          </button>
-                        </div>
-
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                              <Mail className="w-5 h-5 text-purple-600" />
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-900">Promotional Emails</p>
-                              <p className="text-sm text-gray-500">Receive deals and special offers</p>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => handleNotificationChange('promotionalEmails')}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              notifications.promotionalEmails ? 'bg-[#083b66]' : 'bg-gray-300'
-                            }`}
-                          >
-                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              notifications.promotionalEmails ? 'translate-x-6' : 'translate-x-1'
-                            }`} />
-                          </button>
-                        </div>
-
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                              <Smartphone className="w-5 h-5 text-green-600" />
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-900">SMS Notifications</p>
-                              <p className="text-sm text-gray-500">Receive text message alerts</p>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => handleNotificationChange('smsNotifications')}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              notifications.smsNotifications ? 'bg-[#083b66]' : 'bg-gray-300'
-                            }`}
-                          >
-                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              notifications.smsNotifications ? 'translate-x-6' : 'translate-x-1'
-                            }`} />
-                          </button>
-                        </div>
+                        ))}
 
                         <div className="pt-3">
-                          <button 
-                            onClick={saveNotifications}
-                            disabled={savingNotifications}
-                            className="w-full sm:w-auto px-6 py-2.5 bg-[#083b66] text-white font-semibold rounded-lg hover:bg-[#062d4d] disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
-                          >
-                            {savingNotifications ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                              <Save className="w-4 h-4" />
-                            )}
+                          <button onClick={saveNotifications} disabled={savingNotifications} className="px-6 py-2.5 bg-[#083b66] text-white rounded-lg hover:bg-[#062d4d]">
                             {savingNotifications ? 'Saving...' : 'Save Preferences'}
                           </button>
                         </div>
@@ -494,78 +404,36 @@ export default function SettingsPage() {
                     </div>
                   )}
 
-                  {/* Privacy Tab */}
                   {activeTab === 'privacy' && (
                     <div>
-                      <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <Shield className="w-5 h-5 text-[#083b66]" />
-                        </div>
-                        <div>
-                          <h2 className="text-lg font-bold text-gray-900">Privacy Settings</h2>
-                          <p className="text-sm text-gray-500">Control your account visibility</p>
-                        </div>
-                      </div>
-
+                      <h2 className="text-lg font-bold text-gray-900 mb-6">Privacy Settings</h2>
                       <div className="space-y-4">
                         <div className="p-4 bg-gray-50 rounded-lg">
                           <label className="block font-medium text-gray-900 mb-3">Profile Visibility</label>
-                          <div className="space-y-2">
-                            {[
-                              { value: 'public', label: 'Public', desc: 'Anyone can view your profile' },
-                              { value: 'friends', label: 'Friends Only', desc: 'Only friends can view your profile' },
-                              { value: 'private', label: 'Private', desc: 'Only you can view your profile' }
-                            ].map((option) => (
-                              <label key={option.value} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-white transition-colors">
-                                <input
-                                  type="radio"
-                                  name="profileVisibility"
-                                  value={option.value}
-                                  checked={privacy.profileVisibility === option.value}
-                                  onChange={(e) => setPrivacy(prev => ({ ...prev, profileVisibility: e.target.value }))}
-                                  className="w-4 h-4 text-[#083b66] border-gray-300 focus:ring-[#083b66]"
-                                />
-                                <div>
-                                  <p className="font-medium text-gray-900">{option.label}</p>
-                                  <p className="text-sm text-gray-500">{option.desc}</p>
-                                </div>
-                              </label>
-                            ))}
-                          </div>
+                          {['public', 'friends', 'private'].map((opt) => (
+                            <label key={opt} className="flex items-center gap-3 p-2 cursor-pointer">
+                              <input type="radio" name="visibility" value={opt} checked={privacy.profileVisibility === opt} onChange={() => setPrivacy(p => ({...p, profileVisibility: opt}))} className="w-4 h-4" />
+                              <span className="capitalize">{opt}</span>
+                            </label>
+                          ))}
                         </div>
-
+                        
                         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                          <div>
-                            <p className="font-medium text-gray-900">Show Orders</p>
-                            <p className="text-sm text-gray-500">Allow others to see your order history</p>
-                          </div>
-                          <button
-                            onClick={() => setPrivacy(prev => ({ ...prev, showOrders: !prev.showOrders }))}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              privacy.showOrders ? 'bg-[#083b66]' : 'bg-gray-300'
-                            }`}
-                          >
-                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              privacy.showOrders ? 'translate-x-6' : 'translate-x-1'
-                            }`} />
+                          <div><p className="font-medium">Show Orders</p></div>
+                          <button onClick={() => setPrivacy(p => ({...p, showOrders: !p.showOrders}))} className={`relative inline-flex h-6 w-11 rounded-full ${privacy.showOrders ? 'bg-[#083b66]' : 'bg-gray-300'}`}>
+                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white ${privacy.showOrders ? 'translate-x-6' : 'translate-x-1'}`} />
+                          </button>
+                        </div>
+                        
+                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                          <div><p className="font-medium">Show Wishlist</p></div>
+                          <button onClick={() => setPrivacy(p => ({...p, showWishlist: !p.showWishlist}))} className={`relative inline-flex h-6 w-11 rounded-full ${privacy.showWishlist ? 'bg-[#083b66]' : 'bg-gray-300'}`}>
+                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white ${privacy.showWishlist ? 'translate-x-6' : 'translate-x-1'}`} />
                           </button>
                         </div>
 
-                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                          <div>
-                            <p className="font-medium text-gray-900">Show Wishlist</p>
-                            <p className="text-sm text-gray-500">Allow others to see your wishlist</p>
-                          </div>
-                          <button
-                            onClick={() => setPrivacy(prev => ({ ...prev, showWishlist: !prev.showWishlist }))}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              privacy.showWishlist ? 'bg-[#083b66]' : 'bg-gray-300'
-                            }`}
-                          >
-                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              privacy.showWishlist ? 'translate-x-6' : 'translate-x-1'
-                            }`} />
-                          </button>
+                        <div className="pt-3">
+                          <button onClick={saveNotifications} className="px-6 py-2.5 bg-[#083b66] text-white rounded-lg hover:bg-[#062d4d]">Save Privacy Settings</button>
                         </div>
                       </div>
                     </div>
@@ -573,72 +441,22 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              {/* Account Info */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <User className="w-5 h-5 text-gray-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Account Information</h3>
-                    <p className="text-sm text-gray-500">Your account details</p>
-                  </div>
-                </div>
+              <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+                <h3 className="font-semibold text-gray-900 mb-4">Account Information</h3>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="flex justify-between py-2 border-b text-sm">
-                    <span className="text-gray-500">Account Type</span>
-                    <span className="font-medium text-gray-900 capitalize">{user?.role || 'Customer'}</span>
-                  </div>
-                  <div className="flex justify-between py-2 border-b text-sm">
-                    <span className="text-gray-500">Account Status</span>
-                    <span className="font-medium text-green-600 capitalize">{user?.status || 'Active'}</span>
-                  </div>
-                  <div className="flex justify-between py-2 border-b text-sm">
-                    <span className="text-gray-500">Member Since</span>
-                    <span className="font-medium text-gray-900">
-                      {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                      }) : 'N/A'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between py-2 text-sm">
-                    <span className="text-gray-500">Last Login</span>
-                    <span className="font-medium text-gray-900">
-                      {user?.lastLogin ? new Date(user.lastLogin).toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'short', 
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      }) : 'N/A'}
-                    </span>
-                  </div>
+                  <div className="flex justify-between py-2 border-b"><span className="text-gray-500">Account Type</span><span className="font-medium capitalize">{user?.role || 'Customer'}</span></div>
+                  <div className="flex justify-between py-2 border-b"><span className="text-gray-500">Status</span><span className="font-medium text-green-600 capitalize">{user?.status || 'Active'}</span></div>
+                  <div className="flex justify-between py-2 border-b"><span className="text-gray-500">Member Since</span><span className="font-medium">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</span></div>
+                  <div className="flex justify-between py-2"><span className="text-gray-500">Last Login</span><span className="font-medium">{user?.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'N/A'}</span></div>
                 </div>
               </div>
 
-              {/* Danger Zone */}
               <div className="bg-white rounded-xl shadow-sm border border-red-100 p-4 sm:p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                    <AlertTriangle className="w-5 h-5 text-red-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Danger Zone</h3>
-                    <p className="text-sm text-gray-500">Irreversible account actions</p>
-                  </div>
-                </div>
+                <h3 className="font-semibold text-gray-900 mb-4">Danger Zone</h3>
                 <div className="p-4 border border-red-200 rounded-lg bg-red-50">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900">Delete Account</p>
-                      <p className="text-sm text-gray-500">Permanently delete your account and all data</p>
-                    </div>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">
-                      <Trash2 className="w-4 h-4" />
-                      Delete
-                    </button>
+                    <div><p className="font-medium">Delete Account</p><p className="text-sm text-gray-500">Permanently delete your account</p></div>
+                    <button className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"><Trash2 className="w-4 h-4" />Delete</button>
                   </div>
                 </div>
               </div>
