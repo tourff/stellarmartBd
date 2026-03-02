@@ -52,4 +52,16 @@ export function AuthProvider({ children }) {
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    return {
+      user: null,
+      loading: true,
+      login: () => {},
+      logout: async () => {},
+      checkAuth: async () => {}
+    };
+  }
+  return context;
+};
