@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { LogOut } from 'lucide-react';
 
 const pageTitles = {
   '/admin': 'Dashboard',
@@ -34,7 +35,17 @@ const pageTitles = {
 
 export default function AdminNavbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const title = pageTitles[pathname] || 'Admin Panel';
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/admin-logout', { method: 'POST' });
+      router.push('/admin/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
     <nav className="bg-white shadow-sm border-b sticky top-0 z-30">
@@ -46,6 +57,13 @@ export default function AdminNavbar() {
           <Link href="/" className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
             View Website
           </Link>
+          <button 
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
         </div>
       </div>
     </nav>

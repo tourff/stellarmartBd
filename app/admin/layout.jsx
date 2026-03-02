@@ -1,3 +1,5 @@
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import Sidebar from './Sidebar';
 import AdminNavbar from './AdminNavbar';
 
@@ -7,6 +9,14 @@ export const metadata = {
 };
 
 export default function AdminLayout({ children }) {
+  const cookieStore = cookies();
+  const adminToken = cookieStore.get('adminToken');
+  
+  // If no admin token, redirect to login
+  if (!adminToken) {
+    redirect('/admin/login');
+  }
+  
   return (
     <div className="min-h-screen bg-gray-100 flex">
       <Sidebar />
