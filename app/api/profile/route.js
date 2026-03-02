@@ -50,7 +50,12 @@ export async function GET(request) {
         role: user.role,
         status: user.status,
         address: user.address,
+        dateOfBirth: user.dateOfBirth,
+        gender: user.gender,
+        notificationPreferences: user.notificationPreferences,
+        privacySettings: user.privacySettings,
         createdAt: user.createdAt,
+        lastLogin: user.lastLogin,
       }
     });
   } catch (error) {
@@ -76,7 +81,7 @@ export async function PUT(request) {
     }
     
     const data = await request.json();
-    const { name, phone, avatar, address } = data;
+    const { name, phone, avatar, address, dateOfBirth, gender, notificationPreferences, privacySettings } = data;
     
     // Build update object
     const updateData = {};
@@ -84,6 +89,10 @@ export async function PUT(request) {
     if (phone) updateData.phone = phone;
     if (avatar !== undefined) updateData.avatar = avatar;
     if (address) updateData.address = address;
+    if (dateOfBirth !== undefined) updateData.dateOfBirth = dateOfBirth;
+    if (gender !== undefined) updateData.gender = gender;
+    if (notificationPreferences) updateData.notificationPreferences = notificationPreferences;
+    if (privacySettings) updateData.privacySettings = privacySettings;
     
     const user = await User.findByIdAndUpdate(
       decoded.id,
@@ -108,6 +117,10 @@ export async function PUT(request) {
         avatar: user.avatar,
         role: user.role,
         address: user.address,
+        dateOfBirth: user.dateOfBirth,
+        gender: user.gender,
+        notificationPreferences: user.notificationPreferences,
+        privacySettings: user.privacySettings,
       }
     });
   } catch (error) {

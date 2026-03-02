@@ -51,8 +51,45 @@ const userSchema = new mongoose.Schema({
     zipCode: String,
     country: { type: String, default: 'Bangladesh' },
   },
+  
+  // New profile fields
+  dateOfBirth: {
+    type: Date,
+    default: null,
+  },
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'other', null],
+    default: null,
+  },
+  
+  // Notification preferences
+  notificationPreferences: {
+    orderUpdates: { type: Boolean, default: true },
+    promotionalEmails: { type: Boolean, default: true },
+    smsNotifications: { type: Boolean, default: false },
+    pushNotifications: { type: Boolean, default: true },
+  },
+  
+  // Privacy settings
+  privacySettings: {
+    profileVisibility: { type: String, enum: ['public', 'friends', 'private'], default: 'public' },
+    showOrders: { type: Boolean, default: true },
+    showWishlist: { type: Boolean, default: true },
+  },
+  
+  // Wishlist - array of product IDs
+  wishlist: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product'
+  }],
+  
   resetPasswordToken: String,
   resetPasswordExpire: Date,
+  lastLogin: {
+    type: Date,
+    default: null,
+  },
 }, {
   timestamps: true,
 });

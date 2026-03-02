@@ -43,6 +43,12 @@ export async function GET(request) {
         role: user.role,
         status: user.status,
         address: user.address,
+        dateOfBirth: user.dateOfBirth,
+        gender: user.gender,
+        notificationPreferences: user.notificationPreferences,
+        privacySettings: user.privacySettings,
+        createdAt: user.createdAt,
+        lastLogin: user.lastLogin,
       }
     });
   } catch (error) {

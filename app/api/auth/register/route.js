@@ -18,7 +18,7 @@ export async function POST(request) {
       );
     }
     
-    // Create new user
+    // Create new user with default notification and privacy settings
     const user = await User.create({
       name,
       email,
@@ -26,6 +26,18 @@ export async function POST(request) {
       phone,
       role: 'customer',
       status: 'active',
+      lastLogin: new Date(),
+      notificationPreferences: {
+        orderUpdates: true,
+        promotionalEmails: true,
+        smsNotifications: false,
+        pushNotifications: true,
+      },
+      privacySettings: {
+        profileVisibility: 'public',
+        showOrders: true,
+        showWishlist: true,
+      },
     });
     
     // Generate JWT token
@@ -44,7 +56,15 @@ export async function POST(request) {
           email: user.email, 
           role: user.role,
           phone: user.phone,
+          avatar: user.avatar,
+          status: user.status,
           address: user.address,
+          dateOfBirth: user.dateOfBirth,
+          gender: user.gender,
+          notificationPreferences: user.notificationPreferences,
+          privacySettings: user.privacySettings,
+          createdAt: user.createdAt,
+          lastLogin: user.lastLogin,
         },
         token 
       },

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
 import AdminNavbar from './AdminNavbar';
@@ -11,12 +11,17 @@ export default function AdminLayout({ children }) {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Skip auth check for login page
   const isLoginPage = pathname === '/admin/login';
+  const isRootAdmin = pathname === '/admin';
 
   useEffect(() => {
     if (isLoginPage) {
       setLoading(false);
+      return;
+    }
+    
+    if (isRootAdmin) {
+      router.push('/admin/login');
       return;
     }
 
@@ -39,7 +44,7 @@ export default function AdminLayout({ children }) {
     };
 
     checkAuth();
-  }, [isLoginPage, router]);
+  }, [isLoginPage, isRootAdmin, router]);
 
   if (loading) {
     return (
@@ -49,9 +54,8 @@ export default function AdminLayout({ children }) {
     );
   }
 
-  // Show login page without admin layout
   if (isLoginPage) {
-    return <>{children}</>;
+    return children;
   }
 
   if (!isAuthenticated) {
