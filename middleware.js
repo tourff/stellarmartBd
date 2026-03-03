@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 
 export function middleware(request) {
   const token = request.cookies.get('token')?.value;
+  const adminToken = request.cookies.get('adminToken')?.value;
   
   // Public paths that don't require authentication
   const publicPaths = [
@@ -10,11 +11,15 @@ export function middleware(request) {
     '/api/auth/login',
     '/api/auth/register',
     '/api/auth/logout',
+    '/api/auth/admin-login',
+    '/api/auth/admin-logout',
+    '/api/auth/admin-me',
     '/api/products',
     '/api/categories',
     '/api/banners',
     '/login',
     '/register',
+    '/admin/login',
   ];
   
   const path = request.nextUrl.pathname;
@@ -26,22 +31,22 @@ export function middleware(request) {
     return NextResponse.next();
   }
   
-  // For admin routes, require authentication
+  // For admin routes, require admin authentication
   if (path.startsWith('/admin')) {
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url));
+    if (!adminToken) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
     }
     
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024');
+      const decoded = jwt.verify(adminToken, process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024');
       request.user = decoded;
       
       // Check if user is admin
-      if (!['admin', 'moderator', 'editor'].includes(decoded.role)) {
+      if (decoded.role !== 'admin') {
         return NextResponse.redirect(new URL('/', request.url));
       }
     } catch (error) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL('/admin/login', request.url));
     }
   }
   
