@@ -7,8 +7,8 @@ export const dynamic = 'force-dynamic';
 
 async function getProduct(slug) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/products?slug=${slug}`, {
+    // Use relative URL for same-origin requests in production
+    const res = await fetch(`/api/products?slug=${slug}`, {
       cache: 'no-store'
     });
     
