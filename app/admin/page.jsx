@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
 export default function AdminPage() {
-  // Always redirect to login page
-  redirect('/admin/login');
+  // Redirect to dashboard - middleware will check auth
+  redirect('/admin/dashboard');
 }
