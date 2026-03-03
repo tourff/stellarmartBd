@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShoppingBag, Loader2 } from 'lucide-react';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import HeroBanner from './components/HeroBanner';
 import Features from './components/Features';
 import ProductCard from './components/ProductCard';
@@ -69,7 +67,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      <Navbar />
       <HeroBanner />
       <Features />
 
