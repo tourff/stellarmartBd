@@ -1,16 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
-import { ShoppingBag, Heart, Search, User, Headphones, Menu, X } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { ShoppingBag, Heart, Search, User, Headphones, Menu, X, LogOut } from 'lucide-react';
 import CartDrawer from './CartDrawer';
 
 export default function Navbar() {
   const { cartCount, cart, loading, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { user, loading: authLoading, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = '/';
+  };
 
   return (
     <>
@@ -53,9 +60,29 @@ export default function Navbar() {
                   </span>
                 )}
               </Link>
-              <Link href="/login" className="px-5 py-2.5 bg-yellow-400 text-gray-900 font-bold rounded-lg hover:bg-yellow-500 transition-colors shadow-md">
-                Sign In
-              </Link>
+              
+              {/* Auth Buttons - Show based on login state */}
+              {!authLoading && (
+                user ? (
+                  <div className="flex items-center gap-2">
+                    <Link href="/profile" className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-gray-900 font-bold rounded-lg hover:bg-yellow-500 transition-colors shadow-md">
+                      <User className="w-4 h-4" />
+                      {user.name || 'Profile'}
+                    </Link>
+                    <button 
+                      onClick={handleLogout}
+                      className="p-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"
+                      title="Logout"
+                    >
+                      <LogOut className="w-5 h-5" />
+                    </button>
+                  </div>
+                ) : (
+                  <Link href="/login" className="px-5 py-2.5 bg-yellow-400 text-gray-900 font-bold rounded-lg hover:bg-yellow-500 transition-colors shadow-md">
+                    Sign In
+                  </Link>
+                )
+              )}
             </div>
           </div>
         </div>
@@ -117,7 +144,18 @@ export default function Navbar() {
               <Link href="/flash-sale" className="block py-2 font-bold text-red-600">Flash Sale 🔥</Link>
               <Link href="/wishlist" className="block py-2 font-semibold text-gray-800">Wishlist</Link>
               <Link href="/cart" className="block py-2 font-semibold text-gray-800">Cart</Link>
-              <Link href="/login" className="block py-2 font-semibold text-gray-800">Sign In</Link>
+              
+              {/* Mobile Auth */}
+              {!authLoading && (
+                user ? (
+                  <>
+                    <Link href="/profile" className="block py-2 font-semibold text-gray-800">My Profile</Link>
+                    <button onClick={handleLogout} className="block py-2 font-semibold text-red-600 w-full text-left">Logout</button>
+                  </>
+                ) : (
+                  <Link href="/login" className="block py-2 font-semibold text-gray-800">Sign In</Link>
+                )
+              )}
             </div>
           </div>
         )}
@@ -127,9 +165,9 @@ export default function Navbar() {
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50">
         <div className="flex items-center justify-around py-3 px-4">
           {/* Profile */}
-          <Link href="/login" className="flex flex-col items-center gap-1">
+          <Link href={user ? "/profile" : "/login"} className="flex flex-col items-center gap-1">
             <User className="w-6 h-6 text-gray-700" />
-            <span className="text-xs font-medium text-gray-700">Profile</span>
+            <span className="text-xs font-medium text-gray-700">{user ? 'Profile' : 'Sign In'}</span>
           </Link>
 
           {/* Support */}

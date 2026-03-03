@@ -2,9 +2,13 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -30,11 +34,14 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
+        // Update auth context with user data
+        login(data.user);
+        
         // Redirect based on role
         if (data.user?.role === 'admin' || data.user?.role === 'moderator') {
-          window.location.href = '/admin';
+          router.push('/admin');
         } else {
-          window.location.href = '/';
+          router.push('/');
         }
       } else {
         setError(data.error || 'Login failed');

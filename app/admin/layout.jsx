@@ -3,6 +3,8 @@ import AdminNavbar from './AdminNavbar';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Admin Panel - StellarMartBD',
   description: 'E-commerce Admin Panel',

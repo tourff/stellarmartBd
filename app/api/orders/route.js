@@ -3,6 +3,9 @@ import dbConnect from '@/lib/db';
 import { Order } from '@/models';
 import jwt from 'jsonwebtoken';
 
+// Force dynamic rendering - this route uses cookies
+export const dynamic = 'force-dynamic';
+
 // Helper function to verify token
 const verifyToken = (request) => {
   const token = request.cookies.get('token')?.value;
