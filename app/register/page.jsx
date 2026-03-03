@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Eye, EyeOff, UserPlus } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import CategoryMenu from '../components/CategoryMenu';
+import Footer from '../components/Footer';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -58,9 +61,12 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4">
-      <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+    <>
+      <Navbar />
+      <CategoryMenu />
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4">
+        <div className="max-w-md w-full">
+          <div className="bg-white rounded-2xl shadow-xl p-8">
           {/* Logo */}
           <div className="text-center mb-8">
             <Link href="/" className="text-3xl font-bold text-blue-600">
@@ -204,6 +210,8 @@ export default function RegisterPage() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }

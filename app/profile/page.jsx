@@ -6,8 +6,6 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 import { 
   User, Package, Heart, Settings, LogOut, ChevronRight, Loader2, 
@@ -190,13 +188,9 @@ export default function ProfilePage() {
 
   if (authLoading || loading) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-        </div>
-        <Footer />
-      </>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
     );
   }
 
@@ -248,7 +242,7 @@ export default function ProfilePage() {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className={`h-2 rounded-full transition-all ${isProfileComplete ? 'bg-green-500' : 'bg-gradient-to-r from-[#083b66] to-blue-400'}`}
+              className={`h-2 rounded-full transition-all ${isProfileComplete ? 'bg-green-500' : 'bg-gradient-to-r from-[#083b66] to-blue-400}'}`}
               style={{ width: `${profileCompleteness}%` }}
             />
           </div>
@@ -306,327 +300,323 @@ export default function ProfilePage() {
   );
 
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen bg-gray-50">
-        <div className="bg-gradient-to-r from-[#083b66] via-[#0a4a7d] to-[#083b66] text-white py-8 sm:py-12 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16" />
-            <div className="absolute bottom-0 right-0 w-48 h-48 bg-white rounded-full translate-x-24 translate-y-24" />
-          </div>
-          <div className="max-w-7xl mx-auto px-4 relative">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold mb-1">My Account</h1>
-                <p className="text-blue-200 text-sm sm:text-base">Welcome back, {profileData.name || profileData.email}</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-                  <Shield className="w-4 h-4 text-green-400" />
-                  <span className="text-sm font-medium">Verified Account</span>
-                </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-gradient-to-r from-[#083b66] via-[#0a4a7d] to-[#083b66] text-white py-8 sm:py-12 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16" />
+          <div className="absolute bottom-0 right-0 w-48 h-48 bg-white rounded-full translate-x-24 translate-y-24" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 relative">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold mb-1">My Account</h1>
+              <p className="text-blue-200 text-sm sm:text-base">Welcome back, {profileData.name || profileData.email}</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
+                <Shield className="w-4 h-4 text-green-400" />
+                <span className="text-sm font-medium">Verified Account</span>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8 -mt-4">
-          <div className="md:hidden mb-4">
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-white rounded-lg shadow-sm text-gray-700 w-full justify-between font-medium"
-            >
-              <span className="flex items-center gap-2">
-                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                <span>Menu</span>
-              </span>
-              <span className="text-sm text-gray-500">{profileCompleteness}% Complete</span>
-            </button>
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8 -mt-4">
+        <div className="md:hidden mb-4">
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white rounded-lg shadow-sm text-gray-700 w-full justify-between font-medium"
+          >
+            <span className="flex items-center gap-2">
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              <span>Menu</span>
+            </span>
+            <span className="text-sm text-gray-500">{profileCompleteness}% Complete</span>
+          </button>
+        </div>
+
+        <div className="grid md:grid-cols-4 gap-4 sm:gap-6">
+          <div className="hidden md:block md:col-span-1">
+            <SidebarContent />
           </div>
 
-          <div className="grid md:grid-cols-4 gap-4 sm:gap-6">
-            <div className="hidden md:block md:col-span-1">
+          {mobileMenuOpen && (
+            <div className="md:hidden">
               <SidebarContent />
             </div>
+          )}
 
-            {mobileMenuOpen && (
-              <div className="md:hidden">
-                <SidebarContent />
-              </div>
-            )}
-
-            <div className="md:col-span-3 space-y-4 sm:space-y-6">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-                <div className="bg-gradient-to-r from-gray-50 to-white px-4 sm:px-6 py-4 border-b border-gray-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#083b66] rounded-lg flex items-center justify-center">
-                      <User className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-bold text-gray-900">Profile Information</h2>
-                      <p className="text-sm text-gray-500">Manage your personal details</p>
-                    </div>
+          <div className="md:col-span-3 space-y-4 sm:space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+              <div className="bg-gradient-to-r from-gray-50 to-white px-4 sm:px-6 py-4 border-b border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-[#083b66] rounded-lg flex items-center justify-center">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">Profile Information</h2>
+                    <p className="text-sm text-gray-500">Manage your personal details</p>
                   </div>
                 </div>
+              </div>
+              
+              <div className="p-4 sm:p-6">
+                {message.text && (
+                  <div className={`mb-6 p-4 rounded-lg flex items-start gap-3 text-sm ${
+                    message.type === 'success' 
+                      ? 'bg-green-50 text-green-700 border border-green-200' 
+                      : 'bg-red-50 text-red-700 border border-red-200'
+                  }`}>
+                    {message.type === 'success' ? (
+                      <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    )}
+                    <span>{message.text}</span>
+                  </div>
+                )}
                 
-                <div className="p-4 sm:p-6">
-                  {message.text && (
-                    <div className={`mb-6 p-4 rounded-lg flex items-start gap-3 text-sm ${
-                      message.type === 'success' 
-                        ? 'bg-green-50 text-green-700 border border-green-200' 
-                        : 'bg-red-50 text-red-700 border border-red-200'
-                    }`}>
-                      {message.type === 'success' ? (
-                        <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                      ) : (
-                        <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                      )}
-                      <span>{message.text}</span>
+                <form onSubmit={handleSubmit}>
+                  <div className="mb-8">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-4 pb-2 border-b">
+                      <span className="w-1 h-4 bg-[#083b66] rounded-full"></span>
+                      Personal Information
+                    </h3>
+                    
+                    <div className="grid sm:grid-cols-2 gap-5">
+                      <div className="sm:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                          <input 
+                            type="text" 
+                            name="name"
+                            value={profileData.name} 
+                            onChange={handleChange}
+                            placeholder="Enter your full name"
+                            className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                          <input 
+                            type="email" 
+                            value={profileData.email} 
+                            disabled 
+                            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 text-sm cursor-not-allowed" 
+                          />
+                        </div>
+                        <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                          <input 
+                            type="tel" 
+                            name="phone"
+                            value={profileData.phone} 
+                            onChange={handleChange}
+                            placeholder="Enter phone number"
+                            className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                        <div className="relative">
+                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                          <input 
+                            type="date" 
+                            name="dateOfBirth"
+                            value={profileData.dateOfBirth} 
+                            onChange={handleChange}
+                            className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                        <div className="flex gap-4 mt-2">
+                          {['male', 'female', 'other'].map((gender) => (
+                            <label key={gender} className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="radio"
+                                name="gender"
+                                value={gender}
+                                checked={profileData.gender === gender}
+                                onChange={handleChange}
+                                className="w-4 h-4 text-[#083b66] border-gray-300 focus:ring-[#083b66]"
+                              />
+                              <span className="text-sm text-gray-700 capitalize">{gender}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  )}
+                  </div>
                   
-                  <form onSubmit={handleSubmit}>
-                    <div className="mb-8">
-                      <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-4 pb-2 border-b">
-                        <span className="w-1 h-4 bg-[#083b66] rounded-full"></span>
-                        Personal Information
-                      </h3>
-                      
-                      <div className="grid sm:grid-cols-2 gap-5">
-                        <div className="sm:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                          <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input 
-                              type="text" 
-                              name="name"
-                              value={profileData.name} 
-                              onChange={handleChange}
-                              placeholder="Enter your full name"
-                              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
-                            />
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input 
-                              type="email" 
-                              value={profileData.email} 
-                              disabled 
-                              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 text-sm cursor-not-allowed" 
-                            />
-                          </div>
-                          <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                          <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input 
-                              type="tel" 
-                              name="phone"
-                              value={profileData.phone} 
-                              onChange={handleChange}
-                              placeholder="Enter phone number"
-                              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
-                          <div className="relative">
-                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input 
-                              type="date" 
-                              name="dateOfBirth"
-                              value={profileData.dateOfBirth} 
-                              onChange={handleChange}
-                              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
-                          <div className="flex gap-4 mt-2">
-                            {['male', 'female', 'other'].map((gender) => (
-                              <label key={gender} className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                  type="radio"
-                                  name="gender"
-                                  value={gender}
-                                  checked={profileData.gender === gender}
-                                  onChange={handleChange}
-                                  className="w-4 h-4 text-[#083b66] border-gray-300 focus:ring-[#083b66]"
-                                />
-                                <span className="text-sm text-gray-700 capitalize">{gender}</span>
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="mb-8">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-4 pb-2 border-b">
+                      <span className="w-1 h-4 bg-[#083b66] rounded-full"></span>
+                      Address Information
+                    </h3>
                     
-                    <div className="mb-8">
-                      <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-4 pb-2 border-b">
-                        <span className="w-1 h-4 bg-[#083b66] rounded-full"></span>
-                        Address Information
-                      </h3>
-                      
-                      <div className="grid sm:grid-cols-2 gap-5">
-                        <div className="sm:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Street Address</label>
-                          <div className="relative">
-                            <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                            <input 
-                              type="text" 
-                              name="address.street"
-                              value={profileData.address.street} 
-                              onChange={handleChange}
-                              placeholder="Enter street address"
-                              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
-                            />
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                    <div className="grid sm:grid-cols-2 gap-5">
+                      <div className="sm:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Street Address</label>
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                           <input 
                             type="text" 
-                            name="address.city"
-                            value={profileData.address.city} 
+                            name="address.street"
+                            value={profileData.address.street} 
                             onChange={handleChange}
-                            placeholder="Enter city"
-                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">State/Province</label>
-                          <input 
-                            type="text" 
-                            name="address.state"
-                            value={profileData.address.state} 
-                            onChange={handleChange}
-                            placeholder="Enter state"
-                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Zip Code</label>
-                          <input 
-                            type="text" 
-                            name="address.zipCode"
-                            value={profileData.address.zipCode} 
-                            onChange={handleChange}
-                            placeholder="Enter zip code"
-                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
-                          <input 
-                            type="text" 
-                            name="address.country"
-                            value={profileData.address.country} 
-                            onChange={handleChange}
-                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
+                            placeholder="Enter street address"
+                            className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
                           />
                         </div>
                       </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                        <input 
+                          type="text" 
+                          name="address.city"
+                          value={profileData.address.city} 
+                          onChange={handleChange}
+                          placeholder="Enter city"
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">State/Province</label>
+                        <input 
+                          type="text" 
+                          name="address.state"
+                          value={profileData.address.state} 
+                          onChange={handleChange}
+                          placeholder="Enter state"
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Zip Code</label>
+                        <input 
+                          type="text" 
+                          name="address.zipCode"
+                          value={profileData.address.zipCode} 
+                          onChange={handleChange}
+                          placeholder="Enter zip code"
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                        <input 
+                          type="text" 
+                          name="address.country"
+                          value={profileData.address.country} 
+                          onChange={handleChange}
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#083b66] focus:border-transparent transition-all text-sm" 
+                        />
+                      </div>
                     </div>
-                    
-                    <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
-                      <button 
-                        type="submit" 
-                        disabled={updating}
-                        className="order-2 sm:order-1 w-full sm:w-auto px-6 py-2.5 bg-[#083b66] text-white font-semibold rounded-lg hover:bg-[#062d4d] disabled:opacity-50 flex items-center justify-center gap-2 text-sm transition-colors"
-                      >
-                        {updating ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Save className="w-4 h-4" />
-                        )}
-                        {updating ? 'Saving...' : 'Save Changes'}
-                      </button>
-                      <button 
-                        type="button"
-                        onClick={() => router.push('/')}
-                        className="order-1 sm:order-2 w-full sm:w-auto px-6 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 text-sm transition-colors"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+                    <button 
+                      type="submit" 
+                      disabled={updating}
+                      className="order-2 sm:order-1 w-full sm:w-auto px-6 py-2.5 bg-[#083b66] text-white font-semibold rounded-lg hover:bg-[#062d4d] disabled:opacity-50 flex items-center justify-center gap-2 text-sm transition-colors"
+                    >
+                      {updating ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Save className="w-4 h-4" />
+                      )}
+                      {updating ? 'Saving...' : 'Save Changes'}
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => router.push('/')}
+                      className="order-1 sm:order-2 w-full sm:w-auto px-6 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 text-sm transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-[#083b66]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Order Statistics</h3>
+                    <p className="text-xs text-gray-500">Your shopping activity</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
+                    <p className="text-2xl font-bold text-[#083b66]">{stats.totalOrders}</p>
+                    <p className="text-xs text-gray-500">Total</p>
+                  </div>
+                  <div className="text-center p-3 bg-orange-50 rounded-lg">
+                    <p className="text-2xl font-bold text-orange-600">{stats.pendingOrders}</p>
+                    <p className="text-xs text-orange-600">Pending</p>
+                  </div>
+                  <div className="text-center p-3 bg-green-50 rounded-lg">
+                    <p className="text-2xl font-bold text-green-600">{stats.completedOrders}</p>
+                    <p className="text-xs text-green-600">Completed</p>
+                  </div>
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <TrendingUp className="w-5 h-5 text-[#083b66]" />
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
+                <h3 className="font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                <div className="space-y-3">
+                  <Link href="/orders" className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-[#083b66] hover:bg-blue-50 transition-all group">
+                    <div className="flex items-center gap-3">
+                      <Package className="w-5 h-5 text-[#083b66]" />
+                      <span className="font-medium text-gray-700 group-hover:text-[#083b66] text-sm">View Orders</span>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Order Statistics</h3>
-                      <p className="text-xs text-gray-500">Your shopping activity</p>
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-[#083b66]" />
+                  </Link>
+                  <Link href="/wishlist" className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-[#083b66] hover:bg-blue-50 transition-all group">
+                    <div className="flex items-center gap-3">
+                      <Heart className="w-5 h-5 text-[#083b66]" />
+                      <span className="font-medium text-gray-700 group-hover:text-[#083b66] text-sm">My Wishlist</span>
                     </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="text-center p-3 bg-gray-50 rounded-lg">
-                      <p className="text-2xl font-bold text-[#083b66]">{stats.totalOrders}</p>
-                      <p className="text-xs text-gray-500">Total</p>
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-[#083b66]" />
+                  </Link>
+                  <Link href="/settings" className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-[#083b66] hover:bg-blue-50 transition-all group">
+                    <div className="flex items-center gap-3">
+                      <Settings className="w-5 h-5 text-[#083b66]" />
+                      <span className="font-medium text-gray-700 group-hover:text-[#083b66] text-sm">Account Settings</span>
                     </div>
-                    <div className="text-center p-3 bg-orange-50 rounded-lg">
-                      <p className="text-2xl font-bold text-orange-600">{stats.pendingOrders}</p>
-                      <p className="text-xs text-orange-600">Pending</p>
-                    </div>
-                    <div className="text-center p-3 bg-green-50 rounded-lg">
-                      <p className="text-2xl font-bold text-green-600">{stats.completedOrders}</p>
-                      <p className="text-xs text-green-600">Completed</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
-                  <h3 className="font-semibold text-gray-900 mb-4">Quick Actions</h3>
-                  <div className="space-y-3">
-                    <Link href="/orders" className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-[#083b66] hover:bg-blue-50 transition-all group">
-                      <div className="flex items-center gap-3">
-                        <Package className="w-5 h-5 text-[#083b66]" />
-                        <span className="font-medium text-gray-700 group-hover:text-[#083b66] text-sm">View Orders</span>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-[#083b66]" />
-                    </Link>
-                    <Link href="/wishlist" className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-[#083b66] hover:bg-blue-50 transition-all group">
-                      <div className="flex items-center gap-3">
-                        <Heart className="w-5 h-5 text-[#083b66]" />
-                        <span className="font-medium text-gray-700 group-hover:text-[#083b66] text-sm">My Wishlist</span>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-[#083b66]" />
-                    </Link>
-                    <Link href="/settings" className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-[#083b66] hover:bg-blue-50 transition-all group">
-                      <div className="flex items-center gap-3">
-                        <Settings className="w-5 h-5 text-[#083b66]" />
-                        <span className="font-medium text-gray-700 group-hover:text-[#083b66] text-sm">Account Settings</span>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-[#083b66]" />
-                    </Link>
-                  </div>
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-[#083b66]" />
+                  </Link>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <Footer />
-    </>
+    </div>
   );
 }
