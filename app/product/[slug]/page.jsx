@@ -100,38 +100,30 @@ const [activeTab, setActiveTab] = useState('description');
 
   if (loading) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-600">Loading product...</p>
-          </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-600">Loading product...</p>
         </div>
-        <Footer />
-      </>
+      </div>
     );
   }
 
   if (!product) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-24 h-24 mx-auto mb-6 bg-gray-200 rounded-full flex items-center justify-center">
-              <span className="text-4xl">😕</span>
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
-            <p className="text-gray-600 mb-6">Sorry, we couldn't find the product you're looking for.</p>
-            <Link href="/shop" className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-              Back to Shop
-            </Link>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-24 h-24 mx-auto mb-6 bg-gray-200 rounded-full flex items-center justify-center">
+            <span className="text-4xl">😕</span>
           </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
+          <p className="text-gray-600 mb-6">Sorry, we couldn't find the product you're looking for.</p>
+          <Link href="/shop" className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+            Back to Shop
+          </Link>
         </div>
-        <Footer />
-      </>
+      </div>
     );
   }
 
@@ -324,7 +316,7 @@ const [activeTab, setActiveTab] = useState('description');
                 </div>
 
                 {/* Add to Cart Button */}
-                <div className="flex gap-4 mb-8">
+                <div className="flex gap-4 mb-4">
                   <button
                     onClick={handleAddToCart}
                     disabled={!isInStock || isAdding}
@@ -355,6 +347,14 @@ const [activeTab, setActiveTab] = useState('description');
                       </>
                     )}
                   </button>
+                  
+                  {/* Order Now Button */}
+                  <Link
+                    href="/cart"
+                    className="flex-1 py-4 px-6 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-lg bg-green-600 text-white hover:bg-green-700 hover:shadow-green-200"
+                  >
+                    Order Now
+                  </Link>
                 </div>
 
                 {/* Trust Badges */}
