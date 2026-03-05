@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
 import { Star, Heart, ShoppingBag, Truck, Shield, RotateCcw, Minus, Plus, Check, ChevronRight, ArrowLeft, Share2, Facebook, Twitter, Linkedin } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
@@ -147,10 +144,8 @@ const [activeTab, setActiveTab] = useState('description');
   const isLowStock = stockQty > 0 && stockQty <= 5;
 
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-        {/* Breadcrumb */}
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Breadcrumb */}
         <div className="bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center gap-2 text-sm">
@@ -548,8 +543,7 @@ const [activeTab, setActiveTab] = useState('description');
           )}
         </div>
       </div>
-      <Footer />
-    </>
+    </div>
   );
 }
 
