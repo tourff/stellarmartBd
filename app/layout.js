@@ -1,6 +1,12 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
 import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
+import Navbar from './components/Navbar';
+import CategoryMenu from './components/CategoryMenu';
+import Footer from './components/Footer';
+
+export const dynamic = 'force-dynamic';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,9 +25,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <CartProvider>
-          {children}
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Navbar />
+            <CategoryMenu />
+            {children}
+            <Footer />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

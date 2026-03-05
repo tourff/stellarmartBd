@@ -21,7 +21,6 @@ export default function RegisterPage() {
     setLoading(true);
     setError('');
 
-    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setLoading(false);
@@ -61,7 +60,6 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-2xl shadow-xl p-8">
-          {/* Logo */}
           <div className="text-center mb-8">
             <Link href="/" className="text-3xl font-bold text-blue-600">
               StellarMartBD
@@ -70,14 +68,12 @@ export default function RegisterPage() {
             <p className="text-gray-500">Join us and start shopping</p>
           </div>
 
-          {/* Error Message */}
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
               {error}
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -188,14 +184,12 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="mt-6 flex items-center gap-4">
             <div className="flex-1 h-px bg-gray-300"></div>
             <span className="text-sm text-gray-500">OR</span>
             <div className="flex-1 h-px bg-gray-300"></div>
           </div>
 
-          {/* Login Link */}
           <p className="mt-6 text-center text-gray-600">
             Already have an account?{' '}
             <Link href="/login" className="text-blue-600 font-semibold hover:underline">

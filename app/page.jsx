@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShoppingBag, Loader2 } from 'lucide-react';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import HeroBanner from './components/HeroBanner';
 import Features from './components/Features';
 import ProductCard from './components/ProductCard';
@@ -30,17 +28,14 @@ export default function HomePage() {
 
   const fetchData = async () => {
     try {
-      // Fetch categories
       const categoriesRes = await fetch('/api/categories');
       const categoriesData = await categoriesRes.json();
       setCategories(categoriesData.categories || []);
 
-      // Fetch featured products
       const featuredRes = await fetch('/api/products?featured=true&limit=8');
       const featuredData = await featuredRes.json();
       setFeaturedProducts(featuredData.products || []);
 
-      // Fetch new arrivals
       const newArrivalsRes = await fetch('/api/products?sort=-createdAt&limit=5');
       const newArrivalsData = await newArrivalsRes.json();
       setNewArrivals(newArrivalsData.products || []);
@@ -51,29 +46,15 @@ export default function HomePage() {
     }
   };
 
-  // Use static data if no products in database
   const displayCategories = categories.length > 0 ? categories : staticCategories;
   const displayFeatured = featuredProducts.length > 0 ? featuredProducts : [];
   const displayNewArrivals = newArrivals.length > 0 ? newArrivals : [];
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Top Bar */}
-      <div className="bg-blue-700 text-white text-sm py-2">
-        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
-          <span className="font-medium">🚀 Free Shipping on Orders Over ৳500 | 📞 +880 1234 567890</span>
-          <div className="flex gap-4 font-medium">
-            <Link href="/track-order" className="hover:text-blue-200">Track Order</Link>
-            <Link href="/support" className="hover:text-blue-200">Support</Link>
-          </div>
-        </div>
-      </div>
-
-      <Navbar />
       <HeroBanner />
       <Features />
 
-      {/* Categories */}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
@@ -97,7 +78,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
@@ -131,7 +111,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Banner Section */}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-6">
@@ -153,7 +132,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* New Arrivals */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
@@ -184,7 +162,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Newsletter */}
       <section className="py-16 bg-gradient-to-r from-blue-700 to-blue-900 text-white">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
@@ -201,8 +178,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

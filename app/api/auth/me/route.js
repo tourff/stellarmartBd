@@ -3,6 +3,9 @@ import dbConnect from '@/lib/db';
 import { User } from '@/models';
 import jwt from 'jsonwebtoken';
 
+// Force dynamic rendering - this route uses cookies
+export const dynamic = 'force-dynamic';
+
 export async function GET(request) {
   try {
     await dbConnect();

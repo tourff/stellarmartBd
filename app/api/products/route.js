@@ -12,9 +12,15 @@ export async function GET(request) {
     const category = searchParams.get('category');
     const search = searchParams.get('search');
     const featured = searchParams.get('featured');
+    const slug = searchParams.get('slug');
     const sort = searchParams.get('sort') || '-createdAt';
     
     const query = { isActive: true };
+    
+    // Slug filter - get single product by slug
+    if (slug) {
+      query.slug = slug;
+    }
     
     // Category filter
     if (category) {

@@ -74,11 +74,14 @@ export async function POST(request) {
       { status: 200 }
     );
     
-    // Set cookie
+    // Set cookie with proper settings for production
+    const isProduction = process.env.NODE_ENV === 'production';
     response.cookies.set('token', token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/',
+      sameSite: 'lax',
+      secure: isProduction,
     });
     
     return response;

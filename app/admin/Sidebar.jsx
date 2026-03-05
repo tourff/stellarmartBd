@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 
 const menuItems = [
   // Main Menu
-  { name: 'Dashboard', href: '/admin', icon: '📊' },
+  { name: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
   { name: 'Products', href: '/admin/products', icon: '🛍️' },
   { name: 'Categories', href: '/admin/categories', icon: '📁' },
   { name: 'Banners', href: '/admin/banners', icon: '🖼️' },
@@ -45,7 +45,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-white shadow-lg fixed h-full overflow-y-auto z-40">
       <div className="p-4 border-b">
-        <Link href="/admin" className="text-xl font-extrabold text-blue-700 flex items-center gap-2">
+        <Link href="/admin/dashboard" className="text-xl font-extrabold text-blue-700 flex items-center gap-2">
           🛒 StellarMartBD
         </Link>
         <p className="text-xs text-gray-500 mt-1">Admin Panel</p>

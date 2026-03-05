@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
+// Force dynamic rendering - this route uses cookies
+export const dynamic = 'force-dynamic';
+
 export async function GET(request) {
   try {
     const token = request.cookies.get('adminToken')?.value;
