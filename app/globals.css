@@ -129,3 +129,10 @@ input::placeholder, textarea::placeholder {
     font-size: 16px !important;
   }
 }
+
+/* Prevent horizontal swipe on mobile */
+html, body {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  touch-action: pan-x;
+}
