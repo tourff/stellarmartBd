@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { ShoppingBag, Heart, Search, User, Headphones, Menu, LogOut } from 'lucide-react';
+import { ShoppingBag, Heart, Search, User, Headphones, Menu, LogOut, X } from 'lucide-react';
 import CartDrawer from './CartDrawer';
 
 export default function Navbar() {
@@ -12,11 +12,24 @@ export default function Navbar() {
   const { user, loading: authLoading, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef(null);
 
   const handleLogout = async () => {
     await logout();
     window.location.href = '/';
   };
+
+  // Close search when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -30,8 +43,8 @@ export default function Navbar() {
               StellarMartBD
             </Link>
             
-            {/* Search */}
-            <div className="flex-1 max-w-xl mx-8">
+            {/* Search - Desktop */}
+            <div className="flex-1 max-w-xl mx-8 hidden md:block">
               <form action="/search" className="relative">
                 <input
                   type="text"
@@ -45,13 +58,13 @@ export default function Navbar() {
               </form>
             </div>
             
-            {/* Actions */}
+            {/* Actions - Desktop */}
             <div className="flex items-center gap-4">
-              <Link href="/wishlist" className="p-2 hover:bg-blue-50 rounded-lg relative">
+              <Link href="/wishlist" className="p-2 hover:bg-blue-50 rounded-lg relative hidden md:block">
                 <Heart className="w-6 h-6 text-[#083b66]" />
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">0</span>
               </Link>
-              <Link href="/cart" className="p-2 hover:bg-blue-50 rounded-lg relative">
+              <Link href="/cart" className="p-2 hover:bg-blue-50 rounded-lg relative hidden md:block">
                 <ShoppingBag className="w-6 h-6 text-[#083b66]" />
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
@@ -99,6 +112,15 @@ export default function Navbar() {
             <span className="text-xs font-medium text-[#083b66]">Menu</span>
           </button>
 
+          {/* Search Toggle */}
+          <button 
+            onClick={() => setSearchOpen(!searchOpen)}
+            className="flex flex-col items-center gap-1"
+          >
+            <Search className="w-6 h-6 text-[#083b66]" />
+            <span className="text-xs font-medium text-[#083b66]">Search</span>
+          </button>
+
           {/* Profile */}
           <Link href={user ? "/profile" : "/login"} className="flex flex-col items-center gap-1">
             <User className="w-6 h-6 text-[#083b66]" />
@@ -121,14 +143,26 @@ export default function Navbar() {
             )}
             <span className="text-xs font-medium text-[#083b66]">Cart</span>
           </button>
-
-          {/* Wishlist */}
-          <Link href="/wishlist" className="flex flex-col items-center gap-1">
-            <Heart className="w-6 h-6 text-[#083b66]" />
-            <span className="text-xs font-medium text-[#083b66]">Wishlist</span>
-          </Link>
         </div>
       </div>
+
+      {/* Mobile Search Dropdown */}
+      {searchOpen && (
+        <div ref={searchRef} className="md:hidden fixed top-16 left-0 right-0 z-40 bg-white shadow-lg p-4 border-t border-blue-100">
+          <form action="/search" className="relative">
+            <input
+              type="text"
+              name="q"
+              placeholder="Search products..."
+              className="w-full px-4 py-3 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-[#083b66] text-gray-800"
+              autoFocus
+            />
+            <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-[#083b66] text-white rounded-md text-sm font-bold">
+              Search
+            </button>
+          </form>
+        </div>
+      )}
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
@@ -142,7 +176,7 @@ export default function Navbar() {
               onClick={() => setMobileMenuOpen(false)}
               className="p-2 bg-blue-50 rounded-lg"
             >
-              ✕
+              <X className="w-5 h-5 text-[#083b66]" />
             </button>
           </div>
           <div className="px-4 py-4 space-y-3">
@@ -152,7 +186,6 @@ export default function Navbar() {
             <Link href="/products?featured=true" className="block py-3 px-4 font-semibold text-gray-800 bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>Featured</Link>
             <Link href="/new-arrivals" className="block py-3 px-4 font-semibold text-gray-800 bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>New Arrivals</Link>
             <Link href="/flash-sale" className="block py-3 px-4 font-bold text-red-600 bg-red-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>Flash Sale 🔥</Link>
-            <Link href="/wishlist" className="block py-3 px-4 font-semibold text-gray-800 bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>Wishlist</Link>
             <Link href="/cart" className="block py-3 px-4 font-semibold text-gray-800 bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>Cart</Link>
             
             {/* Mobile Auth */}
