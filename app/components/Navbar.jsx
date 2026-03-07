@@ -33,8 +33,8 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Desktop Navigation - White/Bluish Theme */}
-      <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-blue-100">
+      {/* Desktop Navigation - White/Bluish Theme - Hidden on Mobile */}
+      <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-blue-100 hidden md:block">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
