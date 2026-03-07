@@ -100,6 +100,44 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* Mobile Header - Logo + Search Toggle */}
+      <div className="md:hidden sticky top-0 z-50 bg-white shadow-md border-b border-blue-100">
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Logo */}
+          <Link href="/" className="text-xl font-extrabold text-[#083b66] flex items-center gap-2">
+            <ShoppingBag className="w-6 h-6" />
+            StellarMartBD
+          </Link>
+
+          {/* Search Toggle Button */}
+          <button 
+            onClick={() => setSearchOpen(!searchOpen)}
+            className="flex items-center gap-2 px-4 py-2 bg-[#083b66] text-white rounded-lg font-medium"
+          >
+            <Search className="w-5 h-5" />
+            <span>Search</span>
+          </button>
+        </div>
+
+        {/* Mobile Search Dropdown */}
+        {searchOpen && (
+          <div ref={searchRef} className="px-4 pb-4 border-t border-blue-100">
+            <form action="/search" className="relative">
+              <input
+                type="text"
+                name="q"
+                placeholder="Search products..."
+                className="w-full px-4 py-3 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-[#083b66] text-gray-800"
+                autoFocus
+              />
+              <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-[#083b66] text-white rounded-md text-sm font-bold">
+                Search
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
+
       {/* Mobile Navigation - Single Bottom Bar Only */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 border-t border-blue-100">
         <div className="flex items-center justify-around py-3 px-4">
@@ -110,15 +148,6 @@ export default function Navbar() {
           >
             <Menu className="w-6 h-6 text-[#083b66]" />
             <span className="text-xs font-medium text-[#083b66]">Menu</span>
-          </button>
-
-          {/* Search Toggle */}
-          <button 
-            onClick={() => setSearchOpen(!searchOpen)}
-            className="flex flex-col items-center gap-1"
-          >
-            <Search className="w-6 h-6 text-[#083b66]" />
-            <span className="text-xs font-medium text-[#083b66]">Search</span>
           </button>
 
           {/* Profile */}
@@ -145,24 +174,6 @@ export default function Navbar() {
           </button>
         </div>
       </div>
-
-      {/* Mobile Search Dropdown */}
-      {searchOpen && (
-        <div ref={searchRef} className="md:hidden fixed top-16 left-0 right-0 z-40 bg-white shadow-lg p-4 border-t border-blue-100">
-          <form action="/search" className="relative">
-            <input
-              type="text"
-              name="q"
-              placeholder="Search products..."
-              className="w-full px-4 py-3 border-2 border-blue-200 rounded-lg focus:outline-none focus:border-[#083b66] text-gray-800"
-              autoFocus
-            />
-            <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-[#083b66] text-white rounded-md text-sm font-bold">
-              Search
-            </button>
-          </form>
-        </div>
-      )}
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
@@ -214,8 +225,8 @@ export default function Navbar() {
         clearCart={clearCart}
       />
 
-      {/* Spacer for Mobile Bottom Bar */}
-      <div className="md:hidden h-20"></div>
+      {/* Spacer for Mobile Header + Bottom Bar */}
+      <div className="md:hidden h-32"></div>
     </>
   );
 }
