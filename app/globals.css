@@ -107,3 +107,25 @@ input, textarea, select {
 input::placeholder, textarea::placeholder {
   color: #9ca3af !important;
 }
+
+/* Prevent zoom on mobile input focus */
+@supports (-webkit-touch-callout: none) {
+  input:focus, textarea:focus, select:focus {
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
