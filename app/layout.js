@@ -14,6 +14,7 @@ export const metadata = {
   title: 'StellarMartBD - Your Trusted Online Shopping Destination',
   description: 'Best e-commerce platform in Bangladesh. Shop electronics, fashion, home & living, and more with fast delivery.',
   keywords: 'e-commerce, online shopping, Bangladesh, electronics, fashion',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
   openGraph: {
     title: 'StellarMartBD',
     description: 'Your Trusted Online Shopping Destination',

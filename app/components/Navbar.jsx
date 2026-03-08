@@ -14,6 +14,18 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
 
+  // Prevent body scroll when mobile menu or cart is open
+  useEffect(() => {
+    if (mobileMenuOpen || cartOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileMenuOpen, cartOpen]);
+
   const handleLogout = async () => {
     await logout();
     window.location.href = '/';
