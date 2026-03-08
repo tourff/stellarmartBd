@@ -190,8 +190,8 @@ export default function HeroBanner({ autoPlayInterval = 3000 }) {
             )}
           </div>
 
-          {/* Right - Side Banners */}
-          <div className="flex flex-col gap-4">
+          {/* Right - Side Banners - Hidden on Mobile */}
+          <div className="hidden lg:flex flex-col gap-4">
             {sideBanners.map((banner) => (
               <Link
                 key={banner.id}
