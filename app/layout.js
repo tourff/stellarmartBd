@@ -19,7 +19,6 @@ export const metadata = {
     description: 'Your Trusted Online Shopping Destination',
     type: 'website',
   },
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
 };
 
 export default function RootLayout({ children }) {
@@ -30,7 +29,9 @@ export default function RootLayout({ children }) {
           <CartProvider>
             <Navbar />
             <CategoryMenu />
-            {children}
+            <main className="min-h-screen">
+              {children}
+            </main>
             <Footer />
           </CartProvider>
         </AuthProvider>

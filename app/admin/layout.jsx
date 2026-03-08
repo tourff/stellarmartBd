@@ -1,4 +1,5 @@
 import Sidebar from './Sidebar';
+import AdminNavbar from './AdminNavbar';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +13,7 @@ export default function AdminLayout({ children }) {
     <div className="min-h-screen bg-gray-100 flex">
       <Sidebar />
       <div className="flex-1 ml-64">
+        <AdminNavbar />
         <main className="p-8">
           {children}
         </main>

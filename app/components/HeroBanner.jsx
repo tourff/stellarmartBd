@@ -117,11 +117,12 @@ export default function HeroBanner({ autoPlayInterval = 3000 }) {
   }
 
   return (
-    <section className="py-6 bg-gray-100">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="grid lg:grid-cols-3 gap-4">
+    <section className="py-4 md:py-6 bg-gray-100">
+      <div className="max-w-7xl mx-auto px-2 md:px-4">
+        {/* Mobile: Single column stacked layout */}
+        <div className="md:grid md:grid-cols-3 md:gap-4">
           {/* Left - Main Carousel */}
-          <div className="lg:col-span-2 relative h-[400px] rounded-2xl overflow-hidden group">
+          <div className="md:col-span-2 relative h-[250px] md:h-[400px] rounded-xl md:rounded-2xl overflow-hidden group">
             {banners.map((banner, index) => (
               <div
                 key={banner.id}
@@ -137,16 +138,16 @@ export default function HeroBanner({ autoPlayInterval = 3000 }) {
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
                   <div className="absolute inset-0 flex items-center">
-                    <div className="p-8 md:p-12 max-w-lg">
-                      <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4">
+                    <div className="p-4 md:p-8 max-w-lg">
+                      <h2 className="text-xl md:text-3xl lg:text-5xl font-extrabold text-white mb-2 md:mb-4">
                         {banner.title}
                       </h2>
-                      <p className="text-lg md:text-xl text-white/90 mb-6">
+                      <p className="text-sm md:text-lg text-white/90 mb-3 md:mb-6">
                         {banner.description}
                       </p>
                       <Link
                         href={banner.link || '/shop'}
-                        className="inline-block px-8 py-3 bg-white text-gray-900 font-bold rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
+                        className="inline-block px-4 md:px-8 py-2 md:py-3 bg-white text-gray-900 font-bold rounded-lg hover:bg-blue-500 hover:text-white transition-colors text-sm md:text-base"
                       >
                         Shop Now
                       </Link>
@@ -161,26 +162,26 @@ export default function HeroBanner({ autoPlayInterval = 3000 }) {
               <>
                 <button
                   onClick={goToPrev}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-white"
+                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-8 md:w-12 h-8 md:h-12 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-white"
                 >
-                  <ChevronLeft className="w-6 h-6 text-gray-800" />
+                  <ChevronLeft className="w-4 md:w-6 h-4 md:h-6 text-gray-800" />
                 </button>
                 <button
                   onClick={goToNext}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-white"
+                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-8 md:w-12 h-8 md:h-12 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-white"
                 >
-                  <ChevronRight className="w-6 h-6 text-gray-800" />
+                  <ChevronRight className="w-4 md:w-6 h-4 md:h-6 text-gray-800" />
                 </button>
 
                 {/* Dots */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                <div className="absolute bottom-2 md:bottom-4 left-1/2 -translate-x-1/2 flex gap-1 md:gap-2">
                   {banners.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => goToSlide(index)}
-                      className={`w-3 h-3 rounded-full transition-all ${
+                      className={`w-2 md:w-3 h-2 md:h-3 rounded-full transition-all ${
                         index === currentSlide
-                          ? 'bg-white w-8'
+                          ? 'bg-white w-4 md:w-8'
                           : 'bg-white/50 hover:bg-white/80'
                       }`}
                     />
@@ -190,8 +191,8 @@ export default function HeroBanner({ autoPlayInterval = 3000 }) {
             )}
           </div>
 
-          {/* Right - Side Banners - Hidden on Mobile */}
-          <div className="hidden lg:flex flex-col gap-4">
+          {/* Right - Side Banners - Hidden on mobile, visible on md+ */}
+          <div className="hidden md:flex flex-col gap-4">
             {sideBanners.map((banner) => (
               <Link
                 key={banner.id}

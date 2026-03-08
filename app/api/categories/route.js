@@ -13,13 +13,11 @@ export async function GET(request) {
     const parent = searchParams.get('parent');
     const featured = searchParams.get('featured');
     const nested = searchParams.get('nested');
-    const active = searchParams.get('active');
     
     // Handle nested categories query
     if (nested === 'true') {
-      // Get all categories (or active only if specified)
-      const filter = active === 'false' ? {} : { isActive: true };
-      const allCategories = await Category.find(filter)
+      // Get all active categories
+      const allCategories = await Category.find({ isActive: true })
         .populate('parentId', 'name slug')
         .sort('orderBy');
       
@@ -57,13 +55,7 @@ export async function GET(request) {
       return NextResponse.json({ categories: rootCategories });
     }
     
-    // Build query - by default show ALL categories (not just active)
-    const query = {};
-    
-    // Only filter by isActive if explicitly requested
-    if (active === 'true') {
-      query.isActive = true;
-    }
+    const query = { isActive: true };
     
     if (parent === 'true') {
       query.parentId = null;
@@ -81,7 +73,7 @@ export async function GET(request) {
   } catch (error) {
     console.error('Get categories error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch categories', message: error.message },
+      { error: 'Failed to fetch categories' },
       { status: 500 }
     );
   }
@@ -120,7 +112,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('Create category error:', error);
     return NextResponse.json(
-      { error: 'Failed to create category', message: error.message },
+      { error: 'Failed to create category' },
       { status: 500 }
     );
   }
