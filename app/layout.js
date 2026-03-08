@@ -1,0 +1,41 @@
+import './globals.css';
+import { Inter } from 'next/font/google';
+import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
+import Navbar from './components/Navbar';
+import CategoryMenu from './components/CategoryMenu';
+import Footer from './components/Footer';
+
+export const dynamic = 'force-dynamic';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata = {
+  title: 'StellarMartBD - Your Trusted Online Shopping Destination',
+  description: 'Best e-commerce platform in Bangladesh. Shop electronics, fashion, home & living, and more with fast delivery.',
+  keywords: 'e-commerce, online shopping, Bangladesh, electronics, fashion',
+  openGraph: {
+    title: 'StellarMartBD',
+    description: 'Your Trusted Online Shopping Destination',
+    type: 'website',
+  },
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <AuthProvider>
+          <CartProvider>
+            <Navbar />
+            <CategoryMenu />
+            <main className="min-h-screen pb-16 md:pb-0">
+              {children}
+            </main>
+            <Footer />
+          </CartProvider>
+        </AuthProvider>
+      </body>
+    </html>
+  );
+}
