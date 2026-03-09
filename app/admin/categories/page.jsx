@@ -35,7 +35,8 @@ export default function CategoriesPage() {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch('/api/categories');
+      // Fetch all categories including inactive ones for admin panel
+      const res = await fetch('/api/categories?active=false');
       const data = await res.json();
       setCategories(data.categories || []);
     } catch (error) {

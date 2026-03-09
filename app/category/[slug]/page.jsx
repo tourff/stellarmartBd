@@ -1,6 +1,4 @@
 import Link from 'next/link';
-import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
 import ProductCard from '../../components/ProductCard';
 
 const categoryProducts = {
@@ -42,9 +40,7 @@ export default function CategoryPage({ params }) {
   const categoryName = categoryNames[slug] || slug;
 
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <h1 className="text-3xl font-bold mb-2">{categoryName}</h1>
@@ -73,7 +69,5 @@ export default function CategoryPage({ params }) {
           )}
         </div>
       </div>
-      <Footer />
-    </>
   );
 }

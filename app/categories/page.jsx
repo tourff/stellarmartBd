@@ -1,6 +1,4 @@
 import Link from 'next/link';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 
 async function getCategories() {
   try {
@@ -35,7 +33,6 @@ export default async function CategoriesPage() {
 
   return (
     <>
-      <Navbar />
       <div className="min-h-screen bg-gray-50">
         <div className="bg-gradient-to-r from-green-600 to-green-800 text-white py-12">
           <div className="max-w-7xl mx-auto px-4 text-center">
@@ -81,7 +78,6 @@ export default async function CategoriesPage() {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 }

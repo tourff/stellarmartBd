@@ -13,11 +13,13 @@ export async function GET(request) {
     const parent = searchParams.get('parent');
     const featured = searchParams.get('featured');
     const nested = searchParams.get('nested');
+    const activeOnly = searchParams.get('active');
     
     // Handle nested categories query
     if (nested === 'true') {
-      // Get all active categories
-      const allCategories = await Category.find({ isActive: true })
+      // Get all categories (active and inactive for admin)
+      const query = activeOnly === 'false' ? {} : { isActive: true };
+      const allCategories = await Category.find(query)
         .populate('parentId', 'name slug')
         .sort('orderBy');
       
@@ -55,7 +57,7 @@ export async function GET(request) {
       return NextResponse.json({ categories: rootCategories });
     }
     
-    const query = { isActive: true };
+    const query = activeOnly === 'false' ? {} : { isActive: true };
     
     if (parent === 'true') {
       query.parentId = null;
@@ -65,9 +67,10 @@ export async function GET(request) {
       query.isFeatured = true;
     }
     
-    const categories = await Category.find(query)
-      .populate('parentId', 'name slug')
-      .sort('orderBy');
+    // If admin is requesting (active=false), show all categories
+    const categories = activeOnly === 'false' 
+      ? await Category.find().populate('parentId', 'name slug').sort('orderBy')
+      : await Category.find(query).populate('parentId', 'name slug').sort('orderBy');
     
     return NextResponse.json({ categories });
   } catch (error) {
