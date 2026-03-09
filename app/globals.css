@@ -19,17 +19,22 @@ body {
 }
 
 /* Hide scrollbar but allow scrolling */
-::-webkit-scrollbar {
+body::-webkit-scrollbar {
   display: none;
 }
 
-* {
+body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
+/* Allow dropdowns to overflow */
+.overflow-visible {
+  overflow: visible !important;
+}
+
 /* Prevent horizontal scroll on mobile */
-* {
+.scroll-container {
   max-width: 100vw;
   overflow-x: hidden;
   box-sizing: border-box;
