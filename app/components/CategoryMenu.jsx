@@ -54,22 +54,24 @@ const CategoryMenu = () => {
               <li
                 key={cat._id}
                 className="relative py-1 cursor-pointer hover:text-yellow-400 flex items-center gap-1 transition-all duration-300 uppercase"
+                style={{ overflow: 'visible' }}
                 onMouseEnter={() => setOpenDropdown(index)}
                 onMouseLeave={() => { setOpenDropdown(null); setOpenSubSubDropdown(null); }}
               >
-                <Link href={`/category/${cat.slug}`} className="flex items-center gap-1">
+                <Link href={`/category/${cat.slug}`} className="flex items-center gap-1 relative z-50">
                   <span>{cat.name}</span>
                   {cat.subcategories?.length > 0 && <ChevronDown size={14} />}
                 </Link>
 
                 {/* Level 2 Dropdown */}
                 {cat.subcategories?.length > 0 && openDropdown === index && (
-                  <div className="absolute top-full left-0 pt-2 z-[999] min-w-[220px]">
-                    <div className="bg-white text-gray-800 shadow-2xl border border-gray-100 py-1 overflow-visible">
+                  <div className="absolute top-full left-0 pt-2 z-[9999] min-w-[220px]" style={{ overflow: 'visible' }}>
+                    <div className="bg-white text-gray-800 shadow-2xl border border-gray-100 py-1" style={{ overflow: 'visible' }}>
                       {cat.subcategories.map((sub, subIndex) => (
                         <div 
                           key={sub._id}
                           className="relative group/sub"
+                          style={{ overflow: 'visible' }}
                           onMouseEnter={() => setOpenSubSubDropdown(`${index}-${subIndex}`)}
                         >
                           <Link
@@ -82,7 +84,7 @@ const CategoryMenu = () => {
 
                           {/* Level 3 Dropdown (Right Side) */}
                           {sub.subcategories?.length > 0 && openSubSubDropdown === `${index}-${subIndex}` && (
-                            <div className="absolute top-0 left-full pl-0.5 z-[1000] min-w-[200px]">
+                            <div className="absolute top-0 left-full pl-0.5 z-[1000] min-w-[200px]" style={{ overflow: 'visible' }}>
                               <div className="bg-white text-gray-800 shadow-2xl border border-gray-100 py-1 translate-x-1">
                                 {sub.subcategories.map((subSub) => (
                                   <Link
@@ -160,3 +162,4 @@ const CategoryMenu = () => {
 };
 
 export default CategoryMenu;
+
