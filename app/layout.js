@@ -2,9 +2,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
-import Navbar from './components/Navbar';
-import CategoryMenu from './components/CategoryMenu';
-import Footer from './components/Footer';
+import UserLayoutWrapper from './components/UserLayoutWrapper';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,12 +26,11 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <AuthProvider>
           <CartProvider>
-            <Navbar />
-            <CategoryMenu />
-            <main className="min-h-screen">
-              {children}
-            </main>
-            <Footer />
+            <UserLayoutWrapper>
+              <main className="min-h-screen">
+                {children}
+              </main>
+            </UserLayoutWrapper>
           </CartProvider>
         </AuthProvider>
       </body>
