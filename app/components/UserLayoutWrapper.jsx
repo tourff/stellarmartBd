@@ -8,7 +8,7 @@ import Footer from './Footer';
 export default function UserLayoutWrapper({ children }) {
   const pathname = usePathname();
   
-  // Check if we're on an admin route
+  // Check if we're on an admin route (including /admin/login and /admin-login)
   const isAdminRoute = pathname?.startsWith('/admin') || pathname?.startsWith('/admin-login');
   
   return (
