@@ -1,4 +1,6 @@
 
+'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Loader2, Lock, User } from 'lucide-react';
