@@ -114,10 +114,10 @@ const CategoryMenu = () => {
       </div>
 
       {/* Mobile Category Button - Visible only on mobile */}
-      <div className="md:hidden bg-[#083b66]">
+      <div className="md:hidden bg-[#083b66] mt-0">
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 text-white font-bold"
+          className="w-full flex items-center justify-between px-4 py-2 text-white font-bold"
         >
           <div className="flex items-center gap-2">
             <Menu className="w-5 h-5" />
