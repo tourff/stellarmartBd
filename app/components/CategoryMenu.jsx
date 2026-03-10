@@ -32,7 +32,7 @@ const CategoryMenu = () => {
 
   if (loading) {
     return (
-      <div className="w-full bg-[#083b66] h-10 hidden md:block">
+      <div className="w-full bg-[#083b66] h-10 sticky top-[52px] z-40 md:hidden">
         <div className="max-w-7xl mx-auto px-4 flex items-center h-full">
           <div className="h-4 w-32 bg-white/20 rounded animate-pulse"></div>
         </div>
@@ -114,7 +114,7 @@ const CategoryMenu = () => {
       </div>
 
       {/* Mobile Category Button - Visible only on mobile */}
-      <div className="md:hidden bg-[#083b66]">
+      <div className="md:hidden bg-[#083b66] sticky top-[52px] z-40">
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="w-full flex items-center justify-between px-4 py-3 text-white font-bold"
