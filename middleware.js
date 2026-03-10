@@ -21,6 +21,7 @@ export function middleware(request) {
     '/register',
     '/admin/login',
     '/admin-login',
+    '/admin-login/',
   ];
   
   const path = request.nextUrl.pathname;
