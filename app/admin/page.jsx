@@ -7,7 +7,7 @@ export default function AdminPage() {
   
   // If no admin token, redirect to login page
   if (!adminToken) {
-    redirect('/admin/login');
+    redirect('/admin-login');
   }
   
   // If has token, redirect to dashboard
