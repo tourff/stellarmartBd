@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import { Cart } from '@/models';
+import mongoose from 'mongoose';
 
 export async function GET(request) {
   try {
@@ -37,11 +38,21 @@ export async function POST(request) {
     const data = await request.json();
     const { productId, quantity = 1, sessionId } = data;
     
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return NextResponse.json(
+        { error: 'Invalid product ID' },
+        { status: 400 }
+      );
+    }
+    
     let cart = await Cart.findOne({ sessionId });
     
     if (!cart) {
       cart = await Cart.create({ sessionId, items: [] });
     }
+    
+    const objectId = new mongoose.Types.ObjectId(productId);
     
     // Check if product already in cart
     const existingItem = cart.items.find(
@@ -51,7 +62,7 @@ export async function POST(request) {
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
-      cart.items.push({ product: productId, quantity });
+      cart.items.push({ product: objectId, quantity });
     }
     
     await cart.save();
@@ -74,6 +85,14 @@ export async function PUT(request) {
     const data = await request.json();
     const { productId, quantity, sessionId } = data;
     
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return NextResponse.json(
+        { error: 'Invalid product ID' },
+        { status: 400 }
+      );
+    }
+    
     const cart = await Cart.findOne({ sessionId });
     
     if (!cart) {
@@ -82,6 +101,8 @@ export async function PUT(request) {
         { status: 404 }
       );
     }
+    
+    const objectId = new mongoose.Types.ObjectId(productId);
     
     const item = cart.items.find(
       item => item.product.toString() === productId
