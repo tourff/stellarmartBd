@@ -10,15 +10,14 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get('sessionId');
     
-    let cart;
-    if (sessionId) {
-      cart = await Cart.findOne({ sessionId }).populate('items.product');
-    } else {
-      cart = await Cart.findOne({}).populate('items.product');
+    if (!sessionId) {
+      return NextResponse.json({ cart: { items: [] } });
     }
     
+    let cart = await Cart.findOne({ sessionId }).populate('items.product');
+    
     if (!cart) {
-      cart = await Cart.create({ sessionId, items: [] });
+      cart = await Cart.create({ sessionId, items: [] }).then(c => c.populate('items.product'));
     }
     
     return NextResponse.json({ cart });
@@ -154,6 +153,7 @@ export async function DELETE(request) {
     }
     
     await cart.save();
+    await cart.populate('items.product');
     
     return NextResponse.json({ cart, message: 'Item removed from cart' });
   } catch (error) {
