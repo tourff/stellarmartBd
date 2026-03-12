@@ -43,11 +43,12 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
 
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto p-4">
-          {loading ? (
-            <div className="flex items-center justify-center h-40">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+{loading ? (
+            <div className="flex flex-col items-center justify-center h-48 p-8 text-gray-500">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+              <p className="text-lg font-semibold">Loading your cart...</p>
             </div>
-          ) : cart?.items?.length === 0 ? (
+          ) : !cart?.items || cart.items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-40 text-gray-500">
               <ShoppingBag className="w-16 h-16 mb-4" />
               <p className="text-lg font-semibold">Your cart is empty</p>
@@ -59,18 +60,21 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
                 <div key={item.product?._id || item.productId} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
                   {/* Product Image */}
                   <div className="w-20 h-20 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
-                    {item.product?.image ? (
+                    {item.product?.featuredImage ? (
                       <Image 
-                        src={item.product.image} 
+                        src={item.product.featuredImage} 
                         alt={item.product?.name || 'Product'}
                         fill
                         className="object-cover"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                        <ShoppingBag className="w-8 h-8 text-gray-400" />
-                      </div>
-                    )}
+                    ) : null}
+                    <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 hidden">
+                      <ShoppingBag className="w-8 h-8 text-gray-400" />
+                    </div>
                   </div>
                   
                   {/* Product Details */}
@@ -110,11 +114,11 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
                   {/* Price */}
                   <div className="text-right">
                     <p className="font-bold text-blue-600">
-                      ৳{((item.product?.price || 0) * item.quantity).toLocaleString()}
+                      ৳{((item.product?.sellingPrice || 0) * item.quantity).toLocaleString()}
                     </p>
                     {item.quantity > 1 && (
                       <p className="text-xs text-gray-500">
-                        ৳{item.product?.price}/unit
+                        ৳{item.product?.sellingPrice}/unit
                       </p>
                     )}
                   </div>

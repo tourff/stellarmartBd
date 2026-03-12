@@ -7,6 +7,7 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
   const [cart, setCart] = useState({ items: [], total: 0 });
   const [loading, setLoading] = useState(true);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   // Generate or get session ID
   const getSessionId = () => {
@@ -22,18 +23,23 @@ export function CartProvider({ children }) {
   // Fetch cart on mount
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [refetchTrigger]);
 
   const fetchCart = async () => {
     try {
       const sessionId = getSessionId();
+      console.log('🔄 Fetching cart for session:', sessionId);
       const res = await fetch(`/api/cart?sessionId=${sessionId}`);
       const data = await res.json();
+      console.log('📦 Cart data:', data);
       if (data.cart) {
         calculateTotal(data.cart);
+      } else {
+        console.log('🛒 No cart found, initializing empty cart');
+        setCart({ items: [], total: 0 });
       }
     } catch (error) {
-      console.error('Error fetching cart:', error);
+      console.error('❌ Error fetching cart:', error);
     } finally {
       setLoading(false);
     }
@@ -41,7 +47,7 @@ export function CartProvider({ children }) {
 
   const calculateTotal = (cartData) => {
     const total = cartData.items.reduce((sum, item) => {
-      const price = item.product?.price || 0;
+      const price = item.product?.sellingPrice || 0;
       return sum + (price * item.quantity);
     }, 0);
     setCart({ items: cartData.items, total });
@@ -56,9 +62,11 @@ export function CartProvider({ children }) {
         body: JSON.stringify({ productId, quantity, sessionId })
       });
       const data = await res.json();
+      console.log('➕ Add to cart response:', data);
       if (data.cart) {
         calculateTotal(data.cart);
       }
+      await fetchCart(); // 🔄 Refetch to ensure latest state
       return { success: true, message: 'Added to cart!' };
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -75,9 +83,11 @@ export function CartProvider({ children }) {
         body: JSON.stringify({ productId, quantity, sessionId })
       });
       const data = await res.json();
+      console.log('🔄 Update quantity response:', data);
       if (data.cart) {
         calculateTotal(data.cart);
       }
+      await fetchCart();
     } catch (error) {
       console.error('Error updating cart:', error);
     }
@@ -90,9 +100,11 @@ export function CartProvider({ children }) {
         method: 'DELETE'
       });
       const data = await res.json();
+      console.log('🗑️ Remove from cart response:', data);
       if (data.cart) {
         calculateTotal(data.cart);
       }
+      await fetchCart();
     } catch (error) {
       console.error('Error removing from cart:', error);
     }
@@ -104,9 +116,10 @@ export function CartProvider({ children }) {
       await fetch(`/api/cart?sessionId=${sessionId}`, {
         method: 'DELETE'
       });
-      setCart({ items: [], total: 0 });
+      console.log('🧹 Cart cleared');
+      await fetchCart();
     } catch (error) {
-      console.error('Error clearing cart:', error);
+      console.error('❌ Error clearing cart:', error);
     }
   };
 
