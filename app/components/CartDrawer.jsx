@@ -59,9 +59,9 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
                 <div key={item.product?._id || item.productId} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
                   {/* Product Image */}
                   <div className="w-20 h-20 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
-                    {item.product?.image ? (
+                    {item.product?.featuredImage ? (
                       <Image 
-                        src={item.product.image} 
+                        src={item.product.featuredImage} 
                         alt={item.product?.name || 'Product'}
                         fill
                         className="object-cover"
@@ -110,11 +110,11 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
                   {/* Price */}
                   <div className="text-right">
                     <p className="font-bold text-blue-600">
-                      ৳{((item.product?.price || 0) * item.quantity).toLocaleString()}
+                      ৳{((item.product?.sellingPrice || 0) * item.quantity).toLocaleString()}
                     </p>
                     {item.quantity > 1 && (
                       <p className="text-xs text-gray-500">
-                        ৳{item.product?.price}/unit
+                        ৳{item.product?.sellingPrice}/unit
                       </p>
                     )}
                   </div>
