@@ -21,6 +21,8 @@ export default function ProductCard({ product }) {
   // Get image from database or fallback
   const productImage = product.featuredImage || product.images?.[0] || null;
 
+  const [error, setError] = useState('');
+  
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -28,12 +30,16 @@ export default function ProductCard({ product }) {
     if (isAdding || added) return;
     
     setIsAdding(true);
+    setError('');
     const result = await addToCart(product._id || product.id, 1);
     setIsAdding(false);
     
     if (result.success) {
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
+    } else {
+      setError(result.message || 'Failed to add to cart');
+      setTimeout(() => setError(''), 3000);
     }
   };
   
@@ -101,18 +107,22 @@ export default function ProductCard({ product }) {
             onClick={handleAddToCart}
             disabled={isAdding}
             className={`w-full mt-3 py-2.5 font-bold rounded-lg transition-all shadow-md 
-              ${added 
+            ${added 
                 ? 'bg-green-600 text-white' 
+                : error 
+                ? 'bg-red-600 text-white hover:bg-red-700'
                 : 'bg-blue-600 text-white hover:bg-blue-700'
               }`}
           >
             {added ? (
               <span className="flex items-center justify-center gap-2">
                 <Check className="w-5 h-5" />
-                Added to Cart
+                Added!
               </span>
             ) : isAdding ? (
               'Adding...'
+            ) : error ? (
+              error
             ) : (
               'Add to Cart'
             )}
