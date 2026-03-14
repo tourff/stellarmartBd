@@ -3,7 +3,7 @@ import dbConnect from '@/lib/db';
 import { User } from '@/models';
 import bcrypt from 'bcryptjs';
 
-export async function POST(request) {
+export async function GET() {
   try {
     await dbConnect();
     
@@ -12,7 +12,7 @@ export async function POST(request) {
     
     if (existingAdmin) {
       return NextResponse.json(
-        { message: 'Admin user already exists' },
+        { message: '✅ Admin already exists', email: existingAdmin.email },
         { status: 200 }
       );
     }
@@ -32,16 +32,15 @@ export async function POST(request) {
     
     return NextResponse.json(
       { 
-        message: 'Admin user created successfully',
-        email: adminUser.email,
-        password: 'turjo0424'
+        message: '✅ Admin created! Login: admin@stellarmartbd.com / turjo0424',
+        email: adminUser.email
       },
       { status: 201 }
     );
   } catch (error) {
     console.error('Seed error:', error);
     return NextResponse.json(
-      { error: 'Failed to create admin user' },
+      { error: 'Seeding failed: ' + error.message },
       { status: 500 }
     );
   }
