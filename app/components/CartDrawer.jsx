@@ -57,10 +57,10 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
             </div>
           ) : (
             <div className="space-y-4">
-{cart?.items?.map((item) => {
-                console.log('📦 Rendering cart item:', item, 'product:', item.product);
+              {cart.items.map((item, index) => {
+                console.log(`📦 Item ${index}:`, item, 'product:', item.product);
                 return (
-                <div key={item.product?._id || item.productId || item._id || Math.random()} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
+                <div key={item._id || index} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
                   {/* Product Image */}
                   <div className="w-20 h-20 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
                     {item.product?.featuredImage ? (
