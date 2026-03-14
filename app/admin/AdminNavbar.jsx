@@ -41,7 +41,7 @@ export default function AdminNavbar() {
   const handleLogout = async () => {
     try {
       await fetch('/api/auth/admin-logout', { method: 'POST' });
-      router.push('/admin/login');
+      router.push('/admin-login');
     } catch (error) {
       console.error('Logout failed:', error);
     }
