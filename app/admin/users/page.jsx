@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Plus,
   Edit,
@@ -10,7 +10,8 @@ import {
   CheckCircle
 } from 'lucide-react';
 
-const [users, setUsers] = useState([]);
+export default function UsersPage() {
+  const [users, setUsers] = useState([]);
   const [stats, setStats] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -117,7 +118,7 @@ const [users, setUsers] = useState([]);
                     <p className="text-sm text-gray-500">{user.email}</p>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-gray-500">{user.phone}</td>
+                <td className="px-6 py-4 text-gray-500">{user.phone}</p>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 text-xs rounded ${getRoleBadge(user.role)}`}>
                     {user.role}
