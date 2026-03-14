@@ -10,18 +10,30 @@ import {
   CheckCircle
 } from 'lucide-react';
 
-const mockUsers = [
-  { id: 1, name: 'Super Admin', email: 'admin@stellarmartbd.com', phone: '+8801234567890', role: 'admin', status: 'active', orders: 0 },
-  { id: 2, name: 'John Doe', email: 'john@example.com', phone: '+8801723456789', role: 'customer', status: 'active', orders: 5 },
-  { id: 3, name: 'Jane Smith', email: 'jane@example.com', phone: '+8801723456790', role: 'customer', status: 'active', orders: 12 },
-  { id: 4, name: 'Bob Wilson', email: 'bob@example.com', phone: '+8801723456791', role: 'vendor', status: 'active', orders: 0 },
-  { id: 5, name: 'Alice Brown', email: 'alice@example.com', phone: '+8801723456792', role: 'customer', status: 'suspended', orders: 3 },
-  { id: 6, name: 'Moderator User', email: 'mod@stellarmartbd.com', phone: '+8801234567891', role: 'moderator', status: 'active', orders: 0 },
-];
-
-export default function UsersPage() {
-  const [users] = useState(mockUsers);
+const [users, setUsers] = useState([]);
+  const [stats, setStats] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/users');
+        if (res.ok) {
+          const data = await res.json();
+          setUsers(data.users || []);
+          setStats(data.stats || {});
+        }
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
