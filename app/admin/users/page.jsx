@@ -10,34 +10,69 @@ import {
   CheckCircle
 } from 'lucide-react';
 
-const mockUsers = [
-  { id: 1, name: 'Super Admin', email: 'admin@stellarmartbd.com', phone: '+8801234567890', role: 'admin', status: 'active', orders: 0 },
-  { id: 2, name: 'John Doe', email: 'john@example.com', phone: '+8801723456789', role: 'customer', status: 'active', orders: 5 },
-  { id: 3, name: 'Jane Smith', email: 'jane@example.com', phone: '+8801723456790', role: 'customer', status: 'active', orders: 12 },
-  { id: 4, name: 'Bob Wilson', email: 'bob@example.com', phone: '+8801723456791', role: 'vendor', status: 'active', orders: 0 },
-  { id: 5, name: 'Alice Brown', email: 'alice@example.com', phone: '+8801723456792', role: 'customer', status: 'suspended', orders: 3 },
-  { id: 6, name: 'Moderator User', email: 'mod@stellarmartbd.com', phone: '+8801234567891', role: 'moderator', status: 'active', orders: 0 },
-];
+const [users, setUsers] = useState([]);
+const [loading, setLoading] = useState(true);
+const [searchTerm, setSearchTerm] = useState('');
+
+useEffect(() => {
+  fetchUsers();
+}, []);
+
+const fetchUsers = async () => {
+  setLoading(true);
+  try {
+    const res = await fetch('/api/users');
+    const data = await res.json();
+    if (data.success) {
+      setUsers(data.data);
+    }
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
 export default function UsersPage() {
-  const [users] = useState(mockUsers);
-  const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+const filteredUsers = users.filter(user => 
+  user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
-  const getRoleBadge = (role) => {
-    const colors = {
-      admin: 'bg-red-100 text-red-800',
-      moderator: 'bg-purple-100 text-purple-800',
-      editor: 'bg-blue-100 text-blue-800',
-      vendor: 'bg-green-100 text-green-800',
-      customer: 'bg-gray-100 text-gray-800',
-    };
-    return colors[role] || colors.customer;
+const getRoleBadge = (role) => {
+  const colors = {
+    admin: 'bg-red-100 text-red-800',
+    moderator: 'bg-purple-100 text-purple-800',
+    editor: 'bg-blue-100 text-blue-800',
+    vendor: 'bg-green-100 text-green-800',
+    customer: 'bg-gray-100 text-gray-800',
   };
+  return colors[role] || colors.customer;
+};
+
+const handleDelete = async (id) => {
+  if (!confirm('Delete this user?')) return;
+  try {
+    await fetch(`/api/users/${id}`, { method: 'DELETE' });
+    fetchUsers();
+  } catch (error) {
+    alert('Delete failed');
+  }
+};
+
+const toggleStatus = async (id, currentStatus) => {
+  try {
+    await fetch(`/api/users/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: currentStatus === 'active' ? 'suspended' : 'active' })
+    });
+    fetchUsers();
+  } catch (error) {
+    alert('Status update failed');
+  }
+};
 
   return (
     <div>
@@ -96,22 +131,22 @@ export default function UsersPage() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+<tbody className="divide-y divide-gray-200">
             {filteredUsers.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50">
+              <tr key={user._id} className="hover:bg-gray-50">
                 <td className="px-6 py-4">
                   <div>
                     <p className="font-medium">{user.name}</p>
                     <p className="text-sm text-gray-500">{user.email}</p>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-gray-500">{user.phone}</td>
+                <td className="px-6 py-4 text-gray-500">{user.phone || 'N/A'}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 text-xs rounded ${getRoleBadge(user.role)}`}>
                     {user.role}
                   </span>
                 </td>
-                <td className="px-6 py-4">{user.orders}</td>
+                <td className="px-6 py-4">0</td>
                 <td className="px-6 py-4">
                   {user.status === 'active' ? (
                     <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Active</span>
