@@ -43,6 +43,7 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
 
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto p-4">
+          {console.log('🖥️ CartDrawer render - items:', cart?.items, 'length:', cart?.items?.length)}
 {loading ? (
             <div className="flex flex-col items-center justify-center h-48 p-8 text-gray-500">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
@@ -56,8 +57,10 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
             </div>
           ) : (
             <div className="space-y-4">
-              {cart?.items?.map((item) => (
-                <div key={item.product?._id || item.productId} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
+              {cart.items.map((item, index) => {
+                console.log(`📦 Item ${index}:`, item, 'product:', item.product);
+                return (
+                <div key={item._id || index} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
                   {/* Product Image */}
                   <div className="w-20 h-20 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
                     {item.product?.featuredImage ? (

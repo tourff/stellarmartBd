@@ -1,64 +1,25 @@
-# StellarMartBD - Project Progress
+# Email System Implementation (Welcome + Forgot Password OTP)
 
-## Completed ✅
+## Progress
+- [x] 1. Install nodemailer
 
-### Core Setup
-- [x] MongoDB Models (User, Product, Category, Banner, Order, Page, Cart, Setting, Contact)
-- [x] Database Connection (lib/db.js)
-- [x] Environment Configuration (.env.example)
-- [x] Middleware for authentication
-- [x] Package.json with all dependencies
+- [x] 2. Create lib/email.js
 
-### Authentication API
-- [x] User Registration (/api/auth/register)
-- [x] User Login (/api/auth/login)
-- [x] User Logout (/api/auth/logout)
-- [x] JWT Token Management
+- [x] 3. Create lib/emailTemplates.js
 
-### Public Pages
-- [x] Homepage (app/page.jsx)
-- [x] Login Page (app/login/page.jsx)
-- [x] Register Page (app/register/page.jsx)
+- [x] 4. Update app/api/auth/register/route.js (welcome email)
 
-### Admin Panel
-- [x] Dashboard (/admin)
-- [x] Categories Management (/admin/categories)
-- [x] Products Management (/admin/products)
-- [x] Users Management (/admin/users)
-- [x] Sidebar with 20+ menu items
 
-### Public API Routes
-- [x] Products API (/api/products)
-- [x] Categories API (/api/categories)
-- [x] Banners API (/api/banners)
-- [x] Seed API for admin creation (/api/seed)
+- [x] 5. Create app/api/auth/forgot-password/route.js
 
-### Documentation
-- [x] README.md with setup guide
-- [x] Vercel deployment instructions
+- [x] 6. Create app/api/auth/verify-otp/route.js
 
-## Next Steps (For Production)
+- [x] 7. Create app/api/auth/reset-password/route.js
 
-### Additional Admin Modules to Add
-- [ ] Orders Management (/admin/orders)
-- [ ] Banners Management (/admin/banners)
-- [ ] Pages Management (/admin/pages)
-- [ ] Contact Messages (/admin/contacts)
-- [ ] Tags Management (/admin/tags)
-- [ ] Settings Page (/admin/settings)
-- [ ] Reports & Analytics (/admin/reports)
+- [x] 8. Create app/forgot-password/page.jsx
 
-### Additional Features
-- [ ] Product Detail Pages (/product/[slug])
-- [ ] Category Pages (/category/[slug])
-- [ ] Shopping Cart
-- [ ] Checkout Process
-- [ ] User Dashboard
+- [x] 9. Update app/login/page.jsx (add forgot link) - Already exists!
+- [x] 10. Setup .env.local instructions & test - Done!
 
-## Deployment Steps
+**All steps completed!**
 
-1. Create MongoDB Atlas account
-2. Set up environment variables
-3. Deploy to Vercel
-4. Run seed API to create admin user
-5. Login to admin panel

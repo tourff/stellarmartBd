@@ -209,6 +209,7 @@ export default function Navbar() {
 
       {/* Cart Drawer */}
       <CartDrawer 
+        key={`cart-${cartCount}-${Date.now()}`} 
         isOpen={cartOpen} 
         onClose={() => setCartOpen(false)} 
         cart={cart}
@@ -217,6 +218,7 @@ export default function Navbar() {
         removeFromCart={removeFromCart}
         clearCart={clearCart}
       />
+      {console.log('Navbar cart prop:', cart.items?.length, cartCount)}
 
       {/* Spacer for Mobile Bottom Bar */}
       <div className="md:hidden h-20"></div>
