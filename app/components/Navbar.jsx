@@ -1,34 +1,36 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
-import { ShoppingBag, Heart, Search, User, Headphones, Menu, X, LogOut } from 'lucide-react';
-import CartDrawer from './CartDrawer';
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import { ShoppingBag, Heart, Search, User, Headphones, Menu, X, LogOut } from "lucide-react";
+import CartDrawer from "./CartDrawer";
+import { useCategories } from "../context/CategoryContext";
 
 export default function Navbar() {
   const { cartCount, cart, loading, updateQuantity, removeFromCart, clearCart } = useCart();
   const { user, loading: authLoading, logout } = useAuth();
+  const { isSidebarOpen, toggleSidebar } = useCategories();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
 
-  // Prevent body scroll when mobile menu or cart is open
+  // Prevent body scroll when mobile menu, cart, or category sidebar is open
   useEffect(() => {
-    if (mobileMenuOpen || cartOpen) {
-      document.body.style.overflow = 'hidden';
+    if (mobileMenuOpen || cartOpen || isSidebarOpen) {
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
-  }, [mobileMenuOpen, cartOpen]);
+  }, [mobileMenuOpen, cartOpen, isSidebarOpen]);
 
   const handleLogout = async () => {
     await logout();
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   return (
@@ -62,12 +64,12 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
               <Link href="/wishlist" className="p-2 hover:bg-blue-50 rounded-lg relative">
                 <Heart className="w-6 h-6 text-[#083b66]" />
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">0</span>
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">0</span>
               </Link>
               <Link href="/cart" className="p-2 hover:bg-blue-50 rounded-lg relative">
                 <ShoppingBag className="w-6 h-6 text-[#083b66]" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
                     {cartCount}
                   </span>
                 )}
@@ -77,9 +79,9 @@ export default function Navbar() {
               {!authLoading && (
                 user ? (
                   <div className="flex items-center gap-2">
-                    <Link href="/profile" className="flex items-center gap-2 px-4 py-2 bg-[#083b66] text-white font-bold rounded-lg hover:bg-[#062d4d] transition-colors shadow-md">
+                    <Link href="/profile" className="flex items-center gap-2 px-4 py-2 bg-[#083b66] text-white font-bold rounded-lg hover:bg-[#062d4d] transition-colors shadow-md whitespace-nowrap">
                       <User className="w-4 h-4" />
-                      {user.name || 'Profile'}
+                      {user.name || "Profile"}
                     </Link>
                     <button 
                       onClick={handleLogout}
@@ -109,13 +111,20 @@ export default function Navbar() {
             StellarMartBD
           </Link>
 
-          {/* Search Toggle & Menu */}
+          {/* Search Toggle, Categories, & Menu */}
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setSearchOpen(!searchOpen)}
               className="p-2 bg-blue-50 rounded-lg"
             >
               {searchOpen ? <X className="w-5 h-5 text-[#083b66]" /> : <Search className="w-5 h-5 text-[#083b66]" />}
+            </button>
+            <button 
+              onClick={toggleSidebar}
+              className="p-2 bg-blue-50 rounded-lg"
+              aria-label="Categories"
+            >
+              <Menu className="w-5 h-5 text-[#083b66]" />
             </button>
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -225,3 +234,4 @@ export default function Navbar() {
     </>
   );
 }
+
