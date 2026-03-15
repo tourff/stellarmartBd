@@ -1,15 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { ChevronDown, ChevronRight, Menu, X } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';\nimport Link from 'next/link';\nimport { ChevronDown, ChevronRight, Menu, X, Plus, Minus } from 'lucide-react';\nimport { useCategories } from '../context/CategoryContext';
 
-const CategoryMenu = () => {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [openDropdown, setOpenDropdown] = useState(null);
-  const [openSubSubDropdown, setOpenSubSubDropdown] = useState(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const CategoryMenu = () => {\n  const [categories, setCategories] = useState([]);\n  const [loading, setLoading] = useState(true);\n  const [openDropdown, setOpenDropdown] = useState(null);\n  const [openSubSubDropdown, setOpenSubSubDropdown] = useState(null);\n  const { isSidebarOpen, toggleSidebar, toggleCategory, expandedCategories, closeSidebar } = useCategories();\n  const sidebarRef = useRef(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -113,51 +106,7 @@ const CategoryMenu = () => {
         </div>
       </div>
 
-      {/* Mobile Category Button - Visible only on mobile */}
-      <div className="md:hidden bg-[#083b66] sticky top-[52px] z-40">
-        <button 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 text-white font-bold"
-        >
-          <div className="flex items-center gap-2">
-            <Menu className="w-5 h-5" />
-            <span>Categories</span>
-          </div>
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-        </button>
-        
-        {/* Mobile Category Dropdown */}
-        {mobileMenuOpen && (
-          <div className="bg-white border-t border-blue-800 max-h-[60vh] overflow-y-auto">
-            {categories.length > 0 ? (
-              categories.map((cat) => (
-                <div key={cat._id} className="border-b border-gray-100">
-                  <Link 
-                    href={`/category/${cat.slug}`}
-                    className="block px-4 py-3 text-gray-800 font-semibold hover:bg-blue-50"
-                  >
-                    {cat.name}
-                  </Link>
-                  {cat.subcategories?.map((sub) => (
-                    <Link
-                      key={sub._id}
-                      href={`/category/${sub.slug}`}
-                      className="block px-6 py-2.5 text-gray-600 hover:bg-blue-50 text-sm"
-                    >
-                      → {sub.name}
-                    </Link>
-                  ))}
-                </div>
-              ))
-            ) : (
-              <div className="px-4 py-6 text-center text-gray-500">
-                <p>No categories available</p>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </>
+      {/* Mobile Category Sidebar - Only on mobile */}\n      {isSidebarOpen && (\n        <>\n          {/* Backdrop Overlay */}\n          <div \n            className="fixed inset-0 bg-black/50 z-50 lg:hidden"\n            onClick={closeSidebar}\n          />\n          \n          {/* Sidebar Drawer */}\n          <div \n            ref={sidebarRef}\n            className="fixed left-0 top-0 h-full w-80 bg-white shadow-2xl z-60 lg:hidden transform transition-transform duration-300 ease-in-out -translate-x-full data-[open=true]:translate-x-0"\n            data-open={isSidebarOpen}\n          >\n            {/* Header */}\n            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">\n              <h2 className="text-xl font-bold text-gray-800">Categories</h2>\n              <button \n                onClick={closeSidebar}\n                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"\n              >\n                <X className="w-6 h-6 text-gray-600" />\n              </button>\n            </div>\n            \n            {/* Categories List */}\n            <div className="p-4 overflow-y-auto h-[calc(100vh-80px)]">\n              {categories.length === 0 ? (\n                <div className="text-center text-gray-500 py-8">\n                  <p>No categories available</p>\n                </div>\n              ) : (\n                <nav className="space-y-1">\n                  {categories.map((category) => (\n                    <CategoryItem \n                      key={category._id}\n                      category={category}\n                      level={0}\n                    />\n                  ))}\n                </nav>\n              )}\n            </div>\n          </div>\n        </>\n      )}\n    </>
   );
 };
 

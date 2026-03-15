@@ -4,27 +4,9 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { ShoppingBag, Heart, Search, User, Headphones, Menu, X, LogOut } from 'lucide-react';
-import CartDrawer from './CartDrawer';
+import { ShoppingBag, Heart, Search, User, Headphones, Menu, X, LogOut } from 'lucide-react';\nimport CartDrawer from './CartDrawer';\nimport { useCategories } from '../context/CategoryContext';\n\nexport default function Navbar() {\n  const { cartCount, cart, loading, updateQuantity, removeFromCart, clearCart } = useCart();\n  const { user, loading: authLoading, logout } = useAuth();\n  const { isSidebarOpen, toggleSidebar } = useCategories();\n  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);\n  const [searchOpen, setSearchOpen] = useState(false);\n  const [cartOpen, setCartOpen] = useState(false);
 
-export default function Navbar() {
-  const { cartCount, cart, loading, updateQuantity, removeFromCart, clearCart } = useCart();
-  const { user, loading: authLoading, logout } = useAuth();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
-
-  // Prevent body scroll when mobile menu or cart is open
-  useEffect(() => {
-    if (mobileMenuOpen || cartOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [mobileMenuOpen, cartOpen]);
+  // Prevent body scroll when mobile menu, cart, or category sidebar is open\n  useEffect(() => {\n    if (mobileMenuOpen || cartOpen || isSidebarOpen) {\n      document.body.style.overflow = 'hidden';\n    } else {\n      document.body.style.overflow = 'unset';\n    }\n    return () => {\n      document.body.style.overflow = 'unset';\n    };\n  }, [mobileMenuOpen, cartOpen, isSidebarOpen]);
 
   const handleLogout = async () => {
     await logout();
@@ -109,21 +91,7 @@ export default function Navbar() {
             StellarMartBD
           </Link>
 
-          {/* Search Toggle & Menu */}
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2 bg-blue-50 rounded-lg"
-            >
-              {searchOpen ? <X className="w-5 h-5 text-[#083b66]" /> : <Search className="w-5 h-5 text-[#083b66]" />}
-            </button>
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 bg-blue-50 rounded-lg"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5 text-[#083b66]" /> : <Menu className="w-5 h-5 text-[#083b66]" />}
-            </button>
-          </div>
+          {/* Search Toggle, Categories, & Menu */}\n          <div className="flex items-center gap-2">\n            <button \n              onClick={() => setSearchOpen(!searchOpen)}\n              className="p-2 bg-blue-50 rounded-lg"\n            >\n              {searchOpen ? <X className="w-5 h-5 text-[#083b66]" /> : <Search className="w-5 h-5 text-[#083b66]" />}\n            </button>\n            <button \n              onClick={toggleSidebar}\n              className="p-2 bg-blue-50 rounded-lg"\n              aria-label="Categories"\n            >\n              <Menu className="w-5 h-5 text-[#083b66]" />\n            </button>\n            <button \n              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}\n              className="p-2 bg-blue-50 rounded-lg"\n            >\n              {mobileMenuOpen ? <X className="w-5 h-5 text-[#083b66]" /> : <Menu className="w-5 h-5 text-[#083b66]" />}\n            </button>\n          </div>
         </div>
 
         {/* Search Bar (Expandable) */}
