@@ -1,8 +1,17 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';\nimport Link from 'next/link';\nimport { ChevronDown, ChevronRight, Menu, X, Plus, Minus } from 'lucide-react';\nimport { useCategories } from '../context/CategoryContext';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Link from 'next/link';
+import { ChevronDown, ChevronRight, Menu, X, Plus, Minus } from 'lucide-react';
+import { useCategories } from '../context/CategoryContext';
 
-const CategoryMenu = () => {\n  const [categories, setCategories] = useState([]);\n  const [loading, setLoading] = useState(true);\n  const [openDropdown, setOpenDropdown] = useState(null);\n  const [openSubSubDropdown, setOpenSubSubDropdown] = useState(null);\n  const { isSidebarOpen, toggleSidebar, toggleCategory, expandedCategories, closeSidebar } = useCategories();\n  const sidebarRef = useRef(null);
+const CategoryMenu = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [openSubSubDropdown, setOpenSubSubDropdown] = useState(null);
+  const { isSidebarOpen, toggleSidebar, toggleCategory, expandedCategories, closeSidebar } = useCategories();
+  const sidebarRef = useRef(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -98,7 +107,7 @@ const CategoryMenu = () => {\n  const [categories, setCategories] = useState([])
                 )}
               </li>
             ))}
-            
+
             <li className="hover:text-yellow-400 cursor-pointer transition-all uppercase ml-auto">
               <Link href="/flash-sale" className="text-red-400">Flash Sale 🔥</Link>
             </li>
@@ -106,7 +115,54 @@ const CategoryMenu = () => {\n  const [categories, setCategories] = useState([])
         </div>
       </div>
 
-      {/* Mobile Category Sidebar - Only on mobile */}\n      {isSidebarOpen && (\n        <>\n          {/* Backdrop Overlay */}\n          <div \n            className="fixed inset-0 bg-black/50 z-50 lg:hidden"\n            onClick={closeSidebar}\n          />\n          \n          {/* Sidebar Drawer */}\n          <div \n            ref={sidebarRef}\n            className="fixed left-0 top-0 h-full w-80 bg-white shadow-2xl z-60 lg:hidden transform transition-transform duration-300 ease-in-out -translate-x-full data-[open=true]:translate-x-0"\n            data-open={isSidebarOpen}\n          >\n            {/* Header */}\n            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">\n              <h2 className="text-xl font-bold text-gray-800">Categories</h2>\n              <button \n                onClick={closeSidebar}\n                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"\n              >\n                <X className="w-6 h-6 text-gray-600" />\n              </button>\n            </div>\n            \n            {/* Categories List */}\n            <div className="p-4 overflow-y-auto h-[calc(100vh-80px)]">\n              {categories.length === 0 ? (\n                <div className="text-center text-gray-500 py-8">\n                  <p>No categories available</p>\n                </div>\n              ) : (\n                <nav className="space-y-1">\n                  {categories.map((category) => (\n                    <CategoryItem \n                      key={category._id}\n                      category={category}\n                      level={0}\n                    />\n                  ))}\n                </nav>\n              )}\n            </div>\n          </div>\n        </>\n      )}\n    </>
+      {/* Mobile Category Sidebar - Only on mobile */}
+      {isSidebarOpen && (
+        <>
+          {/* Backdrop Overlay */}
+          <div 
+            className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+            onClick={closeSidebar}
+          />
+          
+          {/* Sidebar Drawer */}
+          <div 
+            ref={sidebarRef}
+            className="fixed left-0 top-0 h-full w-80 bg-white shadow-2xl z-60 lg:hidden transform transition-transform duration-300 ease-in-out -translate-x-full data-[open=true]:translate-x-0"
+            data-open={isSidebarOpen}
+          >
+            {/* Header */}
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-800">Categories</h2>
+              <button 
+                onClick={closeSidebar}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="w-6 h-6 text-gray-600" />
+              </button>
+            </div>
+            
+            {/* Categories List */}
+            <div className="p-4 overflow-y-auto h-[calc(100vh-80px)]">
+              {categories.length === 0 ? (
+                <div className="text-center text-gray-500 py-8">
+                  <p>No categories available</p>
+                </div>
+              ) : (
+                <nav className="space-y-1">
+                  {categories.map((category) => (
+                    <CategoryItem 
+                      key={category._id}
+                      category={category}
+                      level={0}
+                    />
+                  ))}
+                </nav>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 };
 
