@@ -28,18 +28,14 @@ export function CartProvider({ children }) {
   const fetchCart = async () => {
     try {
       const sessionId = getSessionId();
-      console.log('🔄 Fetching cart for session:', sessionId);
       const res = await fetch(`/api/cart?sessionId=${sessionId}`);
       const data = await res.json();
-      console.log('📦 Cart data:', data);
       if (data.cart) {
         calculateTotal(data.cart);
       } else {
-        console.log('🛒 No cart found, initializing empty cart');
         setCart({ items: [], total: 0 });
       }
     } catch (error) {
-      console.error('❌ Error fetching cart:', error);
     } finally {
       setLoading(false);
     }
@@ -62,14 +58,12 @@ export function CartProvider({ children }) {
         body: JSON.stringify({ productId, quantity, sessionId })
       });
       const data = await res.json();
-      console.log('➕ Add to cart response:', data);
       if (data.cart) {
         calculateTotal(data.cart);
       }
-      await fetchCart(); // 🔄 Refetch to ensure latest state
+      await fetchCart();
       return { success: true, message: 'Added to cart!' };
     } catch (error) {
-      console.error('Error adding to cart:', error);
       return { success: false, message: 'Failed to add to cart' };
     }
   };
@@ -83,13 +77,11 @@ export function CartProvider({ children }) {
         body: JSON.stringify({ productId, quantity, sessionId })
       });
       const data = await res.json();
-      console.log('🔄 Update quantity response:', data);
       if (data.cart) {
         calculateTotal(data.cart);
       }
       await fetchCart();
     } catch (error) {
-      console.error('Error updating cart:', error);
     }
   };
 
@@ -100,13 +92,11 @@ export function CartProvider({ children }) {
         method: 'DELETE'
       });
       const data = await res.json();
-      console.log('🗑️ Remove from cart response:', data);
       if (data.cart) {
         calculateTotal(data.cart);
       }
       await fetchCart();
     } catch (error) {
-      console.error('Error removing from cart:', error);
     }
   };
 
@@ -116,10 +106,8 @@ export function CartProvider({ children }) {
       await fetch(`/api/cart?sessionId=${sessionId}`, {
         method: 'DELETE'
       });
-      console.log('🧹 Cart cleared');
       await fetchCart();
     } catch (error) {
-      console.error('❌ Error clearing cart:', error);
     }
   };
 

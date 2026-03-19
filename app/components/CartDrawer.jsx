@@ -9,20 +9,16 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
 
   const handleCheckout = () => {
     onClose();
-    // Navigate to checkout
   };
 
   return (
     <>
-      {/* Overlay */}
       <div 
         className="fixed inset-0 bg-black/50 z-50 transition-opacity"
         onClick={onClose}
       />
       
-      {/* Drawer */}
       <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col">
-        {/* Header */}
         <div className="flex items-center justify-between p-4 border-b bg-blue-600 text-white">
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-6 h-6" />
@@ -41,10 +37,8 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
           </button>
         </div>
 
-        {/* Cart Items */}
         <div className="flex-1 overflow-y-auto p-4">
-          {console.log('🖥️ CartDrawer render - items:', cart?.items, 'length:', cart?.items?.length)}
-{loading ? (
+          {loading ? (
             <div className="flex flex-col items-center justify-center h-48 p-8 text-gray-500">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
               <p className="text-lg font-semibold">Loading your cart...</p>
@@ -57,9 +51,8 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
             </div>
           ) : (
             <div className="space-y-4">
-{cart.items.map((item, index) => (
+              {cart.items.map((item, index) => (
                 <div key={item.product?._id || item.productId || index} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
-                  {/* Product Image */}
                   <div className="w-20 h-20 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
                     {item.product?.featuredImage ? (
                       <Image 
@@ -78,7 +71,6 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
                     </div>
                   </div>
                   
-                  {/* Product Details */}
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-gray-800 truncate">
                       {item.product?.name || 'Product'}
@@ -112,7 +104,6 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
                     </div>
                   </div>
                   
-                  {/* Price */}
                   <div className="text-right">
                     <p className="font-bold text-blue-600">
                       ৳{((item.product?.sellingPrice || 0) * item.quantity).toLocaleString()}
@@ -129,10 +120,8 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
           )}
         </div>
 
-        {/* Footer */}
         {cart?.items?.length > 0 && (
           <div className="border-t p-4 bg-gray-50 space-y-4">
-            {/* Clear Cart */}
             <button 
               onClick={clearCart}
               className="text-sm text-red-500 hover:text-red-600 font-medium"
@@ -140,7 +129,6 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
               Clear Cart
             </button>
             
-            {/* Total */}
             <div className="flex items-center justify-between">
               <span className="text-lg font-semibold">Total:</span>
               <span className="text-2xl font-bold text-blue-600">
@@ -148,7 +136,6 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
               </span>
             </div>
             
-            {/* Checkout Button */}
             <Link 
               href="/cart"
               onClick={onClose}
@@ -160,7 +147,6 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
           </div>
         )}
       </div>
-
     </>
   );
 }

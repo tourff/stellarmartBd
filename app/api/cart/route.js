@@ -17,12 +17,12 @@ export async function GET(request) {
     let cart = await Cart.findOne({ sessionId }).populate('items.product');
     
     if (!cart) {
-      cart = await Cart.create({ sessionId, items: [] }).then(c => c.populate('items.product'));
+      cart = await Cart.create({ sessionId, items: [] });
+      cart = await cart.populate('items.product');
     }
     
     return NextResponse.json({ cart });
   } catch (error) {
-    console.error('Get cart error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch cart' },
       { status: 500 }
@@ -37,7 +37,6 @@ export async function POST(request) {
     const data = await request.json();
     const { productId, quantity = 1, sessionId } = data;
     
-    // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return NextResponse.json(
         { error: 'Invalid product ID' },
@@ -53,7 +52,6 @@ export async function POST(request) {
     
     const objectId = new mongoose.Types.ObjectId(productId);
     
-    // Check if product already in cart
     const existingItem = cart.items.find(
       item => item.product.toString() === productId
     );
@@ -69,7 +67,6 @@ export async function POST(request) {
     
     return NextResponse.json({ cart, message: 'Product added to cart' });
   } catch (error) {
-    console.error('Add to cart error:', error);
     return NextResponse.json(
       { error: 'Failed to add to cart' },
       { status: 500 }
@@ -84,7 +81,6 @@ export async function PUT(request) {
     const data = await request.json();
     const { productId, quantity, sessionId } = data;
     
-    // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return NextResponse.json(
         { error: 'Invalid product ID' },
@@ -122,7 +118,6 @@ export async function PUT(request) {
     
     return NextResponse.json({ cart });
   } catch (error) {
-    console.error('Update cart error:', error);
     return NextResponse.json(
       { error: 'Failed to update cart' },
       { status: 500 }
@@ -157,7 +152,6 @@ export async function DELETE(request) {
     
     return NextResponse.json({ cart, message: 'Item removed from cart' });
   } catch (error) {
-    console.error('Remove from cart error:', error);
     return NextResponse.json(
       { error: 'Failed to remove from cart' },
       { status: 500 }
