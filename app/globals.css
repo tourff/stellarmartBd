@@ -1,6 +1,35 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;\n\n/* Category Sidebar Styles */\n.fixed.left-0.top-0.h-full.w-80 {\n  width: 80%;\n  max-width: 320px;\n}\n\n/* Smooth sidebar animation */\n.transform.transition-transform {\n  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n/* Backdrop */\n.fixed.inset-0.bg-black\\/50 {\n  backdrop-filter: blur(2px);\n}\n\n/* Accordion hover */\n.category-item:hover {\n  @apply bg-blue-50;\n}\n\n/* Full height on mobile */\n.h-full {\n  height: 100dvh;\n}\n
+@tailwind utilities;
+
+/* Custom classes for Category Sidebar */
+.sidebar {
+  @apply fixed left-0 top-0 h-full w-80 bg-white shadow-2xl;
+  width: 80%;
+  max-width: 320px;
+}
+
+.sidebar-enter {
+  transform: translateX(-100%);
+}
+
+.sidebar-enter-active {
+  transform: translateX(0);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.backdrop {
+  @apply fixed inset-0 bg-black/50;
+  backdrop-filter: blur(2px);
+}
+
+.category-hover:hover {
+  @apply bg-blue-50;
+}
+
+.vh100 {
+  height: 100vh;
+}
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -18,7 +47,6 @@ body {
   touch-action: pan-y;
 }
 
-/* Hide scrollbar but allow scrolling */
 body::-webkit-scrollbar {
   display: none;
 }
@@ -28,25 +56,21 @@ body {
   scrollbar-width: none;
 }
 
-/* Allow dropdowns to overflow */
 .overflow-visible {
   overflow: visible !important;
 }
 
-/* Prevent horizontal scroll on mobile */
 .scroll-container {
   max-width: 100vw;
   overflow-x: hidden;
   box-sizing: border-box;
 }
 
-/* Disable pull-to-refresh and overscroll on mobile */
 html, body {
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
 }
 
-/* Force light mode - remove dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 0, 0, 0;
@@ -55,7 +79,6 @@ html, body {
   }
 }
 
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -71,7 +94,6 @@ html, body {
   animation: fadeIn 0.3s ease-out;
 }
 
-/* Toast styles */
 .toast-container {
   position: fixed;
   top: 20px;
@@ -79,7 +101,6 @@ html, body {
   z-index: 9999;
 }
 
-/* Loading spinner */
 .spinner {
   border: 3px solid #f3f3f3;
   border-top: 3px solid #0ea5e9;
@@ -94,7 +115,6 @@ html, body {
   100% { transform: rotate(360deg); }
 }
 
-/* Ensure text is always dark on light backgrounds */
 .text-gray-500 {
   color: #4b5563 !important;
 }
@@ -111,7 +131,6 @@ html, body {
   color: #d1d5db !important;
 }
 
-/* Ensure form inputs have proper text color */
 input, textarea, select {
   color: #111827 !important;
 }
@@ -119,4 +138,3 @@ input, textarea, select {
 input::placeholder, textarea::placeholder {
   color: #9ca3af !important;
 }
-
