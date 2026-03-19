@@ -7,6 +7,7 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
   const [cart, setCart] = useState({ items: [], total: 0 });
   const [loading, setLoading] = useState(true);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   // Generate or get session ID
   const getSessionId = () => {
@@ -22,7 +23,7 @@ export function CartProvider({ children }) {
   // Fetch cart on mount
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [refetchTrigger]);
 
   const fetchCart = async () => {
     try {
@@ -31,9 +32,10 @@ export function CartProvider({ children }) {
       const data = await res.json();
       if (data.cart) {
         calculateTotal(data.cart);
+      } else {
+        setCart({ items: [], total: 0 });
       }
     } catch (error) {
-      console.error('Error fetching cart:', error);
     } finally {
       setLoading(false);
     }
@@ -41,7 +43,7 @@ export function CartProvider({ children }) {
 
   const calculateTotal = (cartData) => {
     const total = cartData.items.reduce((sum, item) => {
-      const price = item.product?.price || 0;
+      const price = item.product?.sellingPrice || 0;
       return sum + (price * item.quantity);
     }, 0);
     setCart({ items: cartData.items, total });
@@ -59,9 +61,9 @@ export function CartProvider({ children }) {
       if (data.cart) {
         calculateTotal(data.cart);
       }
+      await fetchCart();
       return { success: true, message: 'Added to cart!' };
     } catch (error) {
-      console.error('Error adding to cart:', error);
       return { success: false, message: 'Failed to add to cart' };
     }
   };
@@ -78,8 +80,8 @@ export function CartProvider({ children }) {
       if (data.cart) {
         calculateTotal(data.cart);
       }
+      await fetchCart();
     } catch (error) {
-      console.error('Error updating cart:', error);
     }
   };
 
@@ -93,8 +95,8 @@ export function CartProvider({ children }) {
       if (data.cart) {
         calculateTotal(data.cart);
       }
+      await fetchCart();
     } catch (error) {
-      console.error('Error removing from cart:', error);
     }
   };
 
@@ -104,9 +106,8 @@ export function CartProvider({ children }) {
       await fetch(`/api/cart?sessionId=${sessionId}`, {
         method: 'DELETE'
       });
-      setCart({ items: [], total: 0 });
+      await fetchCart();
     } catch (error) {
-      console.error('Error clearing cart:', error);
     }
   };
 

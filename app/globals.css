@@ -1,6 +1,6 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities;\n\n/* Category Sidebar Styles */\n.fixed.left-0.top-0.h-full.w-80 {\n  width: 80%;\n  max-width: 320px;\n}\n\n/* Smooth sidebar animation */\n.transform.transition-transform {\n  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n/* Backdrop */\n.fixed.inset-0.bg-black\\/50 {\n  backdrop-filter: blur(2px);\n}\n\n/* Accordion hover */\n.category-item:hover {\n  @apply bg-blue-50;\n}\n\n/* Full height on mobile */\n.h-full {\n  height: 100dvh;\n}\n
 
 :root {
   --foreground-rgb: 0, 0, 0;
