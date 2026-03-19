@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import { User } from '@/models';
+import { User } from '@/models/index.js';
 import bcrypt from 'bcryptjs';
 
 export async function GET() {

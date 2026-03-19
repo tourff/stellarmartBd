@@ -1,40 +1,47 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import { User } from '@/models';
+import User from '@/models/users';
 
 export async function POST(request) {
   try {
     await dbConnect();
-    
     const { name, email, password, phone } = await request.json();
+
+    // ১. ডাটাবেসে এই ইমেইল অলরেডি আছে কি না চেক
+    const normalizedEmail = email.toLowerCase().trim();
+    const existingUser = await User.findOne({ email: normalizedEmail });
     
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
-        { error: 'Email already registered' },
+        { error: 'এই ইমেইলটি ইতিমধ্যে ব্যবহার করা হয়েছে।' },
         { status: 400 }
       );
     }
-    
-    // Create new user
-    const user = await User.create({
+
+    // ২. নতুন ইউজার তৈরি (মডেলের pre-save হুক পাসওয়ার্ড হ্যাশ করে দিবে)
+    const newUser = await User.create({
       name,
-      email,
+      email: normalizedEmail,
       password,
       phone,
-      role: 'customer',
-      status: 'active',
     });
-    
+
     return NextResponse.json(
-      { message: 'Registration successful', user: { id: user._id, name: user.name, email: user.email, role: user.role } },
+      { message: 'Registration successful', userId: newUser._id },
       { status: 201 }
     );
+
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error("Registration Error:", error);
+    
+    // মঙ্গুজ ভ্যালিডেশন এরর হ্যান্ডেলিং
+    if (error.name === 'ValidationError') {
+      const firstError = Object.values(error.errors)[0].message;
+      return NextResponse.json({ error: firstError }, { status: 400 });
+    }
+
     return NextResponse.json(
-      { error: 'Registration failed' },
+      { error: 'সার্ভারে সমস্যা হয়েছে। ডাটাবেস চেক করুন।' },
       { status: 500 }
     );
   }
