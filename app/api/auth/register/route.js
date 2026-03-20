@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
+import sendEmail from '@/lib/email';
+import { welcomeEmailHTML } from '@/lib/emailTemplates';
 import { User } from '@/models';
 
 export async function POST(request) {
@@ -27,8 +29,16 @@ export async function POST(request) {
       status: 'active',
     });
 
+    // Send welcome email
+    try {
+      const { welcomeEmailHTML } from '@/lib/emailTemplates';
+      await sendEmail(email, 'Welcome to StellarMartBD!', welcomeEmailHTML(name));
+    } catch (emailError) {
+      console.error('Welcome email failed:', emailError);
+    }
+
     return NextResponse.json(
-      { message: 'Registration successful' },
+      { message: 'Registration successful! Welcome email sent.' },
       { status: 201 }
     );
 
