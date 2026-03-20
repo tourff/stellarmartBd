@@ -5,8 +5,8 @@ export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+
+
 import { useAuth } from '../context/AuthContext';
 import { 
   User, Package, Heart, Settings as SettingsIcon, LogOut, Loader2, 
@@ -152,17 +152,7 @@ export default function SettingsPage() {
     }));
   };
 
-  if (authLoading || loading) {
-    return (
-      <>
-        <Navbar />
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-        </div>
-        <Footer />
-      </>
-    );
-  }
+  if (authLoading || loading) {\n    return (\n      <div className="min-h-screen bg-gray-50 flex items-center justify-center">\n        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />\n      </div>\n    );\n  }
 
   const SidebarContent = () => (
     <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
@@ -199,10 +189,7 @@ export default function SettingsPage() {
     </div>
   );
 
-  return (
-    <>
-      <Navbar />
-      <div className="min-h-screen bg-gray-50">
+  return (\n    <div className="min-h-screen bg-gray-50">
         <div className="bg-gradient-to-r from-[#083b66] to-[#062d4d] text-white py-8 sm:py-12">
           <div className="max-w-7xl mx-auto px-4">
             <h1 className="text-2xl sm:text-3xl font-bold mb-1">Settings</h1>
