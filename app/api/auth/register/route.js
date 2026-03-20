@@ -25,8 +25,6 @@ export async function POST(request) {
       email: email.toLowerCase(),
       password,
       phone,
-      role: 'customer',
-      status: 'active',
     });
 
     // Send welcome email

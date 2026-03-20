@@ -1,5 +1,6 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import { NextResponse } from 'next/server';
+import dbConnect from '@/lib/db';
+import User from '@/models/users'; // আপনার মডেলের পাথ অনুযায়ী চেক করে নিন
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -82,4 +83,23 @@ userSchema.index({ status: 1, role: 1 });
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
-export default User;
+    // যদি মঙ্গোডিবি থেকে Duplicate Key এরর আসে (যেমন ইমেইল বা ফোন ডুপ্লিকেট)
+    if (error.code === 11000) {
+      return NextResponse.json(
+        { error: 'ইমেইল বা ফোন নম্বরটি ইতিমধ্যে ব্যবহার করা হয়েছে' },
+        { status: 400 }
+      );
+    }
+
+    // মঙ্গুজ ভ্যালিডেশন এরর হলে
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      return NextResponse.json({ error: messages[0] }, { status: 400 });
+    }
+
+    return NextResponse.json(
+      { error: 'সার্ভারে সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।' },
+      { status: 500 }
+    );
+  }
+}
