@@ -1,47 +1,63 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import User from '@/models/users';
+import sendEmail from '@/lib/email';
+import { welcomeEmailHTML } from '@/lib/emailTemplates';
+import { User } from '@/models';
 
 export async function POST(request) {
   try {
     await dbConnect();
-    const { name, email, password, phone } = await request.json();
+    const body = await request.json();
+    const { name, email, password, phone } = body;
 
-    // ১. ডাটাবেসে এই ইমেইল অলরেডি আছে কি না চেক
-    const normalizedEmail = email.toLowerCase().trim();
-    const existingUser = await User.findOne({ email: normalizedEmail });
-    
+    // ১. চেক করা ইউজার অলরেডি আছে কি না
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return NextResponse.json(
-        { error: 'এই ইমেইলটি ইতিমধ্যে ব্যবহার করা হয়েছে।' },
+        { error: 'এই ইমেইল দিয়ে আগেই অ্যাকাউন্ট খোলা হয়েছে' },
         { status: 400 }
       );
     }
 
-    // ২. নতুন ইউজার তৈরি (মডেলের pre-save হুক পাসওয়ার্ড হ্যাশ করে দিবে)
-    const newUser = await User.create({
+    // ২. নতুন ইউজার তৈরি 
+    const user = await User.create({
       name,
-      email: normalizedEmail,
+      email: email.toLowerCase(),
       password,
       phone,
     });
 
+    // Send welcome email
+    try {
+
+      await sendEmail(email, 'Welcome to StellarMartBD!', welcomeEmailHTML(name));
+    } catch (emailError) {
+      console.error('Welcome email failed:', emailError);
+    }
+
     return NextResponse.json(
-      { message: 'Registration successful', userId: newUser._id },
+      { message: 'Registration successful! Welcome email sent.' },
       { status: 201 }
     );
 
   } catch (error) {
-    console.error("Registration Error:", error);
-    
-    // মঙ্গুজ ভ্যালিডেশন এরর হ্যান্ডেলিং
-    if (error.name === 'ValidationError') {
-      const firstError = Object.values(error.errors)[0].message;
-      return NextResponse.json({ error: firstError }, { status: 400 });
+    console.error('Registration error:', error);
+
+    // ডুপ্লিকেট ইনডেক্স এরর (যেমন: ফোন নম্বর আগে থেকে থাকলে)
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return NextResponse.json({ error: `${field} ইতিমধ্যে ব্যবহার করা হয়েছে` }, { status: 400 });
     }
 
+    // মঙ্গুজ ভ্যালিডেশন এরর (যেমন: কোনো ফিল্ড মিসিং বা ফরমেট ভুল)
+    if (error.name === 'ValidationError') {
+      const message = Object.values(error.errors).map(val => val.message);
+      return NextResponse.json({ error: message[0] }, { status: 400 });
+    }
+
+    // অন্য যেকোনো এরর সরাসরি মেসেজ হিসেবে দেখাবে
     return NextResponse.json(
-      { error: 'সার্ভারে সমস্যা হয়েছে। ডাটাবেস চেক করুন।' },
+      { error: error.message || 'সার্ভারে সমস্যা হয়েছে' },
       { status: 500 }
     );
   }
