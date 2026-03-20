@@ -29,7 +29,7 @@ export async function POST(request) {
 
     // Send welcome email
     try {
-      const { welcomeEmailHTML } from '@/lib/emailTemplates';
+
       await sendEmail(email, 'Welcome to StellarMartBD!', welcomeEmailHTML(name));
     } catch (emailError) {
       console.error('Welcome email failed:', emailError);
