@@ -35,7 +35,7 @@ export function middleware(request) {
   // For admin routes, require admin authentication
   if (path.startsWith('/admin')) {
     if (!adminToken) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+      return NextResponse.redirect(new URL('/admin-login', request.url));
     }
     
     try {
@@ -47,7 +47,7 @@ export function middleware(request) {
         return NextResponse.redirect(new URL('/', request.url));
       }
     } catch (error) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+      return NextResponse.redirect(new URL('/admin-login', request.url));
     }
   }
   
