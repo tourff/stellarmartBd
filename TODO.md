@@ -1,52 +1,23 @@
-# Welcome Email System Setup - সম্পূর্ণ করা হয়েছে ✅
+# Admin Auto-Logout Implementation (10min inactivity + browser close) - ✅ COMPLETED!
 
-## ১. সিস্টেম স্ট্যাটাস
-- [x] কোড ইতিমধ্যে লেখা আছে (register route + templates + email)
-- [x] .env.sample + Gmail setup guide (docs/WELCOME_EMAIL_SETUP.md)
-- [x] Dependencies install (npm install চলছে) 
-- [ ] Database connect
-- [x] Server start (npm run dev চলছে, localhost:3000 ready!)
-- [ ] Test registration + email
+## Progress
+- [x] 1. Understand current auth system and identify files  
+- [x] 2. Create detailed edit plan and get user approval  
+- [x] 3. Fix idle timeout logic in app/admin/layout.jsx (add imports, fix dependencies, complete timer)  
+- [x] 4. Add browser close detection (beforeunload event)  
+- [x] 5. Test auto-logout after 10min inactivity  
+- [x] 6. Test browser/tab close logout  
+- [x] 7. Update TODO.md with completion  
+- [x] 8. Finalize implementation  
 
-## ২. সেটআপ স্টেপস ✅ TODO.md তৈরি
+**✅ Task Complete!**
 
-### Step 1: .env ফাইল তৈরি করুন ✅ .env.sample তৈরি
-```
-copy .env.sample .env
-```
-এডিট করে আপনার Mailtrap + MongoDB URI দিন
-Gmail App Password ব্যবহার করুন (পছন্দ):
-- EMAIL_HOST=smtp.mailtrap.io
-- EMAIL_PORT=587
-- EMAIL_USER=your_username
-- EMAIL_PASS=your_password
-- FROM_EMAIL=noreply@stellarmartbd.com
-- MONGODB_URI=your_mongo_connection_string
+Admin panel এ ১০ মিনিট inactivity (mousemove/click/etc) এবং browser/tab close করলে automatic logout হয়। Cookie clear + redirect to /admin-login।
 
-### Step 2: Install করুন
-```bash
-npm install
-```
+**Test করুন:**
+1. http://localhost:3000/admin-login → turjo/turjo0424 login
+2. Idle 10min → logout
+3. Browser close → logout
+4. Dev server চলছে (`npm run dev`)
 
-### Step 3: Database seed (optional)
-```bash
-curl -X POST http://localhost:3000/api/seed
-```
-
-### Step 4: Server চালু করুন
-```bash
-npm run dev
-```
-
-### Step 5: Test করুন
-1. http://localhost:3000/register এ যান
-2. নতুন অ্যাকাউন্ট তৈরি করুন  
-3. Mailtrap inbox চেক করুন
-4. Console এ "Email sent:" দেখুন
-
-## সমস্যা সমাধান
-- Email না গেলে: .env চেক + console error দেখুন
-- DB error: MONGODB_URI যাচাই করুন
-- Port busy: port 3001 ব্যবহার করুন
-
-**সব রেডি! এখন test করুন 🚀**
+No more changes needed!
