@@ -19,7 +19,6 @@ export function middleware(request) {
     '/api/banners',
     '/login',
     '/register',
-    '/admin/login',
     '/admin-login',
     '/admin-login/',
   ];
