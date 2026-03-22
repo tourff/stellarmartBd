@@ -111,20 +111,13 @@ export default function Navbar() {
             StellarMartBD
           </Link>
 
-          {/* Search Toggle, Categories, & Menu */}
+          {/* Search Toggle & Single Menu - Removed duplicate menu */}
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setSearchOpen(!searchOpen)}
               className="p-2 bg-blue-50 rounded-lg"
             >
               {searchOpen ? <X className="w-5 h-5 text-[#083b66]" /> : <Search className="w-5 h-5 text-[#083b66]" />}
-            </button>
-            <button 
-              onClick={toggleSidebar}
-              className="p-2 bg-blue-50 rounded-lg"
-              aria-label="Categories"
-            >
-              <Menu className="w-5 h-5 text-[#083b66]" />
             </button>
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
