@@ -120,10 +120,11 @@ export default function Navbar() {
               {searchOpen ? <X className="w-5 h-5 text-[#083b66]" /> : <Search className="w-5 h-5 text-[#083b66]" />}
             </button>
             <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={toggleSidebar}
               className="p-2 bg-blue-50 rounded-lg"
+              aria-label="Categories"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5 text-[#083b66]" /> : <Menu className="w-5 h-5 text-[#083b66]" />}
+              <Menu className="w-5 h-5 text-[#083b66]" />
             </button>
           </div>
         </div>
