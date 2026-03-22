@@ -229,8 +229,8 @@ export default function Navbar() {
       />
       {console.log('Navbar cart prop:', cart.items?.length, cartCount)}
 
-      {/* Spacer for Mobile Bottom Bar - Reduced to eliminate gap */}
-      <div className="md:hidden h-16"></div>
+      {/* Spacer for Mobile Bottom Bar - Fine-tuned */}
+      <div className="md:hidden h-14"></div>
     </>
   );
 }
