@@ -13,10 +13,10 @@ const CategoryItem = ({ category, level = 0 }) => {
   return (
     <>
       <div 
-        className={`menu-item border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors ${isExpanded ? 'bg-blue-50 border-blue-200' : ''}`}
+        className={`menu-item ${isExpanded ? 'open' : ''}`}
         onClick={() => hasSubcategories && toggleCategory(category._id)}
       >
-        <div className="menu-label block p-4 text-gray-800 font-medium flex items-center justify-between cursor-pointer pr-4 select-none transition-all group"
+        <div className="menu-label flex items-center justify-between p-4 pr-4 cursor-pointer select-none transition-all group"
           style={{ paddingLeft }}
         >
           <Link 
