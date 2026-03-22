@@ -66,14 +66,15 @@ export default function Navbar() {
                 <Heart className="w-6 h-6 text-[#083b66]" />
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">0</span>
               </Link>
-              <Link href="/cart" className="p-2 hover:bg-blue-50 rounded-lg relative">
+              <button onClick={() => setCartOpen(true)} className="p-2 hover:bg-blue-50 rounded-lg relative">
                 <ShoppingBag className="w-6 h-6 text-[#083b66]" />
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
                     {cartCount}
                   </span>
                 )}
-              </Link>
+              </button>
+              <Link href="/cart" className="ml-2 text-sm text-blue-600 hover:underline hidden md:inline">View Cart</Link>
               
               {/* Auth Buttons - Show based on login state */}
               {!authLoading && (
@@ -196,7 +197,7 @@ export default function Navbar() {
         removeFromCart={removeFromCart}
         clearCart={clearCart}
       />
-      {console.log('Navbar cart prop:', cart.items?.length, cartCount)}
+
 
       {/* Spacer for Mobile Bottom Bar - Fine-tuned */}
       <div className="md:hidden h-14"></div>
