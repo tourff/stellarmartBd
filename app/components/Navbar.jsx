@@ -147,32 +147,7 @@ export default function Navbar() {
         )}
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="px-4 pb-4 bg-white border-t">
-            <div className="py-3 space-y-2">
-              <Link href="/" className="block py-2 font-semibold text-gray-800">Home</Link>
-              <Link href="/shop" className="block py-2 font-semibold text-gray-800">Shop</Link>
-              <Link href="/categories" className="block py-2 font-semibold text-gray-800">Categories</Link>
-              <Link href="/products?featured=true" className="block py-2 font-semibold text-gray-800">Featured</Link>
-              <Link href="/new-arrivals" className="block py-2 font-semibold text-gray-800">New Arrivals</Link>
-              <Link href="/flash-sale" className="block py-2 font-bold text-red-600">Flash Sale 🔥</Link>
-              <Link href="/wishlist" className="block py-2 font-semibold text-gray-800">Wishlist</Link>
-              <Link href="/cart" className="block py-2 font-semibold text-gray-800">Cart</Link>
-              
-              {/* Mobile Auth */}
-              {!authLoading && (
-                user ? (
-                  <>
-                    <Link href="/profile" className="block py-2 font-semibold text-gray-800">My Profile</Link>
-                    <button onClick={handleLogout} className="block py-2 font-semibold text-red-600 w-full text-left">Logout</button>
-                  </>
-                ) : (
-                  <Link href="/login" className="block py-2 font-semibold text-gray-800">Sign In</Link>
-                )
-              )}
-            </div>
-          </div>
-        )}
+{/* No mobile dropdown menu - hamburger now opens categories only */}
       </div>
 
       {/* Mobile Bottom Bar - Profile, Support, Cart (Sticky Bottom) */}
