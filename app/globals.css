@@ -131,6 +131,79 @@ html, body {
   color: #d1d5db !important;
 }
 
+/* Remove navbar gap fixes */
+body, html {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+main {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+main > *:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Ensure content sections don't add extra top space */
+section {
+  margin-top: 0;
+}
+
+/* Mobile specific gap removal */
+@media (max-width: 767px) {
+  main > *:first-child {
+    margin-top: -20px !important;
+    padding-top: 0 !important;
+  }
+  section:first-of-type {
+    padding-top: 0 !important;
+  }
+}
+
+/* Mobile Category Accordion Styling (Skyland-style) */
+.menu-item {
+  @apply border-b border-gray-100 last:border-b-0;
+}
+
+.menu-label {
+  @apply block cursor-pointer select-none transition-all flex items-center justify-between;
+}
+
+.sub-menu {
+  @apply overflow-hidden transition-all duration-300 ease-in-out;
+  max-height: 0;
+}
+
+.menu-item.open .sub-menu {
+  max-height: 1000px; /* Sufficient for nested content */
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-toggle {
+  @apply flex-shrink-0 p-1 rounded transition-all;
+}
+
+.menu-item.open .icon-toggle {
+  @apply bg-blue-100;
+}
+
+@media (max-width: 768px) {
+  .sub-menu {
+    padding-left: 1rem;
+  }
+  
+  .menu-label:hover {
+    @apply bg-blue-50;
+  }
+  
+  .menu-item.open {
+    @apply bg-blue-50 border-blue-200;
+  }
+}
+
 input, textarea, select {
   color: #111827 !important;
 }

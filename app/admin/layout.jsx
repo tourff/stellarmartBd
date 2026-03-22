@@ -1,21 +1,35 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
 import AdminNavbar from './AdminNavbar';
 
-export const dynamic = 'force-dynamic';
-
-export const metadata = {
-  title: 'Admin Panel - StellarMartBD',
-  description: 'E-commerce Admin Panel',
-};
-
 export default function AdminLayout({ children }) {
+  const router = useRouter();
   const [idleTimeout, setIdleTimeout] = useState(null);
-  const IDLE_TIME = 10 * 60 * 1000; // 10 minutes
+  const IDLE_TIME = 10 * 60 * 1000; // 10 minutes = 600000 ms
+
+  const logoutUser = useCallback(async () => {
+    try {
+      await fetch('/api/auth/admin-logout', { 
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.error('Auto-logout failed:', error);
+    } finally {
+      // Clear timeout and redirect
+      if (idleTimeout) {
+        clearTimeout(idleTimeout);
+        setIdleTimeout(null);
+      }
+      router.push('/admin-login');
+    }
+  }, [router]);
 
   const resetIdleTimer = useCallback(() => {
+    // Always clear existing timeout first
     if (idleTimeout) {
       clearTimeout(idleTimeout);
     }
@@ -25,36 +39,50 @@ export default function AdminLayout({ children }) {
     }, IDLE_TIME);
     
     setIdleTimeout(timeout);
-  }, [idleTimeout]);
-
-  const logoutUser = useCallback(async () => {
-    try {
-      await fetch('/api/auth/admin-logout', { 
-        method: 'POST',
-        credentials: 'include' // Include cookies
-      });
-      window.location.href = '/admin-login';
-    } catch (error) {
-      console.error('Auto-logout failed:', error);
-      // Fallback: redirect anyway
-      window.location.href = '/admin-login';
-    }
-  }, []);
+  }, [logoutUser]);
 
   useEffect(() => {
+    const events = ['mousemove', 'keydown', 'scroll', 'click', 'touchstart', 'keypress'];
+    
+    const handleActivity = () => {
+      resetIdleTimer();
+    };
+
+    // Start initial timer
     resetIdleTimer();
 
-    const events = ['mousemove', 'keydown', 'scroll', 'click'];
-    
+    // Activity listeners
     events.forEach(event => {
-      document.addEventListener(event, resetIdleTimer, true);
+      document.addEventListener(event, handleActivity, true);
     });
+
+    // Tab visibility
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        resetIdleTimer();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Browser close
+    const handleBeforeUnload = async () => {
+      try {
+        await fetch('/api/auth/admin-logout', { 
+          method: 'POST',
+          credentials: 'include'
+        });
+      } catch (e) {
+        // Ignore - browser may not wait for fetch
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       events.forEach(event => {
-        document.removeEventListener(event, resetIdleTimer, true);
+        document.removeEventListener(event, handleActivity, true);
       });
-      if (idleTimeout) clearTimeout(idleTimeout);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [resetIdleTimer]);
 

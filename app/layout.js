@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <CartProvider>
             <UserLayoutWrapper>
-              <main className="min-h-screen">
+              <main className="min-h-screen -mt-44 md:-mt-[5rem] lg:-mt-0 pt-0 -mb-4">
                 {children}
               </main>
             </UserLayoutWrapper>

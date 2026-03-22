@@ -111,7 +111,7 @@ export default function Navbar() {
             StellarMartBD
           </Link>
 
-          {/* Search Toggle, Categories, & Menu */}
+          {/* Search Toggle & Single Menu - Removed duplicate menu */}
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setSearchOpen(!searchOpen)}
@@ -125,12 +125,6 @@ export default function Navbar() {
               aria-label="Categories"
             >
               <Menu className="w-5 h-5 text-[#083b66]" />
-            </button>
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 bg-blue-50 rounded-lg"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5 text-[#083b66]" /> : <Menu className="w-5 h-5 text-[#083b66]" />}
             </button>
           </div>
         </div>
@@ -154,32 +148,7 @@ export default function Navbar() {
         )}
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="px-4 pb-4 bg-white border-t">
-            <div className="py-3 space-y-2">
-              <Link href="/" className="block py-2 font-semibold text-gray-800">Home</Link>
-              <Link href="/shop" className="block py-2 font-semibold text-gray-800">Shop</Link>
-              <Link href="/categories" className="block py-2 font-semibold text-gray-800">Categories</Link>
-              <Link href="/products?featured=true" className="block py-2 font-semibold text-gray-800">Featured</Link>
-              <Link href="/new-arrivals" className="block py-2 font-semibold text-gray-800">New Arrivals</Link>
-              <Link href="/flash-sale" className="block py-2 font-bold text-red-600">Flash Sale 🔥</Link>
-              <Link href="/wishlist" className="block py-2 font-semibold text-gray-800">Wishlist</Link>
-              <Link href="/cart" className="block py-2 font-semibold text-gray-800">Cart</Link>
-              
-              {/* Mobile Auth */}
-              {!authLoading && (
-                user ? (
-                  <>
-                    <Link href="/profile" className="block py-2 font-semibold text-gray-800">My Profile</Link>
-                    <button onClick={handleLogout} className="block py-2 font-semibold text-red-600 w-full text-left">Logout</button>
-                  </>
-                ) : (
-                  <Link href="/login" className="block py-2 font-semibold text-gray-800">Sign In</Link>
-                )
-              )}
-            </div>
-          </div>
-        )}
+{/* No mobile dropdown menu - hamburger now opens categories only */}
       </div>
 
       {/* Mobile Bottom Bar - Profile, Support, Cart (Sticky Bottom) */}
@@ -229,8 +198,8 @@ export default function Navbar() {
       />
       {console.log('Navbar cart prop:', cart.items?.length, cartCount)}
 
-      {/* Spacer for Mobile Bottom Bar */}
-      <div className="md:hidden h-20"></div>
+      {/* Spacer for Mobile Bottom Bar - Fine-tuned */}
+      <div className="md:hidden h-14"></div>
     </>
   );
 }
