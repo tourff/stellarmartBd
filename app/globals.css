@@ -152,6 +152,17 @@ section {
   margin-top: 0;
 }
 
+/* Mobile specific gap removal */
+@media (max-width: 767px) {
+  main > *:first-child {
+    margin-top: -20px !important;
+    padding-top: 0 !important;
+  }
+  section:first-of-type {
+    padding-top: 0 !important;
+  }
+}
+
 input, textarea, select {
   color: #111827 !important;
 }
