@@ -8,32 +8,32 @@ const CategoryItem = ({ category, level = 0 }) => {
   const { toggleCategory, expandedCategories } = useCategories();
   const isExpanded = expandedCategories[category._id];
   const hasSubcategories = category.subcategories && category.subcategories.length > 0;
-  const paddingLeft = `${level * 20 + 16}px`;
+  const paddingLeft = `${level * 28 + 12}px`;
 
   return (
     <>
       <div 
-        className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50"
+        className={`menu-item border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors ${isExpanded ? 'bg-blue-50 border-blue-200' : ''}`}
         onClick={() => hasSubcategories && toggleCategory(category._id)}
       >
-        <Link 
-          href={`/category/${category.slug}`}
-          className={`block p-4 text-gray-800 font-medium flex items-center justify-between cursor-pointer pr-4 select-none ${
-            level > 0 ? 'text-sm pl-0' : 'font-semibold'
-          }`}
+        <div className="menu-label block p-4 text-gray-800 font-medium flex items-center justify-between cursor-pointer pr-4 select-none transition-all group"
+          style={{ paddingLeft }}
         >
-          <span style={{ paddingLeft }} className="truncate flex-1">
+          <Link 
+            href={`/category/${category.slug}`}
+            className={`truncate flex-1 group-hover:text-blue-700 ${level === 0 ? 'font-semibold text-lg' : 'text-base'} ${isExpanded ? 'font-bold text-blue-700' : ''}`}
+          >
             {category.name}
-          </span>
+          </Link>
           {hasSubcategories && (
-            <span className="flex-shrink-0 ml-2">
-              {isExpanded ? <Minus size={20} className="text-blue-600" /> : <Plus size={20} className="text-blue-600" />}
+            <span className="icon-toggle flex-shrink-0 ml-3 p-1 rounded-full group-hover:bg-blue-100 transition-all">
+              {isExpanded ? <Minus size={18} className={`text-blue-600 ${isExpanded ? 'rotate-0' : ''}`} /> : <Plus size={18} className={`text-blue-600 hover:rotate-45 transition-transform`} />}
             </span>
           )}
-        </Link>
+        </div>
       </div>
       {hasSubcategories && isExpanded && (
-        <div>
+        <div className="sub-menu overflow-hidden">
           {category.subcategories.map((subCategory) => (
             <CategoryItem 
               key={subCategory._id}

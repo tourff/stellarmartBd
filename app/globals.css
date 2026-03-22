@@ -163,6 +163,47 @@ section {
   }
 }
 
+/* Mobile Category Accordion Styling (Skyland-style) */
+.menu-item {
+  @apply border-b border-gray-100 last:border-b-0;
+}
+
+.menu-label {
+  @apply block cursor-pointer select-none transition-all flex items-center justify-between;
+}
+
+.sub-menu {
+  @apply overflow-hidden transition-all duration-300 ease-in-out;
+  max-height: 0;
+}
+
+.menu-item.open .sub-menu {
+  max-height: 1000px; /* Sufficient for nested content */
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-toggle {
+  @apply flex-shrink-0 p-1 rounded transition-all;
+}
+
+.menu-item.open .icon-toggle {
+  @apply bg-blue-100;
+}
+
+@media (max-width: 768px) {
+  .sub-menu {
+    padding-left: 1rem;
+  }
+  
+  .menu-label:hover {
+    @apply bg-blue-50;
+  }
+  
+  .menu-item.open {
+    @apply bg-blue-50 border-blue-200;
+  }
+}
+
 input, textarea, select {
   color: #111827 !important;
 }
