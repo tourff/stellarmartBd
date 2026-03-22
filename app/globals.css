@@ -131,6 +131,27 @@ html, body {
   color: #d1d5db !important;
 }
 
+/* Remove navbar gap fixes */
+body, html {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+main {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+main > *:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Ensure content sections don't add extra top space */
+section {
+  margin-top: 0;
+}
+
 input, textarea, select {
   color: #111827 !important;
 }
