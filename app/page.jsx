@@ -95,7 +95,7 @@ export default function HomePage() {
               <Loader2 className="w-6 h-6 md:w-8 md:h-8 text-blue-600 animate-spin" />
             </div>
           ) : displayFeatured.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
               {displayFeatured.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
@@ -149,7 +149,7 @@ export default function HomePage() {
               <Loader2 className="w-6 h-6 md:w-8 md:h-8 text-blue-600 animate-spin" />
             </div>
           ) : displayNewArrivals.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
               {displayNewArrivals.map((item) => (
                 <ProductCard key={item._id} product={item} />
               ))}
