@@ -214,7 +214,7 @@ input::placeholder, textarea::placeholder {
 
 /* Product Card Button Styles - Beautiful PHP KenaKata Style */
 .product-card .btn-action {
-  @apply relative font-black uppercase tracking-wide text-sm py-3 px-5 rounded-xl shadow-lg transition-all duration-300 border overflow-hidden group/btn flex items-center justify-center gap-2;
+  @apply relative font-black uppercase tracking-wide text-sm py-3 px-5 rounded-xl shadow-lg transition-all duration-300 border overflow-hidden group flex items-center justify-center gap-2;
 }
 
 .product-card .btn-cart-minimal {
