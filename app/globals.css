@@ -211,3 +211,40 @@ input, textarea, select {
 input::placeholder, textarea::placeholder {
   color: #9ca3af !important;
 }
+
+/* Product Card Button Styles - Beautiful PHP KenaKata Style */
+.product-card .btn-action {
+  @apply relative font-black uppercase tracking-wide text-sm py-3 px-5 rounded-xl shadow-lg transition-all duration-300 border overflow-hidden group flex items-center justify-center gap-2;
+}
+
+.product-card .btn-cart-minimal {
+  @apply bg-gradient-to-b from-gray-100 to-gray-200 text-slate-800 border-2 border-gray-300 hover:from-gray-200 hover:to-gray-300 hover:shadow-xl hover:-translate-y-1 hover:border-gray-400 active:scale-[0.97] before:absolute before:inset-0 before:bg-gradient-to-r before:from-emerald-400/20 before:to-blue-400/20 before:scale-0 before:transition-all before:duration-300 hover:before:scale-110;
+}
+
+.product-card .btn-cart-minimal:hover .btn-icon {
+  @apply text-emerald-600;
+}
+
+.product-card .btn-order-now {
+  @apply bg-gradient-to-r from-rose-500 via-pink-500 to-orange-500 text-white border-2 border-transparent hover:from-rose-600 hover:via-pink-600 hover:to-orange-600 hover:shadow-2xl hover:-translate-y-1 hover:shadow-rose-500/25 active:scale-[0.97] before:absolute before:inset-0 before:bg-white/20 before:scale-0 before:transition-all before:duration-300 hover:before:scale-125 shadow-rose-500/50;
+}
+
+.product-card .btn-order-now:hover .btn-icon {
+  @apply text-white drop-shadow-lg;
+}
+
+@media (max-width: 640px) {
+  .product-card .btn-action {
+    @apply py-2.5 px-4 text-xs rounded-lg;
+  }
+}
+
+.product-card .btn-action:focus {
+  @apply ring-4 ring-offset-2 ring-rose-500/30 outline-none;
+}
+
+.btn-icon {
+  @apply transition-all duration-300;
+}
+
+
