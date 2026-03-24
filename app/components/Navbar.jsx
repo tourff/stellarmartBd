@@ -167,14 +167,13 @@ export default function Navbar() {
           </Link>
 
           {/* Cart - Opens Drawer */}
-          <button onClick={() => setCartOpen(true)} className="flex flex-col items-center gap-1 relative">
+            <button onClick={() => setCartOpen(true)} className="flex flex-col items-center gap-1 relative">
             <ShoppingBag className="w-6 h-6 text-[#083b66]" />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                 {cartCount}
               </span>
             )}
-            <span className="text-xs font-medium text-[#083b66]">Cart</span>
           </button>
 
           {/* Wishlist */}
