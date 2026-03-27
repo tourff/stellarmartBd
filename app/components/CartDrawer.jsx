@@ -14,11 +14,11 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
   return (
     <>
       <div 
-        className="fixed inset-0 bg-black/50 z-50 transition-opacity"
+        className={`fixed inset-0 bg-black/50 z-50 transition-all duration-300 ease-in-out ${isOpen ? 'opacity-50' : 'opacity-0 pointer-events-none'}`}
         onClick={onClose}
       />
       
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col">
+      <div className={`fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform transition-all duration-500 ease-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="flex items-center justify-between p-4 border-b bg-blue-600 text-white">
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-6 h-6" />
@@ -37,7 +37,7 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className={`flex-1 overflow-y-auto p-4 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
           {loading ? (
             <div className="flex flex-col items-center justify-center h-48 p-8 text-gray-500">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
@@ -50,7 +50,7 @@ export default function CartDrawer({ isOpen, onClose, cart, loading, updateQuant
               <p className="text-sm">Add some products to get started</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-4 [&>*]:animate-in [&>*]:fade-in-2 [&>*]:slide-in-from-right-2 [&>*]:duration-500">
               {cart.items.map((item, index) => (
                 <div key={item.product?._id || item.productId || index} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
                   <div className="w-20 h-20 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
