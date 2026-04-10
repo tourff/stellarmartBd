@@ -1,0 +1,42 @@
+import mongoose from 'mongoose';
+
+const contactSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Name is required'],
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    lowercase: true,
+    trim: true,
+  },
+  phone: {
+    type: String,
+    trim: true,
+  },
+  subject: {
+    type: String,
+    trim: true,
+  },
+  message: {
+    type: String,
+    required: [true, 'Message is required'],
+  },
+  status: {
+    type: String,
+    enum: ['unread', 'read', 'replied', 'archived'],
+    default: 'unread',
+  },
+}, {
+  timestamps: true,
+});
+
+// Indexes
+contactSchema.index({ status: 1 });
+contactSchema.index({ createdAt: -1 });
+
+const Contact = mongoose.models.Contact || mongoose.model('Contact', contactSchema);
+
+export default Contact;

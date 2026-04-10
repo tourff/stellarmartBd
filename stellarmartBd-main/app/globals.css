@@ -1,0 +1,250 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom classes for Category Sidebar */
+.sidebar {
+  @apply fixed left-0 top-0 h-full w-80 bg-white shadow-2xl;
+  width: 80%;
+  max-width: 320px;
+}
+
+.sidebar-enter {
+  transform: translateX(-100%);
+}
+
+.sidebar-enter-active {
+  transform: translateX(0);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.backdrop {
+  @apply fixed inset-0 bg-black/50;
+  backdrop-filter: blur(2px);
+}
+
+.category-hover:hover {
+  @apply bg-blue-50;
+}
+
+.vh100 {
+  height: 100vh;
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100vw;
+  touch-action: pan-y;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.overflow-visible {
+  overflow: visible !important;
+}
+
+.scroll-container {
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+html, body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 255, 255, 255;
+    --background-end-rgb: 255, 255, 255;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #0ea5e9;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.text-gray-500 {
+  color: #4b5563 !important;
+}
+
+.text-gray-400 {
+  color: #6b7280 !important;
+}
+
+.text-gray-300 {
+  color: #9ca3af !important;
+}
+
+.text-gray-200 {
+  color: #d1d5db !important;
+}
+
+/* Remove navbar gap fixes */
+body, html {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+main {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+main > *:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Ensure content sections don't add extra top space */
+section {
+  margin-top: 0;
+}
+
+/* Mobile specific gap removal */
+@media (max-width: 767px) {
+  main > *:first-child {
+    margin-top: -20px !important;
+    padding-top: 0 !important;
+  }
+  section:first-of-type {
+    padding-top: 0 !important;
+  }
+}
+
+/* Mobile Category Accordion Styling (Skyland-style) */
+.menu-item {
+  @apply border-b border-gray-100 last:border-b-0;
+}
+
+.menu-label {
+  @apply block cursor-pointer select-none transition-all flex items-center justify-between;
+}
+
+.sub-menu {
+  @apply overflow-hidden transition-all duration-300 ease-in-out;
+  max-height: 0;
+}
+
+.menu-item.open .sub-menu {
+  max-height: 1000px; /* Sufficient for nested content */
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-toggle {
+  @apply flex-shrink-0 p-1 rounded transition-all;
+}
+
+.menu-item.open .icon-toggle {
+  @apply bg-blue-100;
+}
+
+@media (max-width: 768px) {
+  .sub-menu {
+    padding-left: 1rem;
+  }
+  
+  .menu-label:hover {
+    @apply bg-blue-50;
+  }
+  
+  .menu-item.open {
+    @apply bg-blue-50 border-blue-200;
+  }
+}
+
+input, textarea, select {
+  color: #111827 !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Product Card Button Styles - Beautiful PHP KenaKata Style */
+.product-card .btn-action {
+  @apply relative font-black uppercase tracking-wide text-sm py-3 px-5 rounded-xl shadow-lg transition-all duration-300 border overflow-hidden flex items-center justify-center gap-2;
+}
+
+.product-card .btn-cart-minimal {
+  @apply bg-gradient-to-b from-gray-100 to-gray-200 text-slate-800 border-2 border-gray-300 hover:from-gray-200 hover:to-gray-300 hover:shadow-xl hover:-translate-y-1 hover:border-gray-400 active:scale-[0.97] before:absolute before:inset-0 before:bg-gradient-to-r before:from-emerald-400/20 before:to-blue-400/20 before:scale-0 before:transition-all before:duration-300 hover:before:scale-110;
+}
+
+.product-card .btn-cart-minimal:hover .btn-icon {
+  @apply text-emerald-600;
+}
+
+.product-card .btn-order-now {
+  @apply bg-gradient-to-r from-rose-500 via-pink-500 to-orange-500 text-white border-2 border-transparent hover:from-rose-600 hover:via-pink-600 hover:to-orange-600 hover:shadow-2xl hover:-translate-y-1 hover:shadow-rose-500/25 active:scale-[0.97] before:absolute before:inset-0 before:bg-white/20 before:scale-0 before:transition-all before:duration-300 hover:before:scale-125 shadow-rose-500/50;
+}
+
+.product-card .btn-order-now:hover .btn-icon {
+  @apply text-white drop-shadow-lg;
+}
+
+@media (max-width: 640px) {
+  .product-card .btn-action {
+    @apply py-2.5 px-4 text-xs rounded-lg;
+  }
+}
+
+.product-card .btn-action:focus {
+  @apply ring-4 ring-offset-2 ring-rose-500/30 outline-none;
+}
+
+.btn-icon {
+  @apply transition-all duration-300;
+}
+
+
