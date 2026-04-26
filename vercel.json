@@ -2,6 +2,5 @@
   "buildCommand": "cd stellarmartBd-main && npm run build",
   "devCommand": "cd stellarmartBd-main && npm run dev",
   "installCommand": "cd stellarmartBd-main && npm install",
-  "framework": "nextjs",
-  "root": "stellarmartBd-main"
+  "framework": "nextjs"
 }
