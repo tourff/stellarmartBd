@@ -44,7 +44,7 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (response.ok) {
-        alert('Registration successful! Please login.');
+        alert('Registration successful! Please check your email to verify your account before logging in.');
         window.location.href = '/login';
       } else {
         setError(data.error || 'Registration failed');

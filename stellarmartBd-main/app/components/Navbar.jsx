@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { useWishlist } from "../context/WishlistContext";
 import { ShoppingBag, Heart, Search, User, Headphones, Menu, X, LogOut } from "lucide-react";
 import CartDrawer from "./CartDrawer";
 import { useCategories } from "../context/CategoryContext";
@@ -11,6 +12,7 @@ import { useCategories } from "../context/CategoryContext";
 export default function Navbar() {
   const { cartCount, cart, loading, updateQuantity, removeFromCart, clearCart } = useCart();
   const { user, loading: authLoading, logout } = useAuth();
+  const { wishlistCount } = useWishlist();
   const { isSidebarOpen, toggleSidebar } = useCategories();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -64,7 +66,11 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
               <Link href="/wishlist" className="p-2 hover:bg-blue-50 rounded-lg relative">
                 <Heart className="w-6 h-6 text-[#083b66]" />
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">0</span>
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                    {wishlistCount}
+                  </span>
+                )}
               </Link>
               <button onClick={() => setCartOpen(true)} className="p-2 hover:bg-blue-50 rounded-lg relative">
                 <ShoppingBag className="w-6 h-6 text-[#083b66]" />

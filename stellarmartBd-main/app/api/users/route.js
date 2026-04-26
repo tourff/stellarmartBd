@@ -35,3 +35,41 @@ export async function GET() {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export async function DELETE(request) {
+  try {
+    await dbConnect();
+
+    // Admin auth check (cookie-based)
+    const cookieStore = cookies();
+    const adminToken = cookieStore.get('adminToken')?.value;
+    if (!adminToken) {
+      return NextResponse.json({ error: 'Unauthorized - no admin token' }, { status: 401 });
+    }
+
+    // TODO: Verify admin token against DB/session
+
+    const { userId } = await request.json();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    }
+
+    // Prevent admin from deleting themselves
+    // TODO: Add admin token verification to get current admin user
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+
+    return NextResponse.json({ message: 'User deleted successfully' });
+
+  } catch (error) {
+    console.error('Users DELETE error:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+  }
+}

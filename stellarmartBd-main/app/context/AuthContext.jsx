@@ -1,6 +1,8 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
+import { auth, googleProvider } from '@/lib/firebase';
 
 const AuthContext = createContext();
 
@@ -45,8 +47,42 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const loginWithGoogle = async () => {
+    try {
+      setLoading(true);
+      const result = await signInWithPopup(auth, googleProvider);
+      const googleUser = result.user;
+
+      // Send Google user data to our backend
+      const res = await fetch('/api/auth/google-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          uid: googleUser.uid,
+          email: googleUser.email,
+          name: googleUser.displayName,
+          photoURL: googleUser.photoURL
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        login(data.user);
+        return { success: true };
+      } else {
+        return { success: false, error: data.error };
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      return { success: false, error: 'Google login failed' };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, checkAuth }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, checkAuth, loginWithGoogle }}>
       {children}
     </AuthContext.Provider>
   );
@@ -60,7 +96,8 @@ export const useAuth = () => {
       loading: true,
       login: () => {},
       logout: async () => {},
-      checkAuth: async () => {}
+      checkAuth: async () => {},
+      loginWithGoogle: async () => ({ success: false, error: 'Context not available' })
     };
   }
   return context;

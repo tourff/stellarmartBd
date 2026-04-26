@@ -4,12 +4,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, memo } from 'react';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { Star, Heart, ShoppingBag, Check, ImageIcon } from 'lucide-react';
 
 function ProductCard({ product }) {
   const [isAdding, setIsAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist, loading: wishlistLoading } = useWishlist();
 
   // Get price values from different possible field names
   const sellingPrice = product.sellingPrice || product.price || 0;
@@ -43,6 +45,23 @@ function ProductCard({ product }) {
       setTimeout(() => setError(''), 3000);
     }
   };
+
+  const handleWishlistToggle = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const productId = product._id || product.id;
+    const inWishlist = isInWishlist(productId);
+
+    const result = inWishlist 
+      ? await removeFromWishlist(productId)
+      : await addToWishlist(productId);
+
+    if (!result.success) {
+      // Could show a toast notification here
+      console.error(result.message);
+    }
+  };
   
   return (
     <Link
@@ -55,9 +74,15 @@ function ProductCard({ product }) {
             -{discount}%
           </div>
         )}
-        <div className="absolute top-2 right-2 p-2 bg-white rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity z-10">
-          <Heart className="w-5 h-5 text-gray-700" />
-        </div>
+        <button 
+          onClick={handleWishlistToggle}
+          disabled={wishlistLoading}
+          className="absolute top-2 right-2 p-2 bg-white rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-red-50"
+        >
+          <Heart 
+            className={`w-5 h-5 ${isInWishlist(product._id || product.id) ? 'text-red-500 fill-red-500' : 'text-gray-700'}`} 
+          />
+        </button>
         
         {/* Product Image - Optimized with Next.js Image */}
         {productImage ? (

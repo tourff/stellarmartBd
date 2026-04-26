@@ -46,7 +46,7 @@ export default function AdminDashboard() {
       const bannersData = bannersRes.ok ? await bannersRes.json() : { banners: [] };
 
       setStats({
-        users: usersData.users?.length || 0,
+        users: usersData.stats?.active || 0,
         products: productsData.products?.length || 0,
         categories: categoriesData.categories?.length || 0,
         orders: ordersData.orders?.length || 0,

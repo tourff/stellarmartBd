@@ -8,7 +8,35 @@ import AdminNavbar from './AdminNavbar';
 export default function AdminLayout({ children }) {
   const router = useRouter();
   const [idleTimeout, setIdleTimeout] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
   const IDLE_TIME = 10 * 60 * 1000; // 10 minutes = 600000 ms
+
+  // Check authentication on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/auth/admin-me', {
+          credentials: 'include'
+        });
+        
+        if (res.ok) {
+          setIsAuthenticated(true);
+        } else {
+          router.push('/admin-login');
+          return;
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/admin-login');
+        return;
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
 
   const logoutUser = useCallback(async () => {
     try {
@@ -24,9 +52,10 @@ export default function AdminLayout({ children }) {
         clearTimeout(idleTimeout);
         setIdleTimeout(null);
       }
+      setIsAuthenticated(false);
       router.push('/admin-login');
     }
-  }, [router]);
+  }, [router, idleTimeout]);
 
   const resetIdleTimer = useCallback(() => {
     // Always clear existing timeout first
@@ -39,9 +68,11 @@ export default function AdminLayout({ children }) {
     }, IDLE_TIME);
     
     setIdleTimeout(timeout);
-  }, [logoutUser]);
+  }, [logoutUser, idleTimeout]);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     const events = ['mousemove', 'keydown', 'scroll', 'click', 'touchstart', 'keypress'];
     
     const handleActivity = () => {
@@ -84,7 +115,24 @@ export default function AdminLayout({ children }) {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [resetIdleTimer]);
+  }, [resetIdleTimer, isAuthenticated]);
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#083b66] mx-auto"></div>
+          <p className="mt-4 text-gray-600">Verifying admin access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If not authenticated, this component won't render (redirect happens in useEffect)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex">

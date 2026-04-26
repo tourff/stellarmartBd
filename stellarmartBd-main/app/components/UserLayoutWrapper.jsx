@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import CategoryMenu from "./CategoryMenu";
 import Footer from "./Footer";
 import { CategoryProvider } from "../context/CategoryContext";
+import { WishlistProvider } from "../context/WishlistContext";
 
 export default function UserLayoutWrapper({ children }) {
   const pathname = usePathname();
@@ -18,10 +19,12 @@ export default function UserLayoutWrapper({ children }) {
         children
       ) : (
         <CategoryProvider>
-          <Navbar />
-          <CategoryMenu />
-          {children}
-          <Footer />
+          <WishlistProvider>
+            <Navbar />
+            <CategoryMenu />
+            {children}
+            <Footer />
+          </WishlistProvider>
         </CategoryProvider>
       )}
     </>

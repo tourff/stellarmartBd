@@ -29,6 +29,31 @@ export default function UsersPage() {
     }
   };
 
+  const handleDeleteUser = async (userId, userName) => {
+    if (!confirm(`Are you sure you want to delete user "${userName}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/users', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      });
+
+      if (res.ok) {
+        alert('User deleted successfully');
+        fetchUsers(); // Refresh the list
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete user');
+      }
+    } catch (error) {
+      console.error('Delete user error:', error);
+      alert('Failed to delete user');
+    }
+  };
+
   const filteredUsers = users.filter(user =>
     user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -107,7 +132,10 @@ export default function UsersPage() {
                     <button className="p-2 text-orange-600 hover:bg-orange-50 rounded-lg">
                       <Ban className="w-4 h-4" />
                     </button>
-                    <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg">
+                    <button 
+                      onClick={() => handleDeleteUser(user._id || user.id, user.name)}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                    >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>

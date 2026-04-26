@@ -91,3 +91,39 @@ export const resetSuccessHTML = (name) => `
 </body>
 </html>
 `;
+
+export const emailVerificationHTML = (name, verificationLink) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Verify Your Email - StellarMartBD</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 12px 12px 0 0; }
+    .content { background: #f8f9ff; padding: 40px 20px; border-radius: 0 0 12px 12px; }
+    .button { background: #4f46e5; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 600; }
+    .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+    h1 { margin: 0 0 10px 0; font-size: 28px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Verify Your Email</h1>
+    <p>Welcome to StellarMartBD, ${name}!</p>
+  </div>
+  <div class="content">
+    <h2>Almost there!</h2>
+    <p>Thanks for signing up. Please verify your email address to complete your registration.</p>
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="${verificationLink}" class="button">Verify Email Address</a>
+    </div>
+    <p>This link will expire in 24 hours. If you didn't create an account, you can safely ignore this email.</p>
+  </div>
+  <div class="footer">
+    <p>StellarMartBD - Bangladesh's Premium Online Marketplace</p>
+    <p><a href="http://localhost:3000/contact">Contact Us</a> | <a href="http://localhost:3000/privacy">Privacy</a></p>
+  </div>
+</body>
+</html>
+`;

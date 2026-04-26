@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { ChevronDown, ChevronRight, Menu, X, Plus, Minus } from 'lucide-react';
 import { useCategories } from '../context/CategoryContext';
+import CategoryItem from './CategoryItem';
 
 const CategoryMenu = () => {
   const [categories, setCategories] = useState([]);

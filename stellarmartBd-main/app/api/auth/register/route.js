@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import sendEmail from '@/lib/email';
-import { welcomeEmailHTML } from '@/lib/emailTemplates';
 import { User } from '@/models';
+import { sendEmailVerification } from '@/lib/authUtils';
 
 export async function POST(request) {
   try {
@@ -19,24 +18,25 @@ export async function POST(request) {
       );
     }
 
-    // ২. নতুন ইউজার তৈরি 
+    // ২. নতুন ইউজার তৈরি (inactive until email verified)
     const user = await User.create({
       name,
       email: email.toLowerCase(),
       password,
       phone,
+      status: 'inactive', // Will be activated after email verification
     });
 
-    // Send welcome email
+    // Send email verification
     try {
-
-      await sendEmail(email, 'Welcome to StellarMartBD!', welcomeEmailHTML(name));
+      await sendEmailVerification(email, name);
     } catch (emailError) {
-      console.error('Welcome email failed:', emailError);
+      console.error('Email verification failed:', emailError);
+      // Don't fail registration if email fails, but log it
     }
 
     return NextResponse.json(
-      { message: 'Registration successful! Welcome email sent.' },
+      { message: 'Registration successful! Please check your email to verify your account.' },
       { status: 201 }
     );
 

@@ -6,61 +6,50 @@ import jwt from 'jsonwebtoken';
 export async function POST(request) {
   try {
     await dbConnect();
-    
-    const { email, password } = await request.json();
-    
-    // Find user with password
-    const user = await User.findOne({ email }).select('+password');
-    
+    const { uid, email, name, photoURL } = await request.json();
+
+    if (!email) {
+      return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+    }
+
+    // Check if user exists
+    let user = await User.findOne({ email: email.toLowerCase() });
+
     if (!user) {
-      return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
-      );
+      // Create new user from Google data
+      user = await User.create({
+        name: name || 'Google User',
+        email: email.toLowerCase(),
+        avatar: photoURL || '',
+        emailVerified: true, // Google accounts are pre-verified
+        status: 'active',
+        role: 'customer'
+      });
+    } else {
+      // Update user info if needed
+      if (photoURL && !user.avatar) {
+        user.avatar = photoURL;
+      }
+      if (!user.emailVerified) {
+        user.emailVerified = true;
+      }
+      await user.save();
     }
-    
-    // Check password
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
-      );
-    }
-    
-    // Check email verification
-    if (!user.emailVerified) {
-      return NextResponse.json(
-        { error: 'Please verify your email before logging in. Check your inbox for the verification link.' },
-        { status: 401 }
-      );
-    }
-    
-    // Check status
-    if (user.status !== 'active') {
-      return NextResponse.json(
-        { error: 'Account is suspended or inactive' },
-        { status: 401 }
-      );
-    }
-    
+
     // Update last login
     user.lastLogin = new Date();
     await user.save();
-    
+
     // Generate JWT token
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024',
       { expiresIn: process.env.JWT_EXPIRE || '7d' }
     );
-    
-    // Remove password from response
-    user.password = undefined;
-    
+
     const response = NextResponse.json(
-      { 
-        message: 'Login successful', 
+      {
+        message: 'Login successful',
         user: {
           id: user._id,
           name: user.name,
@@ -77,12 +66,12 @@ export async function POST(request) {
           createdAt: user.createdAt,
           lastLogin: user.lastLogin,
         },
-        token 
+        token
       },
       { status: 200 }
     );
-    
-    // Set cookie with proper settings for production
+
+    // Set cookie
     const isProduction = process.env.NODE_ENV === 'production';
     response.cookies.set('token', token, {
       httpOnly: true,
@@ -91,10 +80,10 @@ export async function POST(request) {
       sameSite: 'lax',
       secure: isProduction,
     });
-    
+
     return response;
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Google login error:', error);
     return NextResponse.json(
       { error: 'Login failed' },
       { status: 500 }
