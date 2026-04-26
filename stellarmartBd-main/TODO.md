@@ -1,19 +1,10 @@
-# StellarMartBD Task Tracker
+# Deployment Fix & New GitHub Repo Plan
 
-## Current Tasks
-- [ ] Fix mobile navbar hamburger menu (3 line icon click to open category menu)
-  - Verify CategoryContext toggleSidebar called
-  - Check sidebar CSS animation `translate-x`
-  - Test on real mobile device
-  - Update CHANGELOG.md after fix
-
-## Completed
-- Performance optimizations (see PERFORMANCE_OPTIMIZATION.md)
-- Password reset verification (see CHANGELOG.md)
-
-## Next
-1. Implement mobile menu fix
-2. Commit changes to branch `blackboxai/documentation-pr`
-3. Create PR #1
-4. Test production build `npm run build && npm start`
-5. Merge and deploy
+- [x] 1. Fix syntax errors in ProductCard.jsx and page.jsx (duplicated code)
+- [x] 2. Test local \`npm run build\`
+- [ ] 3. \`git config --global user.email "tsturjo57@gmail.com"\`
+- [ ] 4. \`git init; git add .; git commit -m "Fix syntax for Vercel deploy"\`
+- [ ] 5. Check/install gh CLI, \`gh repo create stellarmart-new --public --source=. --remote=origin --push\`
+- [ ] 6. \`vercel --prod\` (new project)
+- [ ] 7. Add env vars in Vercel dashboard (MONGODB_URI, JWT_SECRET)
+- [ ] 8. Test live URL
