@@ -75,7 +75,7 @@ const couponSchema = new mongoose.Schema({
 });
 
 // Index for faster queries
-couponSchema.index({ code: 1 });
+// `code` already has `unique: true`, so avoid a duplicate explicit index.
 couponSchema.index({ isActive: 1, expiresAt: 1 });
 
 export default mongoose.models.Coupon || mongoose.model('Coupon', couponSchema);

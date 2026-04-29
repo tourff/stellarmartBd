@@ -21,7 +21,7 @@ const settingSchema = new mongoose.Schema({
 });
 
 // Indexes
-settingSchema.index({ key: 1 });
+// `key` already uses `unique: true`, so avoid a duplicate explicit index.
 
 const Setting = mongoose.models.Setting || mongoose.model('Setting', settingSchema);
 

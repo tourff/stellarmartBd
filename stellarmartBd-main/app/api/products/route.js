@@ -1,22 +1,55 @@
 import { NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 import dbConnect from '@/lib/db';
 import { Product, Category } from '@/models';
 
 // Cache products for 5 minutes, revalidate on-demand
 export const revalidate = 300;
 
+// Helper function to verify admin token
+function verifyAdminToken(token) {
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024'
+    );
+    return decoded.role === 'admin';
+  } catch (error) {
+    return false;
+  }
+}
+
 export async function GET(request) {
   try {
-    await dbConnect();
-    
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '20', 10);
     const category = searchParams.get('category');
     const search = searchParams.get('search');
     const featured = searchParams.get('featured');
     const slug = searchParams.get('slug');
     const sort = searchParams.get('sort') || '-createdAt';
+
+    let dbReady = true;
+    try {
+      await dbConnect();
+    } catch (dbError) {
+      console.warn('Products GET fallback: database unavailable', dbError?.message || dbError);
+      dbReady = false;
+    }
+
+    if (!dbReady) {
+      return NextResponse.json({
+        products: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          pages: 0,
+        },
+      });
+    }
     
     const query = { isActive: true };
     
@@ -81,6 +114,13 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
+    // Verify admin authentication
+    const cookieStore = cookies();
+    const adminToken = cookieStore.get('adminToken')?.value;
+    if (!adminToken || !verifyAdminToken(adminToken)) {
+      return NextResponse.json({ error: 'Unauthorized - admin access required' }, { status: 401 });
+    }
+
     await dbConnect();
     
     const data = await request.json();

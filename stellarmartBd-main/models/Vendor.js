@@ -103,7 +103,7 @@ const vendorSchema = new mongoose.Schema({
 });
 
 // Index for faster queries
-vendorSchema.index({ slug: 1 });
+// `slug` already uses `unique: true`, so avoid a duplicate explicit index.
 vendorSchema.index({ isActive: 1 });
 vendorSchema.index({ isVerified: 1 });
 

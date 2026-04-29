@@ -57,7 +57,7 @@ const categorySchema = new mongoose.Schema({
 });
 
 // Indexes
-categorySchema.index({ slug: 1 });
+// `slug` already uses `unique: true`, so do not declare a second index here.
 categorySchema.index({ parentId: 1 });
 categorySchema.index({ isFeatured: 1 });
 categorySchema.index({ orderBy: 1 });

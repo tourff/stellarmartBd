@@ -1,21 +1,49 @@
 import { NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 import dbConnect from '@/lib/db';
 import { Banner } from '@/models';
 
-export async function GET(request) {
+// Helper function to verify admin token
+function verifyAdminToken(token) {
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024'
+    );
+    return decoded.role === 'admin';
+  } catch (error) {
+    return false;
+  }
+}
+
+async function ensureDbConnected(operation) {
   try {
     await dbConnect();
-    
+    return true;
+  } catch (error) {
+    console.warn(`Banner ${operation} fallback: database unavailable`, error?.message || error);
+    return false;
+  }
+}
+
+export async function GET(request) {
+  try {
+    const dbReady = await ensureDbConnected('GET');
     const { searchParams } = new URL(request.url);
     const position = searchParams.get('position');
     const admin = searchParams.get('admin');
-    
+
+    if (!dbReady) {
+      return NextResponse.json({ banners: [] });
+    }
+
     let query = {};
-    
+
     // If not admin, only show active banners
     if (!admin) {
       query.isActive = true;
-      
+
       // Check date validity
       const now = new Date();
       query.$or = [
@@ -29,14 +57,14 @@ export async function GET(request) {
         ],
       });
     }
-    
+
     // Filter by position
     if (position) {
       query.position = position;
     }
-    
+
     const banners = await Banner.find(query).sort({ orderBy: 1, createdAt: -1 });
-    
+
     return NextResponse.json({ banners });
   } catch (error) {
     console.error('Get banners error:', error);
@@ -49,12 +77,25 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    await dbConnect();
-    
+    // Verify admin authentication
+    const cookieStore = cookies();
+    const adminToken = cookieStore.get('adminToken')?.value;
+    if (!adminToken || !verifyAdminToken(adminToken)) {
+      return NextResponse.json({ error: 'Unauthorized - admin access required' }, { status: 401 });
+    }
+
+    const dbReady = await ensureDbConnected('POST');
+    if (!dbReady) {
+      return NextResponse.json(
+        { error: 'Banner service temporarily unavailable' },
+        { status: 503 }
+      );
+    }
+
     const data = await request.json();
-    
+
     const banner = await Banner.create(data);
-    
+
     return NextResponse.json(
       { message: 'Banner created successfully', banner },
       { status: 201 }

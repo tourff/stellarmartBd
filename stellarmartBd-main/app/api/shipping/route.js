@@ -1,6 +1,21 @@
 import { NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 import dbConnect from '@/lib/db';
 import { ShippingMethod, ShippingZone } from '@/models/Shipping';
+
+// Helper function to verify admin token
+function verifyAdminToken(token) {
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024'
+    );
+    return decoded.role === 'admin';
+  } catch (error) {
+    return false;
+  }
+}
 
 export async function GET(request) {
   try {
@@ -35,6 +50,13 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
+    // Verify admin authentication
+    const cookieStore = cookies();
+    const adminToken = cookieStore.get('adminToken')?.value;
+    if (!adminToken || !verifyAdminToken(adminToken)) {
+      return NextResponse.json({ error: 'Unauthorized - admin access required' }, { status: 401 });
+    }
+
     await dbConnect();
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
@@ -55,6 +77,13 @@ export async function POST(request) {
 
 export async function PUT(request) {
   try {
+    // Verify admin authentication
+    const cookieStore = cookies();
+    const adminToken = cookieStore.get('adminToken')?.value;
+    if (!adminToken || !verifyAdminToken(adminToken)) {
+      return NextResponse.json({ error: 'Unauthorized - admin access required' }, { status: 401 });
+    }
+
     await dbConnect();
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
@@ -75,6 +104,13 @@ export async function PUT(request) {
 
 export async function DELETE(request) {
   try {
+    // Verify admin authentication
+    const cookieStore = cookies();
+    const adminToken = cookieStore.get('adminToken')?.value;
+    if (!adminToken || !verifyAdminToken(adminToken)) {
+      return NextResponse.json({ error: 'Unauthorized - admin access required' }, { status: 401 });
+    }
+
     await dbConnect();
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');

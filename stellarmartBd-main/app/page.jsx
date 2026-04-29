@@ -41,13 +41,19 @@ export default function HomePage() {
     const now = Date.now();
 
     // Use cache if less than 5 minutes old
-    if (cachedData && cachedTime && now - parseInt(cachedTime) < 5 * 60 * 1000) {
-      const data = JSON.parse(cachedData);
-      setCategories(data.categories || []);
-      setFeaturedProducts(data.featured || []);
-      setNewArrivals(data.arrivals || []);
-      setLoading(false);
-      return;
+    if (cachedData && cachedTime && now - parseInt(cachedTime, 10) < 5 * 60 * 1000) {
+      try {
+        const data = JSON.parse(cachedData);
+        setCategories(Array.isArray(data.categories) ? data.categories : []);
+        setFeaturedProducts(Array.isArray(data.featured) ? data.featured : []);
+        setNewArrivals(Array.isArray(data.arrivals) ? data.arrivals : []);
+        setLoading(false);
+        return;
+      } catch (error) {
+        console.warn('Invalid cached homepage data, refreshing from API.', error);
+        localStorage.removeItem('homePageData');
+        localStorage.removeItem('homePageCacheTime');
+      }
     }
 
     fetchData();
@@ -89,6 +95,9 @@ export default function HomePage() {
       setNewArrivals(data.arrivals);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setCategories([]);
+      setFeaturedProducts([]);
+      setNewArrivals([]);
     } finally {
       setLoading(false);
     }

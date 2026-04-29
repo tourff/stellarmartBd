@@ -1,6 +1,21 @@
 import { NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 import dbConnect from '@/lib/db';
 import { Category } from '@/models';
+
+// Helper function to verify admin token
+function verifyAdminToken(token) {
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024'
+    );
+    return decoded.role === 'admin';
+  } catch (error) {
+    return false;
+  }
+}
 
 export async function GET(request, { params }) {
   try {
@@ -29,6 +44,13 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
   try {
+    // Verify admin authentication
+    const cookieStore = cookies();
+    const adminToken = cookieStore.get('adminToken')?.value;
+    if (!adminToken || !verifyAdminToken(adminToken)) {
+      return NextResponse.json({ error: 'Unauthorized - admin access required' }, { status: 401 });
+    }
+
     await dbConnect();
     
     const { id } = params;
@@ -83,6 +105,13 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
+    // Verify admin authentication
+    const cookieStore = cookies();
+    const adminToken = cookieStore.get('adminToken')?.value;
+    if (!adminToken || !verifyAdminToken(adminToken)) {
+      return NextResponse.json({ error: 'Unauthorized - admin access required' }, { status: 401 });
+    }
+
     await dbConnect();
     
     const { id } = params;

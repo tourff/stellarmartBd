@@ -27,7 +27,7 @@ const CategoryItem = ({ category, level = 0 }) => {
           </Link>
           {hasSubcategories && (
             <span className="icon-toggle flex-shrink-0 ml-3 p-1 rounded-full group-hover:bg-blue-100 transition-all">
-{isExpanded ? '−' : '+'}
+              {isExpanded ? '−' : '+'}
             </span>
           )}
         </div>

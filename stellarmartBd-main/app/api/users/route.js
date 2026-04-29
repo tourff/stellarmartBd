@@ -1,7 +1,22 @@
 import { NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
 import dbConnect from '@/lib/db';
 import User from '@/models/User';
 import { cookies } from 'next/headers';
+
+// Helper function to verify admin token
+function verifyAdminToken(token) {
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024'
+    );
+    // Check if token contains admin role
+    return decoded.role === 'admin';
+  } catch (error) {
+    return false;
+  }
+}
 
 export async function GET() {
   try {
@@ -14,7 +29,10 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized - no admin token' }, { status: 401 });
     }
 
-    // TODO: Verify admin token against DB/session
+    // Verify admin token is valid
+    if (!verifyAdminToken(adminToken)) {
+      return NextResponse.json({ error: 'Unauthorized - invalid token' }, { status: 401 });
+    }
 
     const users = await User.find({})
       .select('-password -resetPasswordToken -resetPasswordExpire')
@@ -47,7 +65,10 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Unauthorized - no admin token' }, { status: 401 });
     }
 
-    // TODO: Verify admin token against DB/session
+    // Verify admin token is valid
+    if (!verifyAdminToken(adminToken)) {
+      return NextResponse.json({ error: 'Unauthorized - invalid token' }, { status: 401 });
+    }
 
     const { userId } = await request.json();
 
@@ -55,8 +76,12 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
     }
 
-    // Prevent admin from deleting themselves
-    // TODO: Add admin token verification to get current admin user
+    // Prevent admin from deleting themselves (admin user has fixed id 'admin')
+    // Decode token to get current admin id
+    const decoded = jwt.decode(adminToken);
+    if (userId === decoded?.id) {
+      return NextResponse.json({ error: 'Cannot delete yourself' }, { status: 400 });
+    }
 
     const user = await User.findById(userId);
     if (!user) {

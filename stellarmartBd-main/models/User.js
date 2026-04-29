@@ -70,14 +70,18 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Password hashing before save
+/**
+ * Password hashing before save
+ * Return early when the password has not changed to avoid double-processing.
+ */
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
-    next();
+    return next();
   }
+
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
-  next();
+  return next();
 });
 
 // Compare password method
@@ -86,8 +90,8 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 };
 
 // Index for better query performance
-userSchema.index({ email: 1 });
-userSchema.index({ phone: 1 });
+// `email` and `phone` already create indexes via `unique: true`, so declaring
+// them again produces duplicate-index warnings in Mongoose.
 userSchema.index({ status: 1, role: 1 });
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);

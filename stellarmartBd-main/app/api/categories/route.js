@@ -1,19 +1,48 @@
 import { NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 import dbConnect from '@/lib/db';
 import { Category } from '@/models';
 
 // Cache categories for 5 minutes, revalidate on-demand
 export const revalidate = 300;
 
+// Helper function to verify admin token
+function verifyAdminToken(token) {
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'stellarmartbd_secret_key_2024'
+    );
+    return decoded.role === 'admin';
+  } catch (error) {
+    return false;
+  }
+}
+
 export async function GET(request) {
   try {
-    await dbConnect();
-    
     const { searchParams } = new URL(request.url);
     const parent = searchParams.get('parent');
     const featured = searchParams.get('featured');
     const nested = searchParams.get('nested');
     const activeOnly = searchParams.get('active');
+
+    let dbReady = true;
+    try {
+      await dbConnect();
+    } catch (dbError) {
+      console.warn('Categories GET fallback: database unavailable', dbError?.message || dbError);
+      dbReady = false;
+    }
+
+    if (!dbReady) {
+      return NextResponse.json({
+        categories: [],
+      });
+    }
+    
+    // Handle nested categories query
     
     // Handle nested categories query
     if (nested === 'true') {

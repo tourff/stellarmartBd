@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 async function getCategories() {
   try {
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';

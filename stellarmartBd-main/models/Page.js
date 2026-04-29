@@ -37,7 +37,7 @@ const pageSchema = new mongoose.Schema({
 });
 
 // Indexes
-pageSchema.index({ slug: 1 });
+// `slug` already uses `unique: true`, so avoid a duplicate explicit index.
 pageSchema.index({ isActive: 1 });
 
 const Page = mongoose.models.Page || mongoose.model('Page', pageSchema);

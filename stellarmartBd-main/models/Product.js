@@ -151,9 +151,9 @@ const productSchema = new mongoose.Schema({
 });
 
 // Indexes
-productSchema.index({ slug: 1 });
+// `slug` and `sku` are already indexed via `unique: true`, so avoid duplicate
+// explicit indexes that trigger Mongoose warnings.
 productSchema.index({ category: 1 });
-productSchema.index({ sku: 1 });
 productSchema.index({ isFeatured: 1 });
 productSchema.index({ isNewArrival: 1 });
 productSchema.index({ isBestSeller: 1 });
